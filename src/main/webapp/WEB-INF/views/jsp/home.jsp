@@ -24,7 +24,15 @@
 		
 		<!-- BootstrapV3.3.6 Core JavaScript -->
 		<script src="js/bootstrap.min.js"></script>
+		<script>
+		function addRequest() {
+			  var xhttp = new XMLHttpRequest();
+			  xhttp.open("GET", "addPayment", true);
+			  xhttp.send();
+			}
+
 		
+		</script>
 		<!--Only chrome supports type=date, so for firefox i added this datepicker from jquery-->
 		<!-- DOES NOT WORK-->
 		<script>
@@ -79,7 +87,7 @@
 			  <ul class="nav nav-pills nav-stacked">
 				  <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
 				
-				<li><a data-toggle="pill" href="#add">Add</a></li>
+				<li><a data-toggle="pill"  onclick="addRequest()" href="#add">Add</a></li>
 				<li><a data-toggle="pill" href="#history">Show history</a></li>
 				<li><a data-toggle="pill"href="#payments">Show payments</a></li>
 				<li><a data-toggle="pill" href="#shopping">Shopping list</a></li>
