@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,7 +37,6 @@
 
 	<script type="text/javascript">
 	$(function() {
-
     $('#login-form-link').click(function(e) {
 		$("#login-form").delay(100).fadeIn(100);
  		$("#register-form").fadeOut(100);
@@ -51,9 +51,7 @@
 		$(this).addClass('active');
 		e.preventDefault();
 	});
-
 });
-
 // Scroll to target
 function scrollToTarget(D)
 {
@@ -69,11 +67,8 @@ function scrollToTarget(D)
 	{
 		D = $(D).offset().top;
 	}
-
 	$('html,body').animate({scrollTop:D}, 'slow');
 }
-
-
 	</script>
 </head>
 
@@ -160,7 +155,7 @@ function scrollToTarget(D)
 					<div class="panel-body">
 						<div class="row">
 							<div class="col-lg-12">
-								<form id="login-form" action="#" method="post" role="form" style="display: block;">
+								<form id="login-form" action="login" method="post" role="form" style="display: block;">
 									<div class="form-group">
 										<input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="">
 									</div>
@@ -188,7 +183,7 @@ function scrollToTarget(D)
 										</div>
 									</div>
 								</form>
-								<form id="register-form" action="#" method="post" role="form" style="display: none;">
+								<form id="register-form" action="register" method="post" role="form" style="display: none;">
 									<div class="form-group">
 										<input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="">
 									</div>
@@ -277,3 +272,5 @@ function scrollToTarget(D)
 
 </html>
 
+Status API Training Shop Blog About
+© 2016 GitHub, Inc. Terms Privacy Security Contact Help

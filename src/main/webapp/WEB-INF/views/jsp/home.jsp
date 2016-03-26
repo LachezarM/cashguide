@@ -87,9 +87,9 @@
 			  <ul class="nav nav-pills nav-stacked">
 				  <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
 				
-				<li><a data-toggle="pill"  onclick="addRequest()" href="#add">Add</a></li>
+				<li><a data-toggle="pill" href="#payment">Add</a></li>
 				<li><a data-toggle="pill" href="#history">Show history</a></li>
-				<li><a data-toggle="pill"href="#payments">Show payments</a></li>
+				<li><a data-toggle="pill" href="#payments">Show payments</a></li>
 				<li><a data-toggle="pill" href="#shopping">Shopping list</a></li>
 				<li><a data-toggle="pill" href="#simulator">Simulator</a></li>
 			  </ul>
