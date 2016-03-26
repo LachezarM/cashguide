@@ -3,6 +3,7 @@ package com.model.db;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import com.model.User;
@@ -48,8 +49,37 @@ public class DBUserDAO implements IUserDAO{
 
 	@Override
 	public User addUser(User user) {
-		String sql = "INSERT INTO users(username, password, email, first_name, last_name, balanse) VALUES(?,?,?,?,?,?);";
+		String sql = "INSERT INTO users(username, password, email, first_name, last_name, balanse) "
+				+ "VALUES(?,?,?,?,?,?);";
 		
+		try(PreparedStatement pr = DBManager.getDBManager().
+											getConnection().
+											prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+			pr.setString(1, user.getUsername());
+			pr.setString(2, user.getPassword());
+			pr.setString(3, user.getEmail());
+			pr.setString(4, user.getFirstName());
+			pr.setString(5, user.getLastName());
+			pr.setDouble(6, user.getBalance());
+			
+			int affectedRows = pr.executeUpdate();
+			
+			if(affectedRows == 0){
+				throw new SQLException("Creating user failed, no rows affected.");
+			}
+			
+			try (ResultSet generatedKeys = pr.getGeneratedKeys()) {
+	            if (generatedKeys.next()) {
+	                user.setId((int)(generatedKeys.getLong(1)));
+	            }
+	            else {
+	                throw new SQLException("Creating user failed, no ID obtained.");
+	            }
+	        }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return user;
 		
