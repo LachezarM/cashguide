@@ -1,15 +1,26 @@
 package com.model;
 
-import java.util.List;
-
 public class User {
 	
 	private int id;
 	private String username;
 	private String password;
 	private String email;
-	private double balance;
-	List<Payment> payments;
+	//private String firstName;
+	//private String lastName;
+ 	//private double balance;
+  	//List<Payment> payments;
+
+	private Budget budget;
+	
+	public User(){
+		
+	}
+	
+	public User(String username, String password){
+		this.username = username;
+		this.password = password;
+	}
 	
 	public User(String username, String email, String password){
 		this.username = username;
@@ -17,10 +28,15 @@ public class User {
 		this.email = email;
 	}
 
-	public User(String username, String password) {
-		// TODO Auto-generated constructor stub
+	/*
+	public User(String username, String email, String password, String firstNane, String lastName){
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.firstName = firstNane;
+		this.lastName = lastName;
 	}
-
+	*/
 	public int getId() {
 		return id;
 	}
@@ -37,25 +53,23 @@ public class User {
 		return email;
 	}
 
-	public String getFirstName() {
+	/*public String getFirstName() {
 		return firstName;
 	}
 
 	public String getLastName() {
 		return lastName;
-	}
-
-	public double getBalance() {
-		return balance;
-	}
-
-	public List<Payment> getPayments() {
-		return payments;
-	}
+	}*/
 
 	public void setId(int id) {
 		this.id = id;
 	}
 	
-	
+	public void addBudet(Budget budget){
+		this.budget = budget;
+	}
+
+	public Budget getBudget(){
+		return this.budget;
+	}
 }
