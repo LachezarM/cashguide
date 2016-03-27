@@ -6,6 +6,10 @@ import com.model.User;
 
 public interface IUserDAO {
 	
+	static IUserDAO getInstance() {
+		
+		return DBUserDAO.getInstance();
+	}
 	boolean checkIfUserExests(String username);
 	
 	User addUser(User user);

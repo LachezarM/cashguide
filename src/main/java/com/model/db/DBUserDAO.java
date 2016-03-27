@@ -49,8 +49,8 @@ public class DBUserDAO implements IUserDAO{
 
 	@Override
 	public User addUser(User user) {
-		String sql = "INSERT INTO users(username, password, email, first_name, last_name, balanse) "
-				+ "VALUES(?,?,?,?,?,?);";
+		String sql = "INSERT INTO users(username, password, email,balanse) "
+				+ "VALUES(?,?,?,?);";
 		
 		try(PreparedStatement pr = DBManager.getDBManager().
 											getConnection().
@@ -58,8 +58,6 @@ public class DBUserDAO implements IUserDAO{
 			pr.setString(1, user.getUsername());
 			pr.setString(2, user.getPassword());
 			pr.setString(3, user.getEmail());
-			pr.setString(4, user.getFirstName());
-			pr.setString(5, user.getLastName());
 			pr.setDouble(6, user.getBalance());
 			
 			int affectedRows = pr.executeUpdate();

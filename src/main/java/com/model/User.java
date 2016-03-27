@@ -8,8 +8,6 @@ public class User {
 	private String username;
 	private String password;
 	private String email;
-	private String firstName;
-	private String lastName;
 	private double balance;
 	List<Payment> payments;
 	
@@ -17,6 +15,10 @@ public class User {
 		this.username = username;
 		this.password = password;
 		this.email = email;
+	}
+
+	public User(String username, String password) {
+		// TODO Auto-generated constructor stub
 	}
 
 	public int getId() {
