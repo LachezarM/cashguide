@@ -1,9 +1,11 @@
 package com.model.db;
 
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,6 +15,23 @@ public class DBUserDAO implements IUserDAO{
 
 	private static DBUserDAO instance = null;
 	private DBUserDAO(){
+		Statement st;
+		try {
+			st = DBManager.getDBManager().getConnection().createStatement();
+			String query = "USE " + DBManager.DB_NAME + ";";
+			st.executeUpdate(query);
+			query = " CREATE TABLE IF NOT EXISTS users ("
+					+ "ID int auto_increment,"
+					+ "password varchar(20),"
+					+ "username varchar(20),"
+					+ "email varchar(20),"
+					+ "PRIMARY KEY(ID));";
+			st.executeUpdate(query);
+			st.close();
+			
+		} catch (SQLException e) {
+			System.out.println("Error creating table users " + e.getMessage());
+		}
 		
 	}
 	
@@ -57,6 +76,10 @@ public class DBUserDAO implements IUserDAO{
 			pr.setString(1, username);
 			pr.setString(2, password);
 			ResultSet rs = pr.executeQuery();
+			if(rs == null) {
+				result = false;
+				return result;
+			}
 			while(rs.next()){
 				String user = rs.getString("username");
 				if(user==null){
@@ -81,7 +104,8 @@ public class DBUserDAO implements IUserDAO{
 	public void addUser(User user) {
 		/*String sql = "INSERT INTO users(username, password, email, first_name, last_name) "
 				+ "VALUES(?,?,?,?,?);";*/
-		String sql = "INSERT INTO users(username, password, email) "
+
+		String sql = "INSERT INTO " + DBManager.DB_NAME + ".users(username, password, email) "
 				+ "VALUES(?,?,?,);";
 		
 		try(PreparedStatement pr = DBManager.getDBManager().
@@ -108,8 +132,7 @@ public class DBUserDAO implements IUserDAO{
 	            }
 	        }
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error inserting User" + e.getMessage());
 		}		
 	}
 
@@ -168,7 +191,7 @@ public class DBUserDAO implements IUserDAO{
 			e.printStackTrace();
 		}
 		
-		return users;
+		return Collections.unmodifiableList(users);
 	}
 
 	@Override

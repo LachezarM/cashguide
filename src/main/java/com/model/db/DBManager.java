@@ -13,18 +13,16 @@ public class DBManager {
 	private static final String DB_URL = "jdbc:mysql://localhost:3306/";
 	private static final String DB_USER = "root";
 	//password different for users
-	private static final String DB_PASS = "ds941213";
+	private static final String DB_PASS = "mysqlpassword";
 	private Connection con;
 
 	private DBManager() {
 
 		try {
 			Class.forName(JDBC_DRIVER);
-			System.out.println("ho");
 			con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
 			System.out.println("con: " + con);
 			System.out.println("Connection created successfully");
-
 		} catch (SQLException | ClassNotFoundException e) {
 			System.out.println("Error connection to DB " + e.getMessage());
 		}
