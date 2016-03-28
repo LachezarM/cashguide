@@ -6,7 +6,7 @@ public class Expense extends Payment {
 
 	public Expense(String category, String description,
 			double amount, LocalDate date) {
-		super(category, "Expensse", description, amount, date);
+		super(category, "EXPENSE", description, amount, date);
 	}
 
 }

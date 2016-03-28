@@ -2,7 +2,6 @@ package com.controller;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +20,13 @@ public class HomePageController {
 		System.out.println("priema se zaqvka");
 		return 	"index";	
 	}
+	
+	@RequestMapping(value="/history" , method = RequestMethod.GET)
+	String showHistoryTest(HttpServletResponse r) {
+		System.out.println("priema se zaqvka");
+		return 	"index";	
+	}
+	
 	@RequestMapping(value="#payments" , method = RequestMethod.GET)
 	String showPayments(HttpServletResponse r) {
 		System.out.println("priema se zaqvka");
