@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,6 +36,7 @@
 
 	<script type="text/javascript">
 	$(function() {
+
     $('#login-form-link').click(function(e) {
 		$("#login-form").delay(100).fadeIn(100);
  		$("#register-form").fadeOut(100);
@@ -51,7 +51,9 @@
 		$(this).addClass('active');
 		e.preventDefault();
 	});
+
 });
+
 // Scroll to target
 function scrollToTarget(D)
 {
@@ -67,8 +69,11 @@ function scrollToTarget(D)
 	{
 		D = $(D).offset().top;
 	}
+
 	$('html,body').animate({scrollTop:D}, 'slow');
 }
+
+
 	</script>
 </head>
 
@@ -272,5 +277,3 @@ function scrollToTarget(D)
 
 </html>
 
-Status API Training Shop Blog About
-© 2016 GitHub, Inc. Terms Privacy Security Contact Help

@@ -81,13 +81,12 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-
 	    <div class="row" name="content" style="margin-top:50px;">
 			<div class="col-md-3">
 			  <ul class="nav nav-pills nav-stacked">
 				  <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
 				
-				<li><a data-toggle="pill" href="#payment">Add</a></li>
+				<li><a data-toggle="pill"  onclick="addRequest()" href="#add">Add</a></li>
 				<li><a data-toggle="pill" href="#history">Show history</a></li>
 				<li><a data-toggle="pill" href="#payments">Show payments</a></li>
 				<li><a data-toggle="pill" href="#shopping">Shopping list</a></li>
@@ -100,7 +99,11 @@
 					<div class="tab-pane fade in active" id="home">
 						<div class="panel panel-default">
 							<div class="panel-heading">Home</div>
-							<div class="panel-body">Home info</div>
+							<div class="panel-body">Home info
+								<a href="/Cashguide1/history">HISTORY - tva samo go probvah s link kam index jsp i kontroler /history</a>
+							
+							
+							</div>
 						</div>
 					</div>
 					
