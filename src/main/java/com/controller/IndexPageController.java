@@ -81,6 +81,7 @@ public class IndexPageController {
 		if(password.length() < 6) {
 			result = "Password must be atleast 6 characters";
 		}
+		//validmail not strong enought
 		if(!validMail(email)) {
 			result = "Invalid email";
 		}
@@ -93,9 +94,8 @@ public class IndexPageController {
 		return result;
 	}
 	private boolean validMail(String email) {
-		EmailValidator a = new EmailValidator();
-		return a.isValid(email, null);
-	
+		 String EMAIL_REGEX = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+		 return email.matches(EMAIL_REGEX);
 	}
 	private boolean valid(String username, String password) {
 		if(username.length() == 0 || password.length() == 0) {

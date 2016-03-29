@@ -106,7 +106,7 @@ public class DBUserDAO implements IUserDAO{
 				+ "VALUES(?,?,?,?,?);";*/
 
 		String sql = "INSERT INTO " + DBManager.DB_NAME + ".users(username, password, email) "
-				+ "VALUES(?,?,?,);";
+				+ "VALUES(?,?,?);";
 		
 		try(PreparedStatement pr = DBManager.getDBManager().
 											getConnection().
@@ -168,8 +168,8 @@ public class DBUserDAO implements IUserDAO{
 
 	@Override
 	public List<User> getAllUsers() {
-		String sql = "SELECT id, username, password, email, firstName, lastName "
-				+ "FROM " + DBManager.DB_NAME+ ".users;";
+		String sql = "SELECT id, username, password, email"
+				+ " FROM " + DBManager.DB_NAME + ".users;";
 		List<User> users = new LinkedList<User>();
 		try(Statement st = DBManager.getDBManager().getConnection().createStatement()){
 			ResultSet rs = st.executeQuery(sql);

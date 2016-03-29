@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -191,16 +192,16 @@ function scrollToTarget(D)
 								</form>
 								<form id="register-form" action="register" method="post" role="form" style="display: none;">
 									<div class="form-group">
-										<input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="">
+										<input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="${fn:escapeXml(param.username)}">
 									</div>
 									<div class="form-group">
-										<input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email Address" value="">
+										<input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email Address" value="${fn:escapeXml(param.email)}">
 									</div>
 									<div class="form-group">
-										<input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password">
+										<input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password" value="${fn:escapeXml(param.password)}"}">
 									</div>
 									<div class="form-group">
-										<input type="password" name="confirm-password" id="confirm-password" tabindex="2" class="form-control" placeholder="Confirm Password">
+										<input type="password" name="confirm-password" id="confirm-password" tabindex="2" class="form-control" placeholder="Confirm Password" value="${fn:escapeXml(param.password)}">
 									</div>
 									<div class="form-group">
 										<div class="row">
@@ -208,7 +209,9 @@ function scrollToTarget(D)
 												<input type="submit" name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="Register Now">
 											</div>
 										</div>
+										${ErrorInfo }
 									</div>
+									
 								</form>
 							</div>
 						</div>
