@@ -9,37 +9,31 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class HomePageController {
 	
-	@RequestMapping(value="#payment" , method = RequestMethod.GET)
+	@RequestMapping(value="/add" , method = RequestMethod.GET)
 	String addPayment(HttpServletResponse r) {
 		System.out.println("priema se zaqvka");
-		return 	"index";	
-	}
-	
-	@RequestMapping(value="#history" , method = RequestMethod.GET)
-	String showHistory(HttpServletResponse r) {
-		System.out.println("priema se zaqvka");
-		return 	"index";	
+		return 	"add";	
 	}
 	
 	@RequestMapping(value="/history" , method = RequestMethod.GET)
-	String showHistoryTest(HttpServletResponse r) {
+	String showHistory(HttpServletResponse r) {
 		System.out.println("priema se zaqvka");
-		return 	"index";	
+		return 	"history";	
 	}
-	
-	@RequestMapping(value="#payments" , method = RequestMethod.GET)
+		
+	@RequestMapping(value="/payment" , method = RequestMethod.GET)
 	String showPayments(HttpServletResponse r) {
 		System.out.println("priema se zaqvka");
-		return 	"index";	
+		return 	"payment";	
 	}
-	@RequestMapping(value="#shopping" , method = RequestMethod.GET)
+	@RequestMapping(value="/shopping" , method = RequestMethod.GET)
 	String shopingList(HttpServletResponse r) {
 		System.out.println("priema se zaqvka");
 		return 	"index";	
 	}
-	@RequestMapping(value="#simulator" , method = RequestMethod.GET)
+	@RequestMapping(value="/simulator" , method = RequestMethod.GET)
 	String simulator(HttpServletResponse r) {
 		System.out.println("priema se zaqvka");
-		return 	"index";	
+		return 	"simulator";	
 	}
 }

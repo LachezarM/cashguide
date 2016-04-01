@@ -25,6 +25,38 @@
 		<!-- BootstrapV3.3.6 Core JavaScript -->
 		<script src="js/bootstrap.min.js"></script>
 		<script>
+		
+		$(document).ready(function(){
+			/* console.log(location.href);
+			console.log(location.href.split("/")); */
+			var hostname = "/" + location.href.split("/")[3];
+			var links = document.getElementById("navigation");
+			var lists = links.getElementsByTagName("li");	
+			lists[1].childNodes[0].setAttribute("href", hostname+"/add" );
+			lists[2].childNodes[0].setAttribute("href", hostname+"/history" );
+			lists[3].childNodes[0].setAttribute("href", hostname+"/payment" );
+			lists[4].childNodes[0].setAttribute("href", hostname+"/shopping" );
+			lists[5].childNodes[0].setAttribute("href", hostname+"/simulator" );		
+		});
+		/* var projectName = "/Cashguide1";
+		
+		function getUrl(){
+			
+			var links = document.getElementById("navigatiom");
+			var lists = links.getElementsByTagName("li");
+			for(i=0;i<lists.length; i++){
+				console.log(lists[i].childNodes[0]);
+			} */
+			
+			
+			/* var hostname = "/" + $(location).attr('hostname');
+			$('#navigation>li').children("a").each(function(){
+				this.attr("href", projectName);
+			});
+			
+			 */
+			/*attr("href", projectName);*/
+		//}
 		function addRequest() {
 			  var xhttp = new XMLHttpRequest();
 			  xhttp.open("GET", "addPayment", true);
@@ -36,9 +68,9 @@
 		<!--Only chrome supports type=date, so for firefox i added this datepicker from jquery-->
 		<!-- DOES NOT WORK-->
 		<script>
-		if ( $('[type="date"]').prop('type') != 'date' ) {
+		/* if ( $('[type="date"]').prop('type') != 'date' ) {
 			$('[type="date"]').datepicker();
-		}
+		} */
 		
 		</script>
 
@@ -83,14 +115,14 @@
     </nav>
 	    <div class="row" name="content" style="margin-top:50px;">
 			<div class="col-md-3">
-			  <ul class="nav nav-pills nav-stacked">
-				  <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
+			  <ul id = "navigation" class="nav nav-pills nav-stacked">
+				<li class="active"><a data-toggle="pill" href="#home">Home</a></li>
 				
-				<li><a data-toggle="pill"  onclick="addRequest()" href="#add">Add</a></li>
-				<li><a data-toggle="pill" href="#history">Show history</a></li>
-				<li><a data-toggle="pill" href="#payments">Show payments</a></li>
-				<li><a data-toggle="pill" href="#shopping">Shopping list</a></li>
-				<li><a data-toggle="pill" href="#simulator">Simulator</a></li>
+				<li><a  href="">Add</a></li>
+				<li><a  href="">Show history</a></li>
+				<li><a  href="">Show payments</a></li>
+				<li><a  href="">Shopping list</a></li>
+				<li><a  href="">Simulator</a></li>
 			  </ul>
 			</div>
 			
