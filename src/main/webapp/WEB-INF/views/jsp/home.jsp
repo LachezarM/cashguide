@@ -56,12 +56,7 @@
 			
 			 */
 			/*attr("href", projectName);*/
-		//}
-		function addRequest() {
-			  var xhttp = new XMLHttpRequest();
-			  xhttp.open("GET", "addPayment", true);
-			  xhttp.send();
-			}
+		//}		
 
 		
 		</script>
@@ -102,11 +97,11 @@
 				<li class="dropdown">
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">User <span class="caret"></span></a>
 				  <ul class="dropdown-menu">
-					<li><a href="#"><img src="img/user.png"></img>User Profile</a></li>
+					<li><a href="userProfile"><img src="img/user.png"></img>User Profile</a></li>
 					<li role="separator" class="divider"></li>
-					<li><a href="#"><img src="img/settings.png"></img>Settings</a></li>
+					<li><a href="userProfile"><img src="img/settings.png"></img>Settings</a></li>
 					<li role="separator" class="divider"></li>
-					<li><a href="#"><img src="img/logout.png"></img>Logout</a></li>
+					<li><a href="index"><img src="img/logout.png"></img>Logout</a></li>
 				  </ul>
 				</li>
 			  </ul>
