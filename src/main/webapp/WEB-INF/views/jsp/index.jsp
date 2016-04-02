@@ -184,7 +184,7 @@ function scrollToTarget(D)
 											<div class="col-lg-12">
 												<div class="text-center">
 													<a href="#" tabindex="5" class="forgot-password">Forgot Password?</a><br>
-													${ErrorInfo }
+													${ErrorInfo}
 												</div>
 											</div>
 										</div>
@@ -209,7 +209,7 @@ function scrollToTarget(D)
 												<input type="submit" name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="Register Now">
 											</div>
 										</div>
-										${ErrorInfo }
+										${ErrorInfo}
 									</div>
 									
 								</form>

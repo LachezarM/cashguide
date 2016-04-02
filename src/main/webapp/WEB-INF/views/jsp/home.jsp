@@ -38,27 +38,8 @@
 			lists[4].childNodes[0].setAttribute("href", hostname+"/shopping" );
 			lists[5].childNodes[0].setAttribute("href", hostname+"/simulator" );		
 		});
-		/* var projectName = "/Cashguide1";
-		
-		function getUrl(){
-			
-			var links = document.getElementById("navigatiom");
-			var lists = links.getElementsByTagName("li");
-			for(i=0;i<lists.length; i++){
-				console.log(lists[i].childNodes[0]);
-			} */
-			
-			
-			/* var hostname = "/" + $(location).attr('hostname');
-			$('#navigation>li').children("a").each(function(){
-				this.attr("href", projectName);
-			});
-			
-			 */
-			/*attr("href", projectName);*/
-		//}		
-
-		
+	
+	
 		</script>
 		<!--Only chrome supports type=date, so for firefox i added this datepicker from jquery-->
 		<!-- DOES NOT WORK-->
@@ -112,7 +93,6 @@
 			<div class="col-md-3">
 			  <ul id = "navigation" class="nav nav-pills nav-stacked">
 				<li class="active"><a data-toggle="pill" href="#home">Home</a></li>
-				
 				<li><a  href="">Add</a></li>
 				<li><a  href="">Show history</a></li>
 				<li><a  href="">Show payments</a></li>
@@ -127,9 +107,7 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">Home</div>
 							<div class="panel-body">Home info
-								<a href="/Cashguide1/history">HISTORY - tva samo go probvah s link kam index jsp i kontroler /history</a>
-							
-							
+								<a href="history">HISTORY - tva samo go probvah s link kam index jsp i kontroler /history</a>
 							</div>
 						</div>
 					</div>

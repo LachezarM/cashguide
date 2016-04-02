@@ -6,7 +6,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.model.Budget;
 import com.model.Expense;
@@ -271,5 +274,46 @@ private static DBBudgetDAO instance = null;
 		
 	}
 
-	
+	public List<String>  getAllCategoriesByType(String type){
+		String sql = "SELECT category "
+				+ "FROM "+DBManager.DB_NAME+".categories "
+				+ "JOIN "+DBManager.DB_NAME+ ".payment_types ON typeId=payment_types.id "
+				+ "WHERE type=?;";
+		List<String> categories = new LinkedList<String>();
+		try(PreparedStatement ps = DBManager.getDBManager().getConnection().prepareStatement(sql)){
+			ps.setString(1, type);
+			try(ResultSet rs = ps.executeQuery()){
+				while(rs.next()){
+					String category = rs.getString("category");
+					categories.add(category);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return categories;
+	}
+
+	public Map<String, ArrayList<String>>  getAllCategories(){
+		String sql = "SELECT category, type "
+				+ "FROM "+DBManager.DB_NAME+".categories "
+				+ "JOIN "+DBManager.DB_NAME+ ".payment_types ON typeId=payment_types.id;";
+		Map<String, ArrayList<String>> categories = new HashMap<String, ArrayList<String>>();
+		categories.put("EXPENSE", new ArrayList<String>());
+		categories.put("INCOME", new ArrayList<String>());
+		try(Statement ps = DBManager.getDBManager().getConnection().createStatement()){
+			try(ResultSet rs = ps.executeQuery(sql)){
+				while(rs.next()){
+					String category = rs.getString("category");
+					String type = rs.getString("type");
+					categories.get(type).add(category);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return categories;
+	}
 }
