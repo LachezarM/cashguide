@@ -1,6 +1,5 @@
 package com.model.db;
 
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +13,7 @@ import com.model.User;
 public class DBUserDAO implements IUserDAO{
 
 	private static DBUserDAO instance = null;
+	
 	private DBUserDAO(){
 		Statement st;
 		try {
@@ -67,7 +67,7 @@ public class DBUserDAO implements IUserDAO{
 		return result;
 	}
 
-	public boolean checkForCorrectPassword(String username, String password){
+	public boolean checkForCorrectUsernameAndPassword(String username, String password){
 		String sql = "SELECT username, password "
 				+ "FROM " + DBManager.DB_NAME+ ".users "
 				+ "WHERE username=? AND password=?;";

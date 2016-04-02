@@ -12,7 +12,7 @@ public interface IUserDAO {
 	
 	boolean checkIfUserExests(String username);
 	
-	boolean checkForCorrectPassword(String username, String password);
+	boolean checkForCorrectUsernameAndPassword(String username, String password);
 	
 	//after adding the user in DB, the id property in user object is set to id form DB
 	void addUser(User user);

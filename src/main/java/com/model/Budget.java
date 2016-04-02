@@ -13,7 +13,7 @@ public class Budget {
 	
 	public Budget(LocalDate date, double percentageOfIncome) {
 		super();
-		this.date = date;
+		this.date = LocalDate.of(date.getYear(), date.getMonthValue(), 1);
 		this.percentageOfIncome = percentageOfIncome;
 		this.payments = new HashMap<String, ArrayList<Payment>>();
 		this.payments.put("INCOME", new ArrayList<Payment>());
@@ -60,4 +60,13 @@ public class Budget {
 	public void addPayment(Payment payment){
 		this.payments.get(payment.getType()).add(payment);
 	}
+
+	@Override
+	public String toString() {
+		return "Budget [id=" + id + ", date=" + date + ", percentageOfIncome="
+				+ percentageOfIncome + ", payments=" + payments + ", balance="
+				+ balance + "]";
+	}
+
+	
 }

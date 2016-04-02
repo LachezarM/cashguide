@@ -58,5 +58,11 @@ public abstract class Payment {
 	public String getType(){
 		return this.type;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Payment [id=" + id + ", category=" + category + ", type="
+				+ type + ", description=" + description + ", amount=" + amount
+				+ ", date=" + date + "]";
+	}
 }

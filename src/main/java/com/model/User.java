@@ -72,4 +72,9 @@ public class User {
 	public Budget getBudget(){
 		return this.budget;
 	}
+	
+	@Override
+	public String toString() {
+		return "id: " + id + ", username: " + username + ", password: " + budget.toString();
+	} 
 }
