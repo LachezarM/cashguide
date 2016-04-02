@@ -25,5 +25,9 @@ public interface IUserDAO {
 	
 	boolean changeEmail(int id, String newEmail);
 	
-	boolean changeUserProfile(int id, User newUser);//changing password, email, firstName, lastName
+	//boolean changeUserProfile(int id, User newUser);//changing password, email, firstName, lastName
+
+	boolean changeUserProfile(int id, String newUsername);
+
+	boolean checkIfPasswordExists(String newPassword);
 }

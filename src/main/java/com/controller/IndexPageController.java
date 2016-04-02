@@ -41,8 +41,9 @@ public class IndexPageController {
 			
 			for(User u : IUserDAO.getInstance().getAllUsers()) {
 				if(username.equals(u.getUsername()) && password.equals(u.getPassword())) {
-					User x = new User(username,password);
+					User x = IUserDAO.getInstance().getUser(username);
 					s.setAttribute("logedUser",x);
+					System.out.println(x.getId());
 					return "home";
 				}
 			}

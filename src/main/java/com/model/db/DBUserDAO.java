@@ -138,7 +138,7 @@ public class DBUserDAO implements IUserDAO{
 
 	@Override
 	public User getUser(String username) {
-		String sql = "SELECT id, password, email, firstName, lastName "
+		String sql = "SELECT id, password, email "
 				+ "FROM " + DBManager.DB_NAME+ ".users "
 				+ "WHERE username=?;";
 		User user = null;
@@ -149,9 +149,6 @@ public class DBUserDAO implements IUserDAO{
 				int id = rs.getInt("id");
 				String password = rs.getString("password");
 				String email = rs.getString("email");
-				//String firstName = rs.getString("firstName");
-				//String lastName = rs.getString("lastName");
-				//user = new User(username,email, password, firstName, lastName);
 				user = new User(username,email, password);
 				user.setId(id);
 				break;
@@ -174,6 +171,7 @@ public class DBUserDAO implements IUserDAO{
 		try(Statement st = DBManager.getDBManager().getConnection().createStatement()){
 			ResultSet rs = st.executeQuery(sql);
 			while(rs.next()){
+				System.out.println(rs.getString("username") + " : "  + rs.getInt("id"));
 				int id = rs.getInt("id");
 				String username = rs.getString("username");
 				String password = rs.getString("password");
@@ -241,10 +239,51 @@ public class DBUserDAO implements IUserDAO{
 	}
 
 	@Override
-	public boolean changeUserProfile(int id, User newUser) {
-		//
-		return false;
+	public boolean changeUserProfile(int id,String newUsername) {
+		String sql = "UPDATE "+DBManager.DB_NAME+".users "
+				+ "SET username=? "
+				+ "WHERE id=?;";
+		boolean result = false;
+		try(PreparedStatement pr = DBManager.getDBManager().getConnection().prepareStatement(sql)){
+			pr.setString(1, newUsername);
+			pr.setInt(2, id);
+			int rs = pr.executeUpdate();
+			if(rs == 0){
+				result = false;
+			}else{
+				result = true;
+			}			
+		} catch (SQLException e) {
+			System.out.println("DB error in changeEmail");
+			e.printStackTrace();
+		}
+		
+		return result;
 		
 	}
 
+	@Override
+	public boolean checkIfPasswordExists(String newPassword) {
+		String sql = "SELECT password FROM " + DBManager.DB_NAME + ".users WHERE password=?;";
+		boolean result = false;
+		try(PreparedStatement pr = DBManager.getDBManager().getConnection().prepareStatement(sql)){
+			pr.setString(1, newPassword);
+			ResultSet rs= pr.executeQuery();
+			while(rs.next()){
+				String user = rs.getString("username");
+				if(user==null){
+					result = false;
+					break;
+				}else{
+					result = true;
+					break;
+				}
+			}
+			rs.close();
+		} catch (SQLException e) {
+			System.out.println("Error in DB");
+			e.printStackTrace();
+		}
+		return result;
+	}
 }
