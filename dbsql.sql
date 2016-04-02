@@ -74,6 +74,10 @@ VALUES ('mite', '123456', 'mite_sp@abv.bg', 'mite', 'spasov');
 INSERT INTO budgets(userId, percentage, date) 
 VALUES(1, 0.7, NOW());
 
+INSERT INTO budgets(userId, percentage, date)
+VALUE(1, 0.5, str_to_date('01,5,2016','%d, %m, %Y'));
+
+
 INSERT INTO payments(categoryId, description, amount, date, budgetId)
 VALUES(1,"first salary", 1000, NOW(), 1);
 
@@ -87,9 +91,11 @@ VALUES(5,"first salary", 200, NOW(), 1);
 INSERT INTO payments(categoryId, description, amount, date, budgetId)
 VALUES(5,"first salary", 200, str_to_date('01,5,2016','%d, %m, %Y'), 2);
 
-INSERT INTO budgets(userId, percentage, date)
-VALUE(1, 0.5, str_to_date('01,5,2016','%d, %m, %Y'));
+INSERT INTO payments(categoryId, description, amount, date, budgetId)
+VALUES((SELECT id FROM categories WHERE category='food'), 'alavala', 100, str_to_date('01,5,2016','%d, %m, %Y'), 2);
+
 /***************************************************************/
+
 
 SELECT * FROM payment_types;
 SELECT * FROM categories;
