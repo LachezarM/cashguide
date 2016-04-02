@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +11,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>Home page</title>
+<title>Add</title>
 
 <!-- Bootstrap Core CSS -->
 <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
@@ -36,7 +38,7 @@ body {
 <script>
 	$(document).ready(function() {		
 		addSelectOptions("Income");
-		var hostname = "/" + location.href.split("/")[3];
+		/* var hostname = "/" + location.href.split("/")[3];
 		//var hostname = "";
 		var links = document.getElementById("navigation");
 		var lists = links.getElementsByTagName("li");
@@ -45,7 +47,7 @@ body {
 		lists[2].childNodes[0].setAttribute("href", hostname + "/history");
 		lists[3].childNodes[0].setAttribute("href", hostname + "/payment");
 		lists[4].childNodes[0].setAttribute("href", hostname + "/shopping");
-		lists[5].childNodes[0].setAttribute("href", hostname + "/simulator");
+		lists[5].childNodes[0].setAttribute("href", hostname + "/simulator"); */
 	});
 	
 	$(function() {
@@ -98,51 +100,23 @@ body {
 	<div class="container">
 
 		<!-- Fixed navbar -->
-		<nav class="navbar navbar-default navbar-fixed-top">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed"
-						data-toggle="collapse" data-target="#navbar" aria-expanded="false"
-						aria-controls="navbar">
-						<span class="sr-only">Toggle navigation</span> <span
-							class="icon-bar"></span> <span class="icon-bar"></span> <span
-							class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="#">Project name</a>
-				</div>
-				<div id="navbar" class="navbar-collapse collapse">
-					<ul class="nav navbar-nav navbar-right">
-						<li class="dropdown"><a href="#" class="dropdown-toggle"
-							data-toggle="dropdown" role="button" aria-haspopup="true"
-							aria-expanded="false">User <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="#"><img src="img/user.png"></img>User
-										Profile</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a href="#"><img src="img/settings.png"></img>Settings</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a href="#"><img src="img/logout.png"></img>Logout</a></li>
-							</ul></li>
-					</ul>
-				</div>
-				<!--/.nav-collapse -->
-			</div>
-		</nav>
+		<c:import url="header.jsp"></c:import>
+		
 		<div class="row" name="content" style="margin-top: 50px;">
 			<div class="col-md-3">
 				<ul id="navigation" class="nav nav-pills nav-stacked">
-					<li><a href="">Home</a></li>
+					<li><a href="home">Home</a></li>
 					<li class="active"><a href="">Add</a></li>
-					<li><a href="">Show history</a></li>
-					<li><a href="">Show payments</a></li>
+					<li><a href="history">Show history</a></li>
+					<li><a href="payment">Show payments</a></li>
 					<li><a href="">Shopping list</a></li>
-					<li><a href="">Simulator</a></li>
+					<li><a href="simulator">Simulator</a></li>
 				</ul>
 			</div>
 
 			<div class="col-md-9">
 				<div class="panel panel-default">
-					<div class="panel-heading"  >Add</div>
+					<div class="panel-heading">Add</div>
 					<div class="panel-body">
 						<form class="form-horizontal" method="POST" action="addPayment">
 							<div class="form-group">

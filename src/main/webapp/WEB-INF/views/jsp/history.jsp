@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +10,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>Home page</title>
+<title>History</title>
 
 <!-- Bootstrap Core CSS -->
 <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
@@ -33,14 +34,14 @@ body {
 	$(document).ready(function() {
 		/* console.log(location.href);
 		console.log(location.href.split("/")); */
-		var hostname = "/" + location.href.split("/")[3];
+	/* 	var hostname = "/" + location.href.split("/")[3];
 		var links = document.getElementById("navigation");
 		var lists = links.getElementsByTagName("li");
 		lists[1].childNodes[0].setAttribute("href", hostname + "/add");
 		lists[2].childNodes[0].setAttribute("href", hostname + "/history");
 		lists[3].childNodes[0].setAttribute("href", hostname + "/payment");
 		lists[4].childNodes[0].setAttribute("href", hostname + "/shopping");
-		lists[5].childNodes[0].setAttribute("href", hostname + "/simulator");
+		lists[5].childNodes[0].setAttribute("href", hostname + "/simulator"); */
 	});
 </script>
 <!--Only chrome supports type=date, so for firefox i added this datepicker from jquery-->
@@ -56,46 +57,17 @@ body {
 	<div class="container">
 
 		<!-- Fixed navbar -->
-		<nav class="navbar navbar-default navbar-fixed-top">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed"
-						data-toggle="collapse" data-target="#navbar" aria-expanded="false"
-						aria-controls="navbar">
-						<span class="sr-only">Toggle navigation</span> <span
-							class="icon-bar"></span> <span class="icon-bar"></span> <span
-							class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="#">Project name</a>
-				</div>
-				<div id="navbar" class="navbar-collapse collapse">
+		<c:import url="header.jsp"></c:import>
 
-					<ul class="nav navbar-nav navbar-right">
-						<li class="dropdown"><a href="#" class="dropdown-toggle"
-							data-toggle="dropdown" role="button" aria-haspopup="true"
-							aria-expanded="false">User <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="#"><img src="img/user.png"></img>User
-										Profile</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a href="#"><img src="img/settings.png"></img>Settings</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a href="#"><img src="img/logout.png"></img>Logout</a></li>
-							</ul></li>
-					</ul>
-				</div>
-				<!--/.nav-collapse -->
-			</div>
-		</nav>
 		<div class="row" name="content" style="margin-top: 50px;">
 			<div class="col-md-3">
 				<ul id="navigation" class="nav nav-pills nav-stacked">
-					<li><a data-toggle="pill" href="#home">Home</a></li>
-					<li><a href="">Add</a></li>
-					<li class="active"><a href="">Show history</a></li>
-					<li><a href="">Show payments</a></li>
+					<li><a href="home">Home</a></li>
+					<li><a href="add">Add</a></li>
+					<li class="active"><a href="history">Show history</a></li>
+					<li><a href="payment">Show payments</a></li>
 					<li><a href="">Shopping list</a></li>
-					<li><a href="">Simulator</a></li>
+					<li><a href="simulator">Simulator</a></li>
 				</ul>
 			</div>
 
