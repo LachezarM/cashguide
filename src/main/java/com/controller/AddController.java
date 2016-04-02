@@ -2,20 +2,20 @@ package com.controller;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
-import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.gson.JsonArray;
-import com.model.db.DBBudgetDAO;
+import com.model.Expense;
+import com.model.Income;
+import com.model.Payment;
+import com.model.User;
+import com.model.UserManager;
 
 
 @Controller
@@ -41,7 +41,8 @@ public class AddController {
 			@RequestParam(value="payment_type") String paymentType,
 			@RequestParam(value="category") String category,
 			@RequestParam(value="date") String d,
-			@RequestParam(value="description") String description
+			@RequestParam(value="description") String description,
+			HttpSession session
 			){
 		System.out.println("Payment was added");
 		DateTimeFormatter f = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -52,6 +53,19 @@ public class AddController {
 		System.out.println("category: " + category);
 		System.out.println("date: " + date.toString());
 		System.out.println("description: " + description);
+		
+		Payment payment = null;
+		//get user from session
+		User user = (User)session.getAttribute("logedUser");
+		
+		if(paymentType.equalsIgnoreCase("EXPENSE")){
+			payment = new Expense(category,description, amount, date);
+		}else if(paymentType.equalsIgnoreCase("INCOME")){
+			payment = new Income(category, description, amount, date);
+		}
+		
+		//this will add payment to db+all foreign keys and to user's budget in session
+		UserManager.addPayment(user, payment);
 		
 		//change to forward in future
 		//return "forward:add";
