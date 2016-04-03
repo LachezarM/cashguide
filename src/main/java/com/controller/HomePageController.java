@@ -1,6 +1,7 @@
 package com.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -13,14 +14,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.model.Budget;
+import com.model.Payment;
+import com.model.User;
 import com.model.db.DBBudgetDAO;
+import com.model.db.IBudgetDAO;
+import com.model.db.IPaymentDAO;
 
 @Controller
 public class HomePageController {
 	
 	@RequestMapping(value="/add" , method = RequestMethod.GET)
 	String addPayment(HttpServletResponse r, Model model) {
-		System.out.println("priema se zaqvka");		
+		//System.out.println("priema se zaqvka");		
 		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories();
 		JsonObject object = new JsonObject();
 		for(String type:result.keySet()){
@@ -37,8 +43,12 @@ public class HomePageController {
 	}
 	
 	@RequestMapping(value="/history" , method = RequestMethod.GET)
-	String showHistory(HttpServletResponse r) {
-		System.out.println("priema se zaqvka");
+	String showHistory(HttpSession s,
+			Model m) {
+		//System.out.println("priema se zaqvka");
+		User u = (User) s.getAttribute("logedUser");
+		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
+		m.addAttribute("payments", payments);
 		return 	"history";	
 	}
 		

@@ -344,7 +344,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 	public List<Budget> getAllBudgets(int userId) {
 
 		String sql = "SELECT budgets.id as id, balance, percentage, budgets.date as date, "
-				+ "payments.id as paymentId, description, amount, category, type, payments.date as paymentDate "
+				+ "payments.id as paymentId, description, amount, category, payments.date as paymentDate "
 				+ "FROM "
 				+ DBManager.DB_NAME
 				+ ".users "
@@ -353,13 +353,13 @@ public class DBBudgetDAO implements IBudgetDAO {
 				+ ".budgets ON users.id=budgets.userId "
 				+ "JOIN "
 				+ DBManager.DB_NAME
-				+ ".payments ON budgets.id=payments.budgetId "
+				+ ".payments ON budgets.id=paym	ents.budgetId "
 				+ "JOIN "
 				+ DBManager.DB_NAME
 				+ ".categories ON payments.categoryId=categories.id "
-				+ "JOIN "
-				+ DBManager.DB_NAME
-				+ ".payment_types ON payment_types.id = payments.typeId "
+				//+ "JOIN "
+				//+ DBManager.DB_NAME
+				//+ ".payment_types ON payment_types.id = payments.typeId "
 				+ "WHERE users.id=?;";
 		List<Budget> budgets = new ArrayList<Budget>();
 		Budget budget = null;

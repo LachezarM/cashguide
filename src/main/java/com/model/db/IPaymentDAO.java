@@ -7,7 +7,10 @@ import java.util.List;
 import com.model.Payment;
 
 public interface IPaymentDAO {
-		
+	
+	static IPaymentDAO getInstance() {
+		return DBPaymentDAO.getInstance();
+	}
 	void addPayment(Payment payment);
 	
 	void removePayment(Payment payment);

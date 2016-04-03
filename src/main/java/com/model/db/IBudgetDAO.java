@@ -13,6 +13,9 @@ import com.model.User;
 
 public interface IBudgetDAO {
 	
+	static IBudgetDAO getInstance()  {
+		return DBBudgetDAO.getInstance();
+	}
 	void addBudget(int userId, Budget budget);
 	
 	void removeBudget(int budgetId);

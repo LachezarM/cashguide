@@ -1,6 +1,7 @@
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,6 +21,24 @@ body {
 	padding-top: 20px;
 	padding-bottom: 20px;
 }
+<style>
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+    background-color: #337ab7;
+    color: white;
+}
+</style>
 </style>
 
 <!-- jQueryV2.2.2 -->
@@ -28,20 +47,19 @@ body {
 <!-- BootstrapV3.3.6 Core JavaScript -->
 <script src="js/bootstrap.min.js"></script>
 <script>
-
-/*adding hrefs to <a> in the menu, because the name of the project may differ, i.e my project name is Cashguide1*/
-/*this should be in external js file*/
+	/*adding hrefs to <a> in the menu, because the name of the project may differ, i.e my project name is Cashguide1*/
+	/*this should be in external js file*/
 	$(document).ready(function() {
 		/* console.log(location.href);
 		console.log(location.href.split("/")); */
-	/* 	var hostname = "/" + location.href.split("/")[3];
-		var links = document.getElementById("navigation");
-		var lists = links.getElementsByTagName("li");
-		lists[1].childNodes[0].setAttribute("href", hostname + "/add");
-		lists[2].childNodes[0].setAttribute("href", hostname + "/history");
-		lists[3].childNodes[0].setAttribute("href", hostname + "/payment");
-		lists[4].childNodes[0].setAttribute("href", hostname + "/shopping");
-		lists[5].childNodes[0].setAttribute("href", hostname + "/simulator"); */
+		/* 	var hostname = "/" + location.href.split("/")[3];
+			var links = document.getElementById("navigation");
+			var lists = links.getElementsByTagName("li");
+			lists[1].childNodes[0].setAttribute("href", hostname + "/add");
+			lists[2].childNodes[0].setAttribute("href", hostname + "/history");
+			lists[3].childNodes[0].setAttribute("href", hostname + "/payment");
+			lists[4].childNodes[0].setAttribute("href", hostname + "/shopping");
+			lists[5].childNodes[0].setAttribute("href", hostname + "/simulator"); */
 	});
 </script>
 <!--Only chrome supports type=date, so for firefox i added this datepicker from jquery-->
@@ -75,53 +93,24 @@ body {
 				<div class="panel panel-default">
 					<div class="panel-heading">History</div>
 					<div class="panel-body">
-						<div class="panel-group" id="accordion">
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion"
-											href="#collapse1"> Collapsible Group 1</a>
-									</h4>
-								</div>
-								<div id="collapse1" class="panel-collapse collapse in">
-									<div class="panel-body">Lorem ipsum dolor sit amet,
-										consectetur adipisicing elit, sed do eiusmod tempor incididunt
-										ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-										quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-										ea commodo consequat.</div>
-								</div>
-							</div>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion"
-											href="#collapse2"> Collapsible Group 2</a>
-									</h4>
-								</div>
-								<div id="collapse2" class="panel-collapse collapse">
-									<div class="panel-body">Lorem ipsum dolor sit amet,
-										consectetur adipisicing elit, sed do eiusmod tempor incididunt
-										ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-										quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-										ea commodo consequat.</div>
-								</div>
-							</div>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion"
-											href="#collapse3"> Collapsible Group 3</a>
-									</h4>
-								</div>
-								<div id="collapse3" class="panel-collapse collapse">
-									<div class="panel-body">Lorem ipsum dolor sit amet,
-										consectetur adipisicing elit, sed do eiusmod tempor incididunt
-										ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-										quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-										ea commodo consequat.</div>
-								</div>
-							</div>
-						</div>
+						<table style="width: 100%">
+						<thead>
+								<th>Type</th> 
+								<th>Category</th> 
+ 								<th>Description</th> 
+ 								<th>Amount</th> 
+								<th>Date</th> 
+						</thead>
+						<c:forEach var="listValue" items="${payments}">
+							<tr >
+								<td>${listValue.type}</td> 
+								<td>${listValue.category}</td>
+								<td>${listValue.description}</td> 
+								<td>${listValue.amount}</td> 
+								<td>${listValue.date}</td>	 
+							</tr>
+							</c:forEach>
+						</table>
 					</div>
 				</div>
 			</div>
