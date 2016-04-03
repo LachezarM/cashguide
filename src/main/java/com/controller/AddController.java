@@ -45,14 +45,20 @@ public class AddController {
 			HttpSession session
 			){
 		System.out.println("Payment was added");
-		DateTimeFormatter f = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-
-		LocalDate date = LocalDate.parse(d, f);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		//exception
+		LocalDate date = LocalDate.parse(d, formatter);
+		
 		System.out.println("amount: " + amount);
 		System.out.println("payment_type: " + paymentType);
 		System.out.println("category: " + category);
 		System.out.println("date: " + date.toString());
 		System.out.println("description: " + description);
+		
+		
+		
+		
+		
 		
 		Payment payment = null;
 		//get user from session
