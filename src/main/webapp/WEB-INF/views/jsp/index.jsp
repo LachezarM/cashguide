@@ -19,62 +19,58 @@
 	<!-- Login and register CSS -->
 	<link type="text/css" href="css/login_register.css" rel="stylesheet" />
 
+	<style>
+	.has-error-text{
+		color: #a94442;
+	  	background-color: #f2dede;
+	  	border-color: #a94442;
+	  	font-size:24px;
+	  	margin-left:20px;
+	  	margin-right:20px;
+	  	display:inline;
+	}
+	/*START JQUERY VALIDATE STYLE*/
+	/*the error message from jquery validate function will hava this styles*/
+	.error{
+		color: #a94442;
+	}
+	input.error{
+		/*color: #a94442;*/
+	  	background-color: #f2dede;
+	  	border-color: #a94442;
+	}
+	/*END JQUERY VALIDATE STYLE*/
+	</style>
+
+
+
+
 	<!-- jQueryV2.2.2 -->
     <script src="js/jquery-2.2.2.min.js"></script>
+    
     <!-- BootstrapV3.3.6 Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+    
 	<!-- SmoothScroll -->
 	<script src="js/smoothscroll.js"></script>
-	<!--Login and register JavaScript-->
+	
+	<!-- JQuery Validation plugin -->
+	<!-- Plugins for Form validation with jquery -->
+	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
+	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/additional-methods.min.js"></script>
+	
+	<!--Login and register JavaScript
+		NOT USED-->
 	<script src="js/login_register.js"></script>
 	
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
+	<script src="js/index.js"></script>
 	<script type="text/javascript">
-	$(function() {
-
-    $('#login-form-link').click(function(e) {
-		$("#login-form").delay(100).fadeIn(100);
- 		$("#register-form").fadeOut(100);
-		$('#register-form-link').removeClass('active');
-		$(this).addClass('active');
-		e.preventDefault();
-	});
-	$('#register-form-link').click(function(e) {
-		$("#register-form").delay(100).fadeIn(100);
- 		$("#login-form").fadeOut(100);
-		$('#login-form-link').removeClass('active');
-		$(this).addClass('active');
-		e.preventDefault();
-	});
-
-});
-
-// Scroll to target
-function scrollToTarget(D)
-{
-	if(D == 1) // Top of page
-	{
-		D = 0;
-	}
-	else if(D == 2) // Bottom of page
-	{
-		D = $(document).height();
-	}
-	else // Specific Bloc
-	{
-		D = $(D).offset().top;
-	}
-
-	$('html,body').animate({scrollTop:D}, 'slow');
-}
-
-
+	$(function(){
+		//login_register->index.js
+		login_register();
+		//form_validation->index.js
+		form_validation();
+	})	
 	</script>
 </head>
 
@@ -119,7 +115,7 @@ function scrollToTarget(D)
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="tagline">MoneyGuide</h1>
+                    <h1 class="tagline">Cashguide</h1>
                 </div>
             </div>
         </div>
@@ -127,7 +123,6 @@ function scrollToTarget(D)
 
     <!-- Page Content -->
     <div class="container">
-
         <hr>
 		<!--About us-->
         <div class="row" name="about" id="about" style="margin-top:150px;">
@@ -142,7 +137,7 @@ function scrollToTarget(D)
         </div>
         <!-- /.row -->
 		<hr>
-		<!--Login and register form-->
+		<!--LOGIN AND REGISTER-->
 		<div class="row" name="login" id="login">
 		    <div class="col-sm-12 text-center">
 				<div class="col-md-6 col-md-offset-3">
@@ -158,9 +153,12 @@ function scrollToTarget(D)
 						</div>
 						<hr>
 					</div>
+					<!-- PANEL BODY -->
 					<div class="panel-body">
 						<div class="row">
 							<div class="col-lg-12">
+							
+							<!-- LOGIN FORM -->
 								<form id="login-form" action="login" method="post" role="form" style="display: block;">
 									<div class="form-group">
 										<input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="">
@@ -168,10 +166,10 @@ function scrollToTarget(D)
 									<div class="form-group">
 										<input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password">
 									</div>
-									<div class="form-group text-center">
+									<!--<div class="form-group text-center">
 										<input type="checkbox" tabindex="3" class="" name="remember" id="remember">
 										<label for="remember"> Remember Me</label>
-									</div>
+									</div>-->
 									<div class="form-group">
 										<div class="row">
 											<div class="col-sm-6 col-sm-offset-3">
@@ -183,13 +181,15 @@ function scrollToTarget(D)
 										<div class="row">
 											<div class="col-lg-12">
 												<div class="text-center">
-													<a href="#" tabindex="5" class="forgot-password">Forgot Password?</a><br>
-													${ErrorInfo}
+													<!--<a href="#" tabindex="5" class="forgot-password">Forgot Password?</a><br>-->
+													<div class="has-error-text">${LoginErrorInfo}</div>
 												</div>
 											</div>
 										</div>
 									</div>
 								</form>
+								
+							<!-- REGISTER FORM -->
 								<form id="register-form" action="register" method="post" role="form" style="display: none;">
 									<div class="form-group">
 										<input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="${fn:escapeXml(param.username)}">
@@ -209,17 +209,28 @@ function scrollToTarget(D)
 												<input type="submit" name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="Register Now">
 											</div>
 										</div>
-										${ErrorInfo}
 									</div>
 									
+									<div class="form-group">
+										<div class="row">
+											<div class="col-lg-12">
+												<div class="text-center">
+													<!--<a href="#" tabindex="5" class="forgot-password">Forgot Password?</a><br>-->
+													<div class="has-error-text">${RegisterErrorInfo}</div>
+												</div>
+											</div>
+										</div>
+									</div>
 								</form>
 							</div>
 						</div>
 					</div>
+					<!-- END PANEL BODY -->
 				</div>
 			</div>
 		</div>
 		</div>
+		<!-- END LOGIN AND REGISTER -->
         <hr>
 		<!--contact us-->
 		<div class="row" name="contact">
@@ -238,9 +249,7 @@ function scrollToTarget(D)
                 </address>
             </div>
 		</div>
-		
-		<hr>
-		
+				
      <!--   <div class="row">
             <div class="col-sm-4">
                 <img class="img-circle img-responsive img-center" src="http://placehold.it/300x300" alt="">
@@ -274,9 +283,6 @@ function scrollToTarget(D)
 
     </div>
     <!-- /.container -->
-
-   
-
 </body>
 
 </html>

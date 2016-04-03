@@ -1,8 +1,10 @@
 package com.controller;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,7 +19,6 @@ public class IndexPageController {
 	
 	@RequestMapping(value = "/index",method = RequestMethod.GET)
 	String startUp() {
-		
 		return "index";
 	}
 	
@@ -29,7 +30,7 @@ public class IndexPageController {
 	@RequestMapping(value="/login",method = RequestMethod.POST)
 	String login(@RequestParam(value ="username") String username,
 			@RequestParam(value ="password") String password,
-			HttpSession s) {
+			HttpSession s, Model model) {
 		
 		if(valid(username,password)) {
 			for(User u : IUserDAO.getInstance().getAllUsers()) {
@@ -41,10 +42,12 @@ public class IndexPageController {
 					return "redirect:home";
 				}
 			}
-			s.setAttribute("ErrorInfo", "User doesnt exists");
+			model.addAttribute("LoginErrorInfo", "User doesnt exists");
+			//s.setAttribute("ErrorInfo", "User doesnt exists");
 			return "index";
 		} 
-			s.setAttribute("ErrorInfo","Fields empty");
+			model.addAttribute("LoginErrorInfo", "Fields empty");
+			//s.setAttribute("ErrorInfo","Fields empty");
 			return "index";
 	}
 	
@@ -53,7 +56,7 @@ public class IndexPageController {
 			@RequestParam(value ="email") String email,
 			@RequestParam(value ="password") String password,
 			@RequestParam(value ="confirm-password") String confirmPassword,
-			HttpSession s){
+			HttpSession s, Model model, HttpServletResponse response){
 		String result = valid(username,email,password,confirmPassword);
 		if(result.equals("correct"))
 		{
@@ -65,8 +68,9 @@ public class IndexPageController {
 			//this will change the url.If it's only return home, the url will looks like ..../register but the user will be in home page
 			return "redirect:home";
 		}
-		s.setAttribute("ErrorInfo", result);
-		return "redirect:index";
+		model.addAttribute("RegisterErrorInfo", result);
+		//model.setAttribute("ErrorInfo", result);
+		return "index";
 	}
 	
 	private String valid(String username, String email, String password, String confirmPassword) {

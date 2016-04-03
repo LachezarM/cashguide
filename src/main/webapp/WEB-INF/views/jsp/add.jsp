@@ -24,6 +24,19 @@ body {
 	padding-top: 20px;
 	padding-bottom: 20px;
 }
+
+	/*START JQUERY VALIDATE STYLE*/
+	/*the error message from jquery validate function will hava this styles*/
+	.error{
+		color: #a94442;
+	}
+	input.error{
+		/*color: #a94442;*/
+	  	background-color: #f2dede;
+	  	border-color: #a94442;
+	}
+	/*END JQUERY VALIDATE STYLE*/
+
 </style>
 
 <!-- jQueryV2.2.2 -->
@@ -34,9 +47,16 @@ body {
 
 <!-- jquery datepicker -->
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+<!-- JQuery Validation plugin -->
+<!-- Plugins for Form validation with jquery -->
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/additional-methods.min.js"></script>
+	
  
 <script>
-	$(document).ready(function() {		
+	$(document).ready(function() {
+		$("#addForm").css("display", "block")
 		addSelectOptions("Income");
 		/* var hostname = "/" + location.href.split("/")[3];
 		//var hostname = "";
@@ -52,8 +72,8 @@ body {
 	
 	$(function() {
 	    $( "#datepicker" ).datepicker({
-	    	dateFormat:"dd-mm-yy"
-	    	
+	    	dateFormat:"dd-mm-yy",
+	    	appendText: "(dd-mm-yy)"
 	    });
 	  });
 	
@@ -93,16 +113,66 @@ body {
 		}		
 	}
 		
+	//form validation -> javascript
+	$(function(){
+		$("#addForm").validate({
+			// Specify the validation rules
+	        rules: {
+	            amount: {
+	                required: true,
+	                number: true
+	            },
+	            
+	            datepicker: {
+	                required: true,
+	                date: true
+	            },
+	            
+	            description: {
+	 	                maxlength: 100
+	            }
+	        },
+	        
+	        // Specify the validation error messages
+	        messages: {
+	        	amount: {
+	                required: "Please an amount of money",
+	                number: "Amount must be a number"
+	            },
+	            datepicker: {
+	                required: "Please enter a date",
+	                minlength: "it must be valid date"
+	            },
+	            description: {
+	                manlength: "Your description must be at less than 100 characters long"
+	            }
+	        },
+	        
+	        //if error occurs the request won't be send
+	        submitHandler: function(form) {
+	            form.submit();
+	        }
+		});
+		
+	});
+	
+	
+	//server side validation->java
+	
 	
 </script>
 </head>
 <body>
+	
+
 	<div class="container">
 
 		<!-- Fixed navbar -->
 		<c:import url="header.jsp"></c:import>
 		
+		
 		<div class="row" name="content" style="margin-top: 50px;">
+		<!-- Menu start-->
 			<div class="col-md-3">
 				<ul id="navigation" class="nav nav-pills nav-stacked">
 					<li><a href="home">Home</a></li>
@@ -113,24 +183,32 @@ body {
 					<li><a href="simulator">Simulator</a></li>
 				</ul>
 			</div>
-
+		<!-- Menu end-->
+		<!-- Content start-->
 			<div class="col-md-9">
 				<div class="panel panel-default">
 					<div class="panel-heading">Add</div>
 					<div class="panel-body">
-						<form class="form-horizontal" method="POST" action="addPayment">
+						<noscript>
+						 For full functionality of this site it is necessary to enable JavaScript.
+						 Here are the <a href="http://www.enable-javascript.com/" target="_blank">
+						 instructions how to enable JavaScript in your web browser</a>.
+						</noscript>
+					
+					
+						<form id="addForm" class="form-horizontal" method="POST" action="addPayment" style="display:none">
 							<div class="form-group">
 								<!--amount input-->
 								<label class="sr-only" for="exampleInputAmount">Amount</label>
 								<div class="input-group">
 									<div class="input-group-addon">$</div>
-									<input type="text" class="form-control" id="exampleInputAmount"
+									<input type="text" class="form-control" id="amount"
 										placeholder="Amount" name="amount">
 									<!--<div class="input-group-addon">.00</div>-->
 								</div>
 
 								<!--Radio buttons-->
-								<label class="radio-inline"> <input type="radio"
+								<label lass="radio-inline"> <input type="radio"
 									name="payment_type" id="inlineRadio1" value="income" onclick='addSelectOptions("Income")' checked>
 									Income
 								</label> <label class="radio-inline"> <input type="radio"
@@ -143,8 +221,7 @@ body {
 								<select class="form-control" id="sel1" name="category"></select>
 
 								<!--Date-->								
-								<p>Date: <input type="text" name="date" id="datepicker" class="form-control" placeholder="Date"></p>
-								
+								<p>Date: <input type="text" name="date" id="datepicker" class="form-control" placeholder="Date" readonly></p>
 								
 								<!--Description-->
 								<label for="description">Description:</label>
@@ -155,6 +232,7 @@ body {
 					</div>
 				</div>
 			</div>
+			<!-- Content end-->
 		</div>
 	</div>
 	<!-- /container -->
