@@ -73,7 +73,7 @@ body {
 	$(function() {
 	    $( "#datepicker" ).datepicker({
 	    	dateFormat:"dd-mm-yy",
-	    	appendText: "(dd-mm-yy)"
+	    	appendText: "(dd-mm-yyyy)"
 	    });
 	  });
 	
@@ -115,39 +115,53 @@ body {
 		
 	//form validation -> javascript
 	$(function(){
+		
+		$.validator.addMethod(
+				"customNumber",
+				function(value, event){
+					return (value.match(/^[+]?\d+(\.)?\d*$/));
+				},
+				"Please enter a correct positive number."
+		);
+		
+		$.validator.addMethod(
+				"customDate",
+					function(value, event){
+						return (value.match(/^\d\d?\-\d\d?\-\d\d\d\d$/));
+					},
+					"Please enter a date in the format dd-mm-yyyy."
+		);
+		
+		
 		$("#addForm").validate({
 			// Specify the validation rules
 	        rules: {
 	            amount: {
 	                required: true,
-	                number: true
+	                customNumber: true
 	            },
-	            
-	            datepicker: {
+	            date: {
 	                required: true,
-	                date: true
+	                customDate:true
 	            },
-	            
 	            description: {
 	 	                maxlength: 100
 	            }
 	        },
-	        
+
 	        // Specify the validation error messages
 	        messages: {
 	        	amount: {
-	                required: "Please an amount of money",
+	                required: "Please enter amount of money",
 	                number: "Amount must be a number"
 	            },
-	            datepicker: {
-	                required: "Please enter a date",
-	                minlength: "it must be valid date"
+	            date: {
+	            	required: "Please enter a date",
 	            },
 	            description: {
 	                manlength: "Your description must be at less than 100 characters long"
 	            }
 	        },
-	        
 	        //if error occurs the request won't be send
 	        submitHandler: function(form) {
 	            form.submit();
@@ -189,12 +203,17 @@ body {
 				<div class="panel panel-default">
 					<div class="panel-heading">Add</div>
 					<div class="panel-body">
+						<!-- FOR BROWSERS WITHOUT JAVASCRIPT -->
 						<noscript>
 						 For full functionality of this site it is necessary to enable JavaScript.
 						 Here are the <a href="http://www.enable-javascript.com/" target="_blank">
 						 instructions how to enable JavaScript in your web browser</a>.
 						</noscript>
-					
+						<!-- END -->
+						
+						<div class="balance">Your balance is: ${logedUser.budget.balance}</div>
+						<div class="income">Income: ${logedUser.budget.income}</div>
+						<div class="error">${errorBudgetMessage}</div>
 					
 						<form id="addForm" class="form-horizontal" method="POST" action="addPayment" style="display:none">
 							<div class="form-group">
@@ -208,20 +227,22 @@ body {
 								</div>
 
 								<!--Radio buttons-->
-								<label lass="radio-inline"> <input type="radio"
+								<label class="radio-inline"> <input type="radio"
 									name="payment_type" id="inlineRadio1" value="income" onclick='addSelectOptions("Income")' checked>
 									Income
-								</label> <label class="radio-inline"> <input type="radio"
-									name="payment_type" id="inlineRadio2" value="expense" onclick='addSelectOptions("Expense")'>
+								</label> <label class="radio-inline"> 
+								<input type="radio" name="payment_type" id="inlineRadio2" value="expense" onclick='addSelectOptions("Expense")'>
 									Expense
 								</label>
 
 								<!--Tags-->
 								<label for="sel1">Choose tag:</label> 
-								<select class="form-control" id="sel1" name="category"></select>
+								<select class="form-control" id="sel1" name="category">
+								<!-- options are automatically generated with js -->
+								</select>
 
 								<!--Date-->								
-								<p>Date: <input type="text" name="date" id="datepicker" class="form-control" placeholder="Date" readonly></p>
+								<p>Date: <input type="text" name="date" id="datepicker" class="form-control" placeholder="Date"></p>
 								
 								<!--Description-->
 								<label for="description">Description:</label>
@@ -236,5 +257,18 @@ body {
 		</div>
 	</div>
 	<!-- /container -->
+	
+	<script>
+	
+	
+	/*  $( "#addForm" ).submit(function( event ) {
+		var date = $("#datepicker").val();
+		//if(date)
+		//$("#datepicker").val("01-01-2001");
+		// alert($("#datepicker").val()); 
+		 //event.preventDefault();
+		});  */
+
+	</script>
 </body>
 </html>

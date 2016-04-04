@@ -2,6 +2,7 @@ package com.controller;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import javax.servlet.http.HttpSession;
 
@@ -44,16 +45,28 @@ public class AddController {
 			@RequestParam(value="description") String description,
 			HttpSession session
 			){
-		System.out.println("Payment was added");
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-		//exception
-		LocalDate date = LocalDate.parse(d, formatter);
+		//System.out.println("Payment was added");
+		LocalDate date;
+		try{
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			date = LocalDate.parse(d, formatter);
+		}catch(DateTimeParseException e){
+			System.out.println("Date cann't be parsed");
+			return "redirect:add";
+		}
 		
-		System.out.println("amount: " + amount);
+		
+		if(amount<0){
+			System.out.println("must be positive");
+			amount = -amount;
+		}
+		//exception 
+		
+		/*System.out.println("amount: " + amount);
 		System.out.println("payment_type: " + paymentType);
 		System.out.println("category: " + category);
 		System.out.println("date: " + date.toString());
-		System.out.println("description: " + description);
+		System.out.println("description: " + description);*/
 		
 		
 		
@@ -71,7 +84,17 @@ public class AddController {
 		}
 		
 		//this will add payment to db+all foreign keys and to user's budget in session
-		UserManager.addPayment(user, payment);
+		if(payment.getType().equalsIgnoreCase("EXPENSE")){
+				if(payment.getAmount()>user.getBudget().getBalance()){
+					model.addAttribute("errorBudgetMessage", "You don't have enought money in your budget");
+					System.out.println("error you can't do this");
+				}
+				else{
+					UserManager.addPayment(user, payment);
+				}
+			}else{
+			UserManager.addPayment(user, payment);
+		}
 		
 		//change to forward in future
 		//return "forward:add";

@@ -27,7 +27,11 @@ public abstract class Payment {
 		this.category = category;
 		this.type = type;
 		this.description = description;
-		this.amount = amount;
+		if(amount<0){
+			this.amount = 0;
+		}else{
+			this.amount = amount;
+		}
 		this.date = date;
 	}
 

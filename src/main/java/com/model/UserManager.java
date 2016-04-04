@@ -34,8 +34,12 @@ public class UserManager {
 		}else{
 			//get all payments for this budget
 			user.addBudet(budget);
+			//getPayments is changed on 4.4.16.returns only payments for the specific budget
 			DBBudgetDAO.getInstance().getPayments(budget);
 		}
+		
+		System.out.println("Budget in UserManager: " + budget.toString());
+		
 		return user;
 	}
 	
@@ -50,7 +54,8 @@ public class UserManager {
 			//add to current budget
 			System.out.println("In range");
 			budget.addPayment(payment);
-			DBBudgetDAO.getInstance().addPayment(payment, budget.getId());
+			System.out.println("Budget balance to be added in db is: " + budget.getBalance());
+			DBBudgetDAO.getInstance().addPayment(payment, budget);
 		}else{
 			//create new budget or add to old one
 			System.out.println("new budget");
@@ -62,12 +67,12 @@ public class UserManager {
 				Budget newBudget =new Budget(payment.getDate(), 1);
 				DBBudgetDAO.getInstance().addBudget(user.getId(), newBudget);
 				newBudget.addPayment(payment);
-				DBBudgetDAO.getInstance().addPayment(payment, newBudget.getId());
+				DBBudgetDAO.getInstance().addPayment(payment, newBudget);
 			}else{
 				//budget exists->old or new budget
 				//add to it
 				budgetForOtherDate.addPayment(payment);
-				DBBudgetDAO.getInstance().addPayment(payment, budgetForOtherDate.getId());
+				DBBudgetDAO.getInstance().addPayment(payment, budgetForOtherDate);
 			}
 		}
 			

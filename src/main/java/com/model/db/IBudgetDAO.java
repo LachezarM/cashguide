@@ -33,7 +33,7 @@ public interface IBudgetDAO {
 	Budget getBudget(int userId, LocalDate date);///get budget + all payments for this budget  |
 	//-----------------------------------------------------------------------------------------|
 	
-	void addPayment(Payment payment, int budgetId);
+	void addPayment(Payment payment, Budget budget);
 	
 	void addIncome(Income income, int budgetId);
 	
