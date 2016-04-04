@@ -1,4 +1,4 @@
-
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
@@ -21,24 +21,34 @@ body {
 	padding-top: 20px;
 	padding-bottom: 20px;
 }
-<style>
-table {
-    border-collapse: collapse;
-    width: 100%;
+
+<
+style>table {
+	border-collapse: collapse;
+	width: 100%;
 }
 
 th, td {
-    text-align: left;
-    padding: 8px;
+	text-align: left;
+	padding: 8px;
 }
 
-tr:nth-child(even){background-color: #f2f2f2}
+tr:nth-child(even) {
+	background-color: #f2f2f2
+}
 
 th {
-    background-color: #337ab7;
-    color: white;
+	background-color: #337ab7;
+	color: white;
 }
-</style>
+label{
+    padding:5px;
+    color:#222;
+    font-family:corbel,sans-serif;
+    font-size: 14px;
+    margin: 5px;
+}
+
 </style>
 
 <!-- jQueryV2.2.2 -->
@@ -61,6 +71,11 @@ th {
 			lists[4].childNodes[0].setAttribute("href", hostname + "/shopping");
 			lists[5].childNodes[0].setAttribute("href", hostname + "/simulator"); */
 	});
+	$(document).ready(function() { 
+		   $('input[name=Show]').change(function(){
+		        $('form').submit();
+		   });
+		  });
 </script>
 <!--Only chrome supports type=date, so for firefox i added this datepicker from jquery-->
 <!-- DOES NOT WORK-->
@@ -93,24 +108,50 @@ th {
 				<div class="panel panel-default">
 					<div class="panel-heading">History</div>
 					<div class="panel-body">
+					<form action="showOnly" method="GET">
+								<input checked="checked" type="radio" name="Show" id="rd1" value="All" ${param.Show == 'All' ? 'checked' : ''} />
+								<label for="rd1">Show All</label><br/>
+								<input type="radio" name="Show" id="rd2" value="EXPENSE" ${param.Show == 'EXPENSE' ? 'checked' : ''}/>
+								<label for="rd2">Show Expenses</label><br/>
+								<input type="radio" name="Show" id="rd3" value="INCOME" ${param.Show == 'INCOME' ? 'checked' : ''}/>
+								<label for="rd3">Show Incomes</label><br/>
+								</form>
+								
+						<c:set var="payments" scope="session" value="${payments}" />
+						<c:set var="totalCount" scope="session"
+							value="${fn:length(payments)}>" />
+						<c:set var="perPage" scope="session" value="5" />
+						<c:set var="pageStart" value="${param.start}" />
+						<c:if test="${empty pageStart or pageStart < 0}">
+							<c:set var="pageStart" value="0" />
+						</c:if>
+						<c:if test="${totalCount < pageStart}">
+							<c:set var="pageStart" value="${pageStart - perPage}" />
+						</c:if>
+						<a href="?start=${pageStart - perPage}"><<</a>${pageStart + 1} -
+						${pageStart + perPage} <a href="?start=${pageStart + perPage}">>></a>
 						<table style="width: 100%">
-						<thead>
-								<th>Type</th> 
-								<th>Category</th> 
- 								<th>Description</th> 
- 								<th>Amount</th> 
-								<th>Date</th> 
-						</thead>
-						<c:forEach var="listValue" items="${payments}">
-							<tr >
-								<td>${listValue.type}</td> 
-								<td>${listValue.category}</td>
-								<td>${listValue.description}</td> 
-								<td>${listValue.amount}</td> 
-								<td>${listValue.date}</td>	 
-							</tr>
+							<thead>
+								<th>Type</th>
+								<th>Category</th>
+								<th>Description</th>
+								<th>Amount</th>
+								<th>Date</th>
+							</thead>
+							<c:forEach var="payments" items="${payments}"
+								varStatus="paymentsCounter" begin="${pageStart}"
+								end="${pageStart + perPage - 1 }">
+								<tr>
+									<td>${payments.type}</td>
+									<td>${payments.category}</td>
+									<td>${payments.description}</td>
+									<td>${payments.amount}</td>
+									<td>${payments.date}</td>
+								</tr>
 							</c:forEach>
 						</table>
+
+
 					</div>
 				</div>
 			</div>

@@ -1,5 +1,6 @@
 package com.model.db;
 
+import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -31,5 +32,6 @@ public interface IPaymentDAO {
 	
 	List<Payment> getAllExpensesForSpecificMonth(int month);
 	//more methods
+	
 	
 }

@@ -50,7 +50,6 @@ public class IndexPageController {
 			//s.setAttribute("ErrorInfo","Fields empty");
 			return "index";
 	}
-	
 	@RequestMapping(value="/register",method = RequestMethod.POST)
 	String register(@RequestParam(value="username") String username,
 			@RequestParam(value ="email") String email,

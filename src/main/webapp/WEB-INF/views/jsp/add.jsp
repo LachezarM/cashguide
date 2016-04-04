@@ -208,7 +208,7 @@ body {
 								</div>
 
 								<!--Radio buttons-->
-								<label lass="radio-inline"> <input type="radio"
+								<label class="radio-inline"> <input type="radio"
 									name="payment_type" id="inlineRadio1" value="income" onclick='addSelectOptions("Income")' checked>
 									Income
 								</label> <label class="radio-inline"> <input type="radio"
