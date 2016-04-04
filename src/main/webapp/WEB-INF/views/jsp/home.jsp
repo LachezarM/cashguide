@@ -57,9 +57,13 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">Home</div>
 							<div class="panel-body">Home info
-								<a href="history">HISTORY - tva samo go probvah s link kam index jsp i kontroler /history</a>
-								<p>${logedUser.username}</p>
+							<c:set var="budgetCash" value="${logedUser.budget.income*logedUser.budget.percentageOfIncome}" scope="page"></c:set>
+								<p>Hello, ${logedUser.username}. You can change your default budget percentage for current month <a href="changeBudgetPercentage">here.</a></p>
+								<p>Your income is: ${logedUser.budget.income}</p>
+								<p>Your budget cash is: ${budgetCash}</p>
 								<p>Your balance is: ${logedUser.budget.balance}</p>
+								<p>Your percentage is: ${logedUser.budget.percentageOfIncome}</p>
+								
 							</div>
 						</div>
 			</div>

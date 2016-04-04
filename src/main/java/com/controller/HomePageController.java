@@ -1,6 +1,5 @@
 package com.controller;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -55,6 +53,45 @@ public class HomePageController {
 		m.addAttribute("payments", payments);
 		return 	"history";	
 	}
+	
+	//----------------------------------------------------------------------------------------
+	@RequestMapping(value="/history/all", method = RequestMethod.GET)
+	String choose(@RequestParam(value = "Show") String choise,HttpSession s,Model m) {
+		User u = (User) s.getAttribute("logedUser");
+		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
+		if(choise.equalsIgnoreCase("ALL")) {
+			m.addAttribute("payments", payments);
+		}else if(choise.equalsIgnoreCase("EXPENSE")) {
+			for(Iterator<Payment> itt = payments.iterator();itt.hasNext();) {
+				Payment p = itt.next();
+				if(p.getType().equalsIgnoreCase("INCOME"))
+					itt.remove();
+			}
+
+			m.addAttribute("payments", payments);
+
+			System.out.println(payments.toString());
+
+		}else if(choise.equalsIgnoreCase("INCOME")) {
+			for(Iterator<Payment> itt = payments.iterator();itt.hasNext();) {
+				Payment p = itt.next();
+				if(p.getType().equalsIgnoreCase("EXPENSE"))
+					itt.remove();
+			}
+			m.addAttribute("payments", payments);
+			System.out.println(payments.toString());
+		}
+		return "history";
+	}
+	
+	
+	
+	
+	
+	///----------------------------------------------------------------------------------------
+	
+	
+	
 	@RequestMapping(value="/showOnly", method = RequestMethod.GET)
 	String showOnly(@RequestParam(value = "Show") String choise,HttpSession s,Model m) {
 		User u = (User) s.getAttribute("logedUser");
@@ -83,6 +120,7 @@ public class HomePageController {
 		}
 		return "history";
 	}
+	
 	@RequestMapping(value="/payment" , method = RequestMethod.GET)
 	String showPayments(HttpServletResponse r) {
 		System.out.println("priema se zaqvka");
