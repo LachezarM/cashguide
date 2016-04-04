@@ -51,6 +51,7 @@ public class AddController {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 			date = LocalDate.parse(d, formatter);
 		}catch(DateTimeParseException e){
+			model.addAttribute("errorMessage", "date must be in dd-mm-yyyy format");
 			System.out.println("Date cann't be parsed");
 			return "redirect:add";
 		}

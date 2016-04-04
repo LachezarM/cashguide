@@ -71,6 +71,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 		}
 	}
 
+	//Not used
 	@Override
 	public void removeBudget(int budgetId) {
 		String sql = "DELETE FROM " + DBManager.DB_NAME
@@ -87,7 +88,8 @@ public class DBBudgetDAO implements IBudgetDAO {
 			e.printStackTrace();
 		}
 	}
-
+	
+	//used when percentage is changed
 	public void updateBudget(Budget budget){
 		String sql = "UPDATE " +DBManager.DB_NAME + ".budgets "
 				+ "SET balance=?, percentage=? "
@@ -106,6 +108,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 		
 	}
 	
+	//not used i think
 	@Override
 	public boolean changePercentage(int budgetId, double percentage) {
 		String sql = "UPDATE " + DBManager.DB_NAME
@@ -129,6 +132,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 		return result;
 	}
 
+	//must be refactored
 	public Budget getBudget(User user, LocalDate date) {
 		String sql = "SELECT budgets.id as id, balance, percentage, budgets.date as date "
 				+ "FROM "
@@ -219,7 +223,9 @@ public class DBBudgetDAO implements IBudgetDAO {
 		
 	}
 	
-	//---------------------------------------------------------------------------------------------------
+	//REFACTORING
+	//THIS methods should be deleted after the app is tested, so we are sure they are not used
+/*	//---------------------------------------------------------------------------------------------------
 	//calls the getBudget(userId, date)																	|
 	@Override
 	public Budget getBudget(int userId) {
@@ -305,6 +311,8 @@ public class DBBudgetDAO implements IBudgetDAO {
 
 	}
 	//------------------------------------------------------------------------------------------------------
+*/	
+	//used 
 	//tested
 	public void addPayment(Payment payment, Budget budget) {
 		
@@ -430,6 +438,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 	}
 
 	// not tested
+	//not sure if used
 	@Override
 	public List<Budget> getAllBudgets(int userId) {
 
@@ -522,7 +531,8 @@ public class DBBudgetDAO implements IBudgetDAO {
 
 	}
 
-	public List<String> getAllCategoriesByType(String type) {
+	//not sure if used
+	/*public List<String> getAllCategoriesByType(String type) {
 		String sql = "SELECT category " + "FROM " + DBManager.DB_NAME
 				+ ".categories " + "JOIN " + DBManager.DB_NAME
 				+ ".payment_types ON typeId=payment_types.id "
@@ -542,8 +552,9 @@ public class DBBudgetDAO implements IBudgetDAO {
 		}
 
 		return categories;
-	}
+	}*/
 
+	//this method should be changed after another table for categories is made
 	public Map<String, ArrayList<String>> getAllCategories() {
 		String sql = "SELECT category, type " + "FROM " + DBManager.DB_NAME
 				+ ".categories " + "JOIN " + DBManager.DB_NAME

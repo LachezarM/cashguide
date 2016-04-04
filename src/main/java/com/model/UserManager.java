@@ -20,9 +20,9 @@ public class UserManager {
 	 
 	//login
 	//initialize user when login
-	//this method gets the user, the budget for the current month if exists else creates new budget and all payments for current budget
+	//this method gets the user, the budget for the current month if exists else creates new budget and add all payments for current budget
 	public static User createUserAfterLogin(String username, String password){
-		//getting user only by username is not cool
+		//getting user only by username is not cool!!!!TODO
 		User user = DBUserDAO.getInstance().getUser(username);
 		Budget budget = DBBudgetDAO.getInstance().getBudget(user, LocalDate.now());
 		if(budget == null){

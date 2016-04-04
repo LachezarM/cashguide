@@ -29,14 +29,18 @@ public interface IBudgetDAO {
 	void getPayments(Budget budget);//gets all payments for specific budget
 	
 	
+	//REFACTORING 
+	//THIS METHODS WILL BE DELETED
 	//-----------------------------------------------------------------------------------------|
-	Budget getBudget(int userId);//get budget + all payments for this budget in current month; |
+	//Budget getBudget(int userId);//get budget + all payments for this budget in current month; |
 	//                                                                                         |
-	Budget getBudget(int userId, LocalDate date);///get budget + all payments for this budget  |
+	//Budget getBudget(int userId, LocalDate date);///get budget + all payments for this budget  |
 	//-----------------------------------------------------------------------------------------|
 	
 	void addPayment(Payment payment, Budget budget);
 	
+	//THIS METHODS ARE NOT IMPLEMENTED AND WILL BE DELETED
+	//---------------------------------------------------------
 	void addIncome(Income income, int budgetId);
 	
 	void addExpense(Expense expense, int budgetId);
@@ -44,7 +48,8 @@ public interface IBudgetDAO {
 	void removeIncome(int incomeId);
 	
 	void removeExpense(int expenseId);
-		
+	
+	//---------------------------------------------------------
 	List<Budget> getAllBudgets(int userId);
 	
 	 Map<String, ArrayList<String>> getAllCategories();
