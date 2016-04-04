@@ -1,5 +1,6 @@
 package com.model.db;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -85,7 +86,6 @@ public class DBBudgetDAO implements IBudgetDAO {
 			System.out.println("Error with deleting budget");
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
@@ -150,17 +150,20 @@ public class DBBudgetDAO implements IBudgetDAO {
 		return budget;
 	}
 
+	//changed on 4.4.16. Returns payments for the specific budget
+	//this method must be either renamed or its return type must be changed
 	public void getPayments(Budget budget){
 		String sql = "SELECT payments.id as paymentId, description, amount, category, type, payments.date as paymentDate "
 				+ "FROM "+ DBManager.DB_NAME + ".budgets "
 				+ "JOIN "+ DBManager.DB_NAME + ".payments ON budgets.id=payments.budgetId "
 				+ "JOIN "+ DBManager.DB_NAME + ".categories ON payments.categoryId=categories.id "
 				+ "JOIN "+ DBManager.DB_NAME + ".payment_types ON payment_types.id = categories.typeId "
-				+ "WHERE budgets.date=?;";
+				+ "WHERE budgets.id=? AND budgets.date=?;";
 		try (PreparedStatement pr = DBManager.getDBManager().getConnection()
 				.prepareStatement(sql)) {
 			java.sql.Date sqlDate = java.sql.Date.valueOf(budget.getDate());
-			pr.setDate(1, sqlDate);
+			pr.setInt(1, budget.getId());
+			pr.setDate(2, sqlDate);
 
 			try (ResultSet rs = pr.executeQuery()) {
 				while (rs.next()) {
@@ -197,15 +200,16 @@ public class DBBudgetDAO implements IBudgetDAO {
 		
 	}
 	
-	//calls the getBudget(userId, date)
+	//---------------------------------------------------------------------------------------------------
+	//calls the getBudget(userId, date)																	|
 	@Override
 	public Budget getBudget(int userId) {
 		// the date is current month and year and first day of the month
 		return this.getBudget(userId, LocalDate.of(LocalDate.now().getYear(),
 				LocalDate.now().getMonthValue(), 1));
 	}
-
-	// get budget by userId and date and all incomes for this budget
+																									//  |
+	// get budget by userId and date and all incomes for this budget									|
 	public Budget getBudget(int userId, LocalDate date) {
 		String sql = "SELECT budgets.id as id, balance, percentage, budgets.date as date, "
 				+ "payments.id as paymentId, description, amount, category, type, payments.date as paymentDate "
@@ -281,19 +285,86 @@ public class DBBudgetDAO implements IBudgetDAO {
 		return budget;
 
 	}
-
+	//------------------------------------------------------------------------------------------------------
 	//tested
-	public void addPayment(Payment payment, int budgetId) {
-		String sql = "INSERT INTO " + DBManager.DB_NAME
+	public void addPayment(Payment payment, Budget budget) {
+		
+		String sqlInsert = "INSERT INTO " + DBManager.DB_NAME
 				+ ".payments(categoryId, description, amount, date, budgetId) "
 				+ "VALUES( " + "(SELECT id FROM " + DBManager.DB_NAME
 				+ ".categories WHERE category=?),?,?,?,?)";
+		
+		String sqlUpdate = "UPDATE " + DBManager.DB_NAME+ ".budgets SET balance=? WHERE id=?;";
+		
+		int budgetId = budget.getId();
 		String category = payment.getCategory();
 		String description = payment.getDescription();
 		double amount = payment.getAmount();
 		LocalDate date = payment.getDate();
 		java.sql.Date sqlDate = java.sql.Date.valueOf(date);
-		try (PreparedStatement ps = DBManager.getDBManager().getConnection()
+		
+		Connection con = DBManager.getDBManager().getConnection();
+		
+		try {
+			con.setAutoCommit(false);
+			System.out.println("autocommit is false");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		try(PreparedStatement ps1 = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS); 
+				PreparedStatement ps2 = con.prepareStatement(sqlUpdate)){
+			ps1.setString(1, category);
+			ps1.setString(2, description);
+			ps1.setDouble(3, amount);
+			ps1.setDate(4, sqlDate);
+			ps1.setInt(5, budgetId);
+			
+			//ps1.executeUpdate();
+			
+			int affectedRows = ps1.executeUpdate();
+
+			if (affectedRows == 0) {
+				throw new SQLException(
+						"Adding payment failed, no rows affected.");
+			}
+			try (ResultSet generatedKeys = ps1.getGeneratedKeys()) {
+				if (generatedKeys.next()) {
+					payment.setId((int) (generatedKeys.getLong(1)));
+				} else {
+					throw new SQLException(
+							"Adding payment failed, no ID obtained.");
+				}
+			}
+			
+			System.out.println("Payment has id: " + payment.toString());
+			
+			ps2.setDouble(1,budget.getBalance());
+			ps2.setInt(2, budgetId);
+			
+			ps2.executeUpdate();
+			
+			con.commit();
+			System.out.println("changes are commited");
+		} catch (SQLException e) {
+			try {
+				con.rollback();
+				e.printStackTrace();
+				System.out.println("rollback");
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}finally{
+			try {
+				con.setAutoCommit(true);
+				System.out.println("autocommit is true");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+	/*	try (PreparedStatement ps = DBManager.getDBManager().getConnection()
 				.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, category);
 			ps.setString(2, description);
@@ -317,7 +388,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	@Override

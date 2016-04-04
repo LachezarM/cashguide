@@ -29,16 +29,6 @@
 		<script>
 		
 		$(document).ready(function(){
-			/* console.log(location.href);
-			console.log(location.href.split("/")); */
-			/* var hostname = "/" + location.href.split("/")[3];
-			var links = document.getElementById("navigation");
-			var lists = links.getElementsByTagName("li");	
-			lists[1].childNodes[0].setAttribute("href", hostname+"/add" );
-			lists[2].childNodes[0].setAttribute("href", hostname+"/history" );
-			lists[3].childNodes[0].setAttribute("href", hostname+"/payment" );
-			lists[4].childNodes[0].setAttribute("href", hostname+"/shopping" );
-			lists[5].childNodes[0].setAttribute("href", hostname+"/simulator" );		 */
 		});
 	
 	
@@ -69,6 +59,7 @@
 							<div class="panel-body">Home info
 								<a href="history">HISTORY - tva samo go probvah s link kam index jsp i kontroler /history</a>
 								<p>${logedUser.username}</p>
+								<p>Your balance is: ${logedUser.budget.balance}</p>
 							</div>
 						</div>
 			</div>
