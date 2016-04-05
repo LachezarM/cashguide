@@ -11,25 +11,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.model.Budget;
 import com.model.User;
+import com.model.UserManager;
 import com.model.db.IBudgetDAO;
 import com.model.db.IUserDAO;
 
 @Controller
 public class UserProfileController {
-	
+	/*
 	@RequestMapping(value = "/changeUsername" , method = RequestMethod.GET)
 	String changeUsername(HttpSession s) {
-
 		s.removeAttribute("changePassword");
 		s.removeAttribute("addBalance");
 		s.removeAttribute("changeBudgetPercentage");
 		s.setAttribute("changeUsername", true);
 		return "UserProfile";
 	}
-	
+	*/
 	@RequestMapping(value = "/changePassword" , method = RequestMethod.GET)
 	String changePassword(HttpSession s) {
-
 		s.removeAttribute("changeUsername");
 		s.removeAttribute("addBalance");
 		s.removeAttribute("changeBudgetPercentage");
@@ -39,7 +38,6 @@ public class UserProfileController {
 	
 	@RequestMapping(value = "/addBalance" , method = RequestMethod.GET)
 	String addBalance(HttpSession s) {
-
 		s.removeAttribute("changePassword");
 		s.removeAttribute("changeUsername");
 		s.removeAttribute("changeBudgetPercentage");
@@ -49,12 +47,10 @@ public class UserProfileController {
 	
 	@RequestMapping(value = "/changeBudgetPercentage" , method = RequestMethod.GET)
 	String changeBudgetPercentage(HttpSession s) {
-
 		s.removeAttribute("changePassword");
 		s.removeAttribute("addBalance");
 		s.removeAttribute("changeUsername");
 		s.setAttribute("changeBudgetPercentage", true);
-		
 		return "UserProfile";
 	}
 	
@@ -66,10 +62,8 @@ public class UserProfileController {
 		return "home";
 	}
 	
-	@RequestMapping(value = "/changeUsername" , method = RequestMethod.POST)
-	String changeUsernamePost(@RequestParam(value ="username") String username,
-			HttpSession s,
-			Model m) {
+	/*@RequestMapping(value = "/changeUsername" , method = RequestMethod.POST)
+	String changeUsernamePost(@RequestParam(value ="username") String username, HttpSession s, Model m) {
 		if(username.length() != 0 && !IUserDAO.getInstance().checkIfUserExests(username)) {
 			User u = (User) s.getAttribute("logedUser");
 			System.out.println(u.getId());
@@ -82,19 +76,20 @@ public class UserProfileController {
 		m.addAttribute("change", "UnSucessful");
 		return "UserProfile";
 	}
+	*/
 	
+	//with UserManager
 	@RequestMapping(value="/changePasswordUser", method = RequestMethod.GET)
-	String changePasswordPost(@RequestParam(value="newPassword") String newPassword,
-	HttpSession s,
-	Model m) {
-			if(newPassword.length() > 6 && !IUserDAO.getInstance().checkIfPasswordExists(newPassword)) {
-			User u = (User) s.getAttribute("logedUser");
-			IUserDAO.getInstance().changePassword(u.getId(), newPassword);
+	String changePasswordPost(@RequestParam(value="newPassword") String newPassword, HttpSession s, Model m) {
+		User user = (User) s.getAttribute("logedUser");
+		boolean changeResult = UserManager.changePassword(user, newPassword);
+		if(changeResult){
 			m.addAttribute("change","successful");
 			return "UserProfile";
-		}
+		}else{
 			m.addAttribute("change","unsuccessful");
 			return "UserProfile";
+		}
 	}
 	
 	@RequestMapping(value="/changeBudgetPercentage", method = RequestMethod.POST)

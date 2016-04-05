@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +20,7 @@ import com.model.User;
 public class DBBudgetDAO implements IBudgetDAO {
 
 	private static DBBudgetDAO instance = null;
+	private static final int BUDGET_START_DATE = 1;
 
 	private DBBudgetDAO() {
 
@@ -33,8 +33,9 @@ public class DBBudgetDAO implements IBudgetDAO {
 		return instance;
 	}
 
+	//OK
 	@Override
-	public void addBudget(int userId, Budget budget) {
+	public void saveBudget(int userId, Budget budget) {
 		String sql = "INSERT INTO "
 				+ DBManager.DB_NAME
 				+ ".budgets(userId, balance, percentage, date) VALUES(?,?,?,?);";
@@ -42,8 +43,11 @@ public class DBBudgetDAO implements IBudgetDAO {
 		double percentage = budget.getPercentageOfIncome();
 		LocalDate date = budget.getDate();
 		java.sql.Date sqlDate = java.sql.Date.valueOf(date);
+		
+		
 		System.out.println("date: " + date);
 		System.out.println("sqlDate: " + sqlDate);
+		
 		try (PreparedStatement pr = DBManager.getDBManager().getConnection()
 				.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 			pr.setInt(1, userId);
@@ -89,6 +93,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 		}
 	}
 	
+	//OK
 	//used when percentage is changed
 	public void updateBudget(Budget budget){
 		String sql = "UPDATE " +DBManager.DB_NAME + ".budgets "
@@ -104,8 +109,6 @@ public class DBBudgetDAO implements IBudgetDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
 	}
 	
 	//not used i think
@@ -146,7 +149,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 
 		try (PreparedStatement pr = DBManager.getDBManager().getConnection().prepareStatement(sql)) {
 			//change date to 1-st day of the say month and year.
-			date = LocalDate.of(date.getYear(), date.getMonthValue(), 1);
+			date = LocalDate.of(date.getYear(), date.getMonthValue(), BUDGET_START_DATE);
 			java.sql.Date sqlDate = java.sql.Date.valueOf(date);
 			pr.setInt(1, user.getId());
 			pr.setDate(2, sqlDate);
@@ -155,14 +158,11 @@ public class DBBudgetDAO implements IBudgetDAO {
 				while (rs.next()) {
 					// budget
 					int id = rs.getInt("id");
-					//double balance = rs.getDouble("balance");
 					double percentage = rs.getDouble("Percentage");
 					LocalDate budgetDate = rs.getDate("date").toLocalDate();
 
 					budget = new Budget(budgetDate, percentage);
 					budget.setId(id);
-					//budget.setBalance(balance);
-					//the budget will be 0 and it'll be calculated with addPayment in Budget
 				}
 			}
 		} catch (SQLException e) {
@@ -223,97 +223,9 @@ public class DBBudgetDAO implements IBudgetDAO {
 		
 	}
 	
-	//REFACTORING
-	//THIS methods should be deleted after the app is tested, so we are sure they are not used
-/*	//---------------------------------------------------------------------------------------------------
-	//calls the getBudget(userId, date)																	|
-	@Override
-	public Budget getBudget(int userId) {
-		// the date is current month and year and first day of the month
-		return this.getBudget(userId, LocalDate.of(LocalDate.now().getYear(),
-				LocalDate.now().getMonthValue(), 1));
-	}
-																									//  |
-	// get budget by userId and date and all incomes for this budget									|
-	public Budget getBudget(int userId, LocalDate date) {
-		String sql = "SELECT budgets.id as id, balance, percentage, budgets.date as date, "
-				+ "payments.id as paymentId, description, amount, category, type, payments.date as paymentDate "
-				+ "FROM "
-				+ DBManager.DB_NAME
-				+ ".users "
-				+ "JOIN "
-				+ DBManager.DB_NAME
-				+ ".budgets ON users.id=budgets.userId "
-				+ "JOIN "
-				+ DBManager.DB_NAME
-				+ ".payments ON budgets.id=payments.budgetId "
-				+ "JOIN "
-				+ DBManager.DB_NAME
-				+ ".categories ON payments.categoryId=categories.id "
-				+ "JOIN "
-				+ DBManager.DB_NAME
-				+ ".payment_types ON payment_types.id = categories.typeId "
-				+ "WHERE users.id=? AND budgets.date=?;";
-		Budget budget = null;
-
-		try (PreparedStatement pr = DBManager.getDBManager().getConnection()
-				.prepareStatement(sql)) {
-			java.sql.Date sqlDate = java.sql.Date.valueOf(date);
-			pr.setInt(1, userId);
-			pr.setDate(2, sqlDate);
-
-			try (ResultSet rs = pr.executeQuery()) {
-				while (rs.next()) {
-					// budget
-					int id = rs.getInt("id");
-					double balance = rs.getDouble("balance");
-					double percentage = rs.getDouble("Percentage");
-					LocalDate budgetDate = rs.getDate("date").toLocalDate();
-
-					// payments
-					int paymentId = rs.getInt("paymentId");
-					String category = rs.getString("category");
-					String description = rs.getString("description");
-					double amount = rs.getDouble("amount");
-					LocalDate paymentDate = rs.getDate("paymentDate")
-							.toLocalDate();
-					String type = rs.getString("type");
-
-					// create payment
-					Payment payment = null;
-
-					if (type.equals("INCOME")) {
-						payment = new Income(category, description, amount,
-								paymentDate);
-					}
-					if (type.equals("EXPENSE")) {
-						payment = new Expense(category, description, amount,
-								paymentDate);
-					}
-
-					payment.setId(paymentId);
-
-					if (budget == null) {
-						budget = new Budget(budgetDate, percentage);
-						budget.setId(id);
-						budget.setBalance(balance);
-					}
-					// add payment to budget
-					budget.addPayment(payment);
-				}
-			}
-		} catch (SQLException e) {
-			System.out.println("Error with db select budgets");
-			e.printStackTrace();
-		}
-
-		return budget;
-
-	}
-	//------------------------------------------------------------------------------------------------------
-*/	
 	//used 
 	//tested
+	//adds payments and updates budget's balance, because it must be a transaction;
 	public void addPayment(Payment payment, Budget budget) {
 		
 		String sqlInsert = "INSERT INTO " + DBManager.DB_NAME
@@ -321,8 +233,10 @@ public class DBBudgetDAO implements IBudgetDAO {
 				+ "VALUES( " + "(SELECT id FROM " + DBManager.DB_NAME
 				+ ".categories WHERE category=?),?,?,?,?)";
 		
+		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		//ERRORS WHEN I TRY TO USE updateBudget instead of this query, because of con auto commit
 		String sqlUpdate = "UPDATE " + DBManager.DB_NAME+ ".budgets SET balance=? WHERE id=?;";
-		
+		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		int budgetId = budget.getId();
 		String category = payment.getCategory();
 		String description = payment.getDescription();
@@ -389,52 +303,6 @@ public class DBBudgetDAO implements IBudgetDAO {
 				e.printStackTrace();
 			}
 		}
-		
-		
-	/*	try (PreparedStatement ps = DBManager.getDBManager().getConnection()
-				.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-			ps.setString(1, category);
-			ps.setString(2, description);
-			ps.setDouble(3, amount);
-			ps.setDate(4, sqlDate);
-			ps.setInt(5, budgetId);
-
-			int affectedRows = ps.executeUpdate();
-
-			if (affectedRows == 0) {
-				throw new SQLException(
-						"Adding payment failed, no rows affected.");
-			}
-			try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-				if (generatedKeys.next()) {
-					payment.setId((int) (generatedKeys.getLong(1)));
-				} else {
-					throw new SQLException(
-							"Adding payment failed, no ID obtained.");
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}*/
-	}
-
-	@Override
-	public void addIncome(Income income, int budgetId) {
-
-	}
-
-	@Override
-	public void addExpense(Expense expense, int budgetId) {
-
-	}
-
-	@Override
-	public void removeIncome(int incomeId) {
-
-	}
-
-	@Override
-	public void removeExpense(int expenseId) {
 	}
 
 	// not tested
@@ -530,29 +398,6 @@ public class DBBudgetDAO implements IBudgetDAO {
 		return budgets;
 
 	}
-
-	//not sure if used
-	/*public List<String> getAllCategoriesByType(String type) {
-		String sql = "SELECT category " + "FROM " + DBManager.DB_NAME
-				+ ".categories " + "JOIN " + DBManager.DB_NAME
-				+ ".payment_types ON typeId=payment_types.id "
-				+ "WHERE type=?;";
-		List<String> categories = new LinkedList<String>();
-		try (PreparedStatement ps = DBManager.getDBManager().getConnection()
-				.prepareStatement(sql)) {
-			ps.setString(1, type);
-			try (ResultSet rs = ps.executeQuery()) {
-				while (rs.next()) {
-					String category = rs.getString("category");
-					categories.add(category);
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return categories;
-	}*/
 
 	//this method should be changed after another table for categories is made
 	public Map<String, ArrayList<String>> getAllCategories() {

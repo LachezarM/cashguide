@@ -16,19 +16,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.model.Budget;
 import com.model.Payment;
 import com.model.User;
 import com.model.db.DBBudgetDAO;
-import com.model.db.IBudgetDAO;
 import com.model.db.IPaymentDAO;
 
 @Controller
 public class HomePageController {
 	
 	@RequestMapping(value="/add" , method = RequestMethod.GET)
-	String addPayment(HttpServletResponse r, Model model) {
-		//System.out.println("priema se zaqvka");		
+	String addInit(HttpServletResponse r, Model model) {
 		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories();
 		JsonObject object = new JsonObject();
 		for(String type:result.keySet()){
@@ -84,12 +81,7 @@ public class HomePageController {
 		return "history";
 	}
 	
-	
-	
-	
-	
 	///----------------------------------------------------------------------------------------
-	
 	
 	
 	@RequestMapping(value="/showOnly", method = RequestMethod.GET)

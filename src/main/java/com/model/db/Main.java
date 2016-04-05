@@ -6,6 +6,7 @@ import com.model.Budget;
 import com.model.Expense;
 import com.model.Income;
 import com.model.Payment;
+import com.model.PaymentManager;
 import com.model.User;
 import com.model.UserManager;
 
@@ -29,11 +30,11 @@ public class Main {
 		Payment salary2 = new Income("salary", "myTestSalary", 1000, LocalDate.now().plusMonths(1));
 		Payment food2 = new Expense("food", "myTestFood", 100, LocalDate.now().minusMonths(1));
 		Payment transport = new Expense("transport", "MyTrasportTest", 50, LocalDate.now().minusMonths(1));
-		UserManager.addPayment(user, salary1);
-		UserManager.addPayment(user, food1);
-		UserManager.addPayment(user, salary2);
-		UserManager.addPayment(user, food2);
-		UserManager.addPayment(user, transport);
+		PaymentManager.savePayment(user, salary1);
+		PaymentManager.savePayment(user, food1);
+		PaymentManager.savePayment(user, salary2);
+		PaymentManager.savePayment(user, food2);
+		PaymentManager.savePayment(user, transport);
 		
 		
 		

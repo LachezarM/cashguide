@@ -64,11 +64,6 @@ public class Budget {
 	
 	public void addPayment(Payment payment){
 		this.payments.get(payment.getType()).add(payment);
-		//System.out.println("BALANCE BEFORE ADDING new payment: " + this.balance);
-		//System.out.println("Amount to be added: " + payment.getAmount());
-		//System.out.println("percentage: " + this.percentageOfIncome);
-		//System.out.println("gg: " + this.percentageOfIncome*payment.getAmount());
-		
 		
 		//this logic must be somewhere else, not in the pojo
 		if(payment.getType().equalsIgnoreCase("expense")){
@@ -77,7 +72,6 @@ public class Budget {
 			this.balance += this.percentageOfIncome*payment.getAmount();
 			this.income += payment.getAmount();
 		}
-		//System.out.println("BALANCE: " + this.balance);
 	}
 
 	@Override

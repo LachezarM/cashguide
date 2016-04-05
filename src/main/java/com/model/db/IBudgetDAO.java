@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.model.Budget;
-import com.model.Expense;
-import com.model.Income;
 import com.model.Payment;
 import com.model.User;
 
@@ -16,7 +14,7 @@ public interface IBudgetDAO {
 	static IBudgetDAO getInstance()  {
 		return DBBudgetDAO.getInstance();
 	}
-	void addBudget(int userId, Budget budget);
+	void saveBudget(int userId, Budget budget);
 	
 	void removeBudget(int budgetId);
 	
@@ -39,18 +37,7 @@ public interface IBudgetDAO {
 	
 	void addPayment(Payment payment, Budget budget);
 	
-	//THIS METHODS ARE NOT IMPLEMENTED AND WILL BE DELETED
-	//---------------------------------------------------------
-	void addIncome(Income income, int budgetId);
-	
-	void addExpense(Expense expense, int budgetId);
-	
-	void removeIncome(int incomeId);
-	
-	void removeExpense(int expenseId);
-	
-	//---------------------------------------------------------
 	List<Budget> getAllBudgets(int userId);
 	
-	 Map<String, ArrayList<String>> getAllCategories();
+	Map<String, ArrayList<String>> getAllCategories();
 }

@@ -52,11 +52,11 @@ public class DBManager {
 	}
 
  	public Connection getConnection() {
-		try {
-			con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-		} catch (SQLException e) {
-			System.out.println("Error creating connection" + e.getMessage());
-		}
+ 		try {
+				con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+			} catch (SQLException e) {
+				System.out.println("Error creating connection" + e.getMessage());
+			}
 		return con;
 	}
 

@@ -23,10 +23,10 @@ public class IndexPageController {
 	}
 	
 	@RequestMapping(value="/home",method=RequestMethod.GET)
-	String test() {
-		
+	String home() {
 		return "home";
 	}
+	//*********************THIS METHOD SHOULD BE REFACTORED******************
 	@RequestMapping(value="/login",method = RequestMethod.POST)
 	String login(@RequestParam(value ="username") String username,
 			@RequestParam(value ="password") String password,
@@ -58,19 +58,19 @@ public class IndexPageController {
 			@RequestParam(value ="confirm-password") String confirmPassword,
 			HttpSession s, Model model, HttpServletResponse response){
 		String result = valid(username,email,password,confirmPassword);
+		String view="index";
 		if(result.equals("correct"))
 		{
-			//User x = new User(username,email,password);
-			//IUserDAO.getInstance().addUser(x);
 			//use UserManager.createUserAfterRegister();
+			//maybe validation should be in UserManager
 			User user = UserManager.createUserAfterRegister(username, password, email);
 			s.setAttribute("logedUser",user);
-			//this will change the url.If it's only return home, the url will looks like ..../register but the user will be in home page
-			return "redirect:home";
+			view="redirect:home";
+		}else{
+			model.addAttribute("RegisterErrorInfo", result);
+			view="index";
 		}
-		model.addAttribute("RegisterErrorInfo", result);
-		//model.setAttribute("ErrorInfo", result);
-		return "index";
+		return view;
 	}
 	
 	private String valid(String username, String email, String password, String confirmPassword) {
@@ -87,15 +87,14 @@ public class IndexPageController {
 		if(!validMail(email)) {
 			result = "Invalid email";
 		}
+		//--------------------!!!!!------------------------
 		for(User u : IUserDAO.getInstance().getAllUsers()) {
-			//ne sam mnogo siguren, no taka nqma li da se iziskva vsichki paroli da sa razlichni, 
-			//t.e. ne moje da ima 2-ma user-a s edna i sashta parola
-			//if(u.getUsername().equals(username) || u.getPassword().equals(password)) {
 			if(u.getUsername().equals(username)) {
 				result = "Username or password already in use";
 				break;
 			}
 		}
+		//--------------------------------------------------
 		return result;
 	}
 	
