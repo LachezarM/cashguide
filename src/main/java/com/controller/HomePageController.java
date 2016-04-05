@@ -52,44 +52,7 @@ public class HomePageController {
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
 		m.addAttribute("payments", payments);
 		return 	"history";	
-	}
-	
-	//----------------------------------------------------------------------------------------
-	@RequestMapping(value="/history/all", method = RequestMethod.GET)
-	String choose(@RequestParam(value = "Show") String choise,HttpSession s,Model m) {
-		User u = (User) s.getAttribute("logedUser");
-		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
-		if(choise.equalsIgnoreCase("ALL")) {
-			m.addAttribute("payments", payments);
-		}else if(choise.equalsIgnoreCase("EXPENSE")) {
-			for(Iterator<Payment> itt = payments.iterator();itt.hasNext();) {
-				Payment p = itt.next();
-				if(p.getType().equalsIgnoreCase("INCOME"))
-					itt.remove();
-			}
-
-			m.addAttribute("payments", payments);
-
-			System.out.println(payments.toString());
-
-		}else if(choise.equalsIgnoreCase("INCOME")) {
-			for(Iterator<Payment> itt = payments.iterator();itt.hasNext();) {
-				Payment p = itt.next();
-				if(p.getType().equalsIgnoreCase("EXPENSE"))
-					itt.remove();
-			}
-			m.addAttribute("payments", payments);
-			System.out.println(payments.toString());
-		}
-		return "history";
-	}
-	
-	
-	
-	
-	
-	///----------------------------------------------------------------------------------------
-	
+	}	
 	
 	
 	@RequestMapping(value="/showOnly", method = RequestMethod.GET)
