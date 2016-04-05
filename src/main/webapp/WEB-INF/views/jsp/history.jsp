@@ -41,14 +41,41 @@ th {
 	background-color: #337ab7;
 	color: white;
 }
-label{
-    padding:5px;
-    color:#222;
-    font-family:corbel,sans-serif;
-    font-size: 14px;
-    margin: 5px;
-}
 
+label {
+	padding: 5px;
+	color: #222;
+	font-family: corbel, sans-serif;
+	font-size: 14px;
+	margin: 5px;
+}
+.select_style {
+     background: #FFF;
+    overflow: hidden;
+    display: inline-block;
+    color: #525252;
+    font-weight: 300;
+    -webkit-border-radius: 5px 4px 4px 5px/5px 5px 4px 4px;
+    -moz-border-radius: 5px 4px 4px 5px/5px 5px 4px 4px;
+    border-radius: 5px 4px 4px 5px/5px 5px 4px 4px;
+    -webkit-box-shadow: 0 0 5px rgba(123, 123, 123, 0.2);
+    -moz-box-shadow: 0 0 5px rgba(123,123,123,.2);
+    box-shadow: 0 0 5px rgba(123, 123, 123, 0.2);
+    border: solid 1px #DADADA;
+    font-family: "helvetica neue",arial;
+    position: relative;
+    cursor: pointer;
+    padding-right:20px;
+}
+.select_style select {
+    -webkit-appearance: none;
+    appearance:none;
+    width:70%;
+    background:none;
+    background:transparent;
+    border:none;
+    outline:none;
+}
 </style>
 
 <!-- jQueryV2.2.2 -->
@@ -71,11 +98,6 @@ label{
 			lists[4].childNodes[0].setAttribute("href", hostname + "/shopping");
 			lists[5].childNodes[0].setAttribute("href", hostname + "/simulator"); */
 	});
-	$(document).ready(function() { 
-		   $('input[name=Show]').change(function(){
-		        $('form').submit();
-		   });
-		  });
 </script>
 <!--Only chrome supports type=date, so for firefox i added this datepicker from jquery-->
 <!-- DOES NOT WORK-->
@@ -84,7 +106,6 @@ label{
 		$('[type="date"]').datepicker();
 	} */
 </script>
-
 </head>
 <body>
 	<div class="container">
@@ -108,18 +129,34 @@ label{
 				<div class="panel panel-default">
 					<div class="panel-heading">History</div>
 					<div class="panel-body">
-					<form action="showOnly" method="GET">
-								<input checked="checked" type="radio" name="Show" id="rd1" value="All" ${param.Show == 'All' ? 'checked' : ''} />
-								<label for="rd1">Show All</label><br/>
-								<input type="radio" name="Show" id="rd2" value="EXPENSE" ${param.Show == 'EXPENSE' ? 'checked' : ''}/>
-								<label for="rd2">Show Expenses</label><br/>
-								<input type="radio" name="Show" id="rd3" value="INCOME" ${param.Show == 'INCOME' ? 'checked' : ''}/>
-								<label for="rd3">Show Incomes</label><br/>
-								</form>
-								
-						<c:set var="payments" scope="session" value="${payments}" />
+					<form action="showOnlyCategories" method="GET">
+							<div class='select_style'>
+								<label for="categories"> Categories:</label>
+								<select id="categories" name="categories" onChange='this.form.submit();'>
+										<option value="All">All</option>
+								<c:forEach  var="categories" items="${currCategories }">
+										<option  value="${categories}" >${categories}</option>							
+								</c:forEach>
+								</select>
+							</div>
+							</form>
+						<form action="showOnlyTypes" method="GET" >
+							<input checked="checked" type="radio" name="Show" id="rd1"
+								value="All" ${param.Show == 'ALL' ? 'checked' : ''}
+								onChange='this.form.submit();'/>
+								 <label for="rd1">Show All</label><br /> 
+								<input  type="radio" name="Show" id="rd2"
+								value="EXPENSE" ${param.Show == 'EXPENSE' ? 'checked' : ''}
+								onChange='this.form.submit();'/> 
+								<label for="rd2">Show Expenses</label><br /> 
+								<input type="radio" name="Show" id="rd3"
+								value="INCOME" ${param.Show == 'INCOME' ? 'checked' : ''}
+								onChange='this.form.submit();' /> 
+								<label for="rd3">Show Incomes</label><br />
+						</form>
+						<c:set var="payments" scope="session" value="${currPayments}" />
 						<c:set var="totalCount" scope="session"
-							value="${fn:length(payments)}>" />
+							value="${fn:length(payments)}" />
 						<c:set var="perPage" scope="session" value="5" />
 						<c:set var="pageStart" value="${param.start}" />
 						<c:if test="${empty pageStart or pageStart < 0}">
@@ -128,8 +165,8 @@ label{
 						<c:if test="${totalCount < pageStart}">
 							<c:set var="pageStart" value="${pageStart - perPage}" />
 						</c:if>
-						<a href="?start=${pageStart - perPage}"><<</a>${pageStart + 1} -
-						${pageStart + perPage} <a href="?start=${pageStart + perPage}">>></a>
+						<a href="?Show=${param.Show }&start=${pageStart - perPage}"><<</a>${pageStart + 1}	- ${pageStart + perPage} 
+						<a href="?Show=${param.Show }&start=${pageStart + perPage}">>></a>
 						<table style="width: 100%">
 							<thead>
 								<th>Type</th>

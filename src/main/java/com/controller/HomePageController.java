@@ -52,36 +52,13 @@ public class HomePageController {
 		//System.out.println("priema se zaqvka");
 		User u = (User) s.getAttribute("logedUser");
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
-		m.addAttribute("payments", payments);
+		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories();
+		List<String> categories = new ArrayList();
+		categories.addAll(result.get("EXPENSE"));
+		categories.addAll(result.get("INCOME"));
+		m.addAttribute("currPayments", payments);
+		m.addAttribute("currCategories",categories);
 		return 	"history";	
-	}
-	@RequestMapping(value="/showOnly", method = RequestMethod.GET)
-	String showOnly(@RequestParam(value = "Show") String choise,HttpSession s,Model m) {
-		User u = (User) s.getAttribute("logedUser");
-		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
-		if(choise.equalsIgnoreCase("ALL")) {
-			m.addAttribute("payments", payments);
-		}else if(choise.equalsIgnoreCase("EXPENSE")) {
-			for(Iterator<Payment> itt = payments.iterator();itt.hasNext();) {
-				Payment p = itt.next();
-				if(p.getType().equalsIgnoreCase("INCOME"))
-					itt.remove();
-			}
-
-			m.addAttribute("payments", payments);
-
-			System.out.println(payments.toString());
-
-		}else if(choise.equalsIgnoreCase("INCOME")) {
-			for(Iterator<Payment> itt = payments.iterator();itt.hasNext();) {
-				Payment p = itt.next();
-				if(p.getType().equalsIgnoreCase("EXPENSE"))
-					itt.remove();
-			}
-			m.addAttribute("payments", payments);
-			System.out.println(payments.toString());
-		}
-		return "history";
 	}
 	@RequestMapping(value="/payment" , method = RequestMethod.GET)
 	String showPayments(HttpServletResponse r) {
