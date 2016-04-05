@@ -16,27 +16,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.model.Budget;
 import com.model.Payment;
 import com.model.User;
 import com.model.db.DBBudgetDAO;
-import com.model.db.IBudgetDAO;
 import com.model.db.IPaymentDAO;
 
 @Controller
 public class HomePageController {
 	
 	@RequestMapping(value="/add" , method = RequestMethod.GET)
-	String addPayment(HttpServletResponse r, Model model) {
-		//System.out.println("priema se zaqvka");		
-		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories();
+	String add(HttpServletResponse r, Model model, HttpSession session) {
+		User user = (User)session.getAttribute("logedUser");
+		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(user.getId());
 		JsonObject object = new JsonObject();
 		for(String type:result.keySet()){
 			JsonArray categories = new JsonArray();
 			for(String category:result.get(type)){
 				categories.add(category);
 			}
-			
 			object.add(type, categories);
 		}
 		
@@ -50,17 +47,15 @@ public class HomePageController {
 		//System.out.println("priema se zaqvka");
 		User u = (User) s.getAttribute("logedUser");
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
-		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories();
-		List<String> categories = new ArrayList();
+		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(u.getId());
+		List<String> categories = new ArrayList<String>();
 		categories.addAll(result.get("EXPENSE"));
 		categories.addAll(result.get("INCOME"));
 		m.addAttribute("currPayments", payments);
 		m.addAttribute("currCategories",categories);
 		return 	"history";	
-
 	}	
-	
-	
+		
 	@RequestMapping(value="/showOnly", method = RequestMethod.GET)
 	String showOnly(@RequestParam(value = "Show") String choise,HttpSession s,Model m) {
 		User u = (User) s.getAttribute("logedUser");
@@ -73,11 +68,8 @@ public class HomePageController {
 				if(p.getType().equalsIgnoreCase("INCOME"))
 					itt.remove();
 			}
-
 			m.addAttribute("payments", payments);
-
 			System.out.println(payments.toString());
-
 		}else if(choise.equalsIgnoreCase("INCOME")) {
 			for(Iterator<Payment> itt = payments.iterator();itt.hasNext();) {
 				Payment p = itt.next();

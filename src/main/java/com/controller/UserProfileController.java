@@ -1,5 +1,8 @@
 package com.controller;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpRequest;
@@ -9,8 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import scala.annotation.meta.setter;
+
 import com.model.Budget;
 import com.model.User;
+import com.model.db.DBBudgetDAO;
+import com.model.db.DBPaymentDAO;
 import com.model.db.IBudgetDAO;
 import com.model.db.IUserDAO;
 
@@ -23,6 +30,7 @@ public class UserProfileController {
 		s.removeAttribute("changePassword");
 		s.removeAttribute("addBalance");
 		s.removeAttribute("changeBudgetPercentage");
+		s.removeAttribute("deleteCategory");
 		s.setAttribute("changeUsername", true);
 		return "UserProfile";
 	}
@@ -33,6 +41,7 @@ public class UserProfileController {
 		s.removeAttribute("changeUsername");
 		s.removeAttribute("addBalance");
 		s.removeAttribute("changeBudgetPercentage");
+		s.removeAttribute("deleteCategory");
 		s.setAttribute("changePassword", true);
 		return "UserProfile";
 	}
@@ -43,6 +52,7 @@ public class UserProfileController {
 		s.removeAttribute("changePassword");
 		s.removeAttribute("changeUsername");
 		s.removeAttribute("changeBudgetPercentage");
+		s.removeAttribute("deleteCategory");
 		s.setAttribute("addBalance", true);
 		return "UserProfile";
 	}
@@ -53,8 +63,26 @@ public class UserProfileController {
 		s.removeAttribute("changePassword");
 		s.removeAttribute("addBalance");
 		s.removeAttribute("changeUsername");
+		s.removeAttribute("deleteCategory");
 		s.setAttribute("changeBudgetPercentage", true);
 		
+		return "UserProfile";
+	}
+	
+	@RequestMapping(value = "/deleteCategory" , method = RequestMethod.GET)
+	String deleteCategory(HttpSession s, Model m){
+		s.removeAttribute("changePassword");
+		s.removeAttribute("addBalance");
+		s.removeAttribute("changeBudgetPercentage");
+		s.removeAttribute("changeUsername");
+		s.setAttribute("deleteCategory", true);
+		
+		int id = ((User) s.getAttribute("logedUser")).getId();
+		ArrayList<String> categories = DBBudgetDAO.getInstance().getCustomCategories(id);
+		
+		System.out.println("categories: " + categories);
+		
+		m.addAttribute("categories", categories);
 		return "UserProfile";
 	}
 	
@@ -63,6 +91,7 @@ public class UserProfileController {
 		s.removeAttribute("changePassword");
 		s.removeAttribute("changeUsername");
 		s.removeAttribute("addBalance");
+		s.removeAttribute("deleteCategory");
 		return "home";
 	}
 	
@@ -124,4 +153,20 @@ public class UserProfileController {
 			}
 			return "UserProfile";
 	}
+	
+	
+	@RequestMapping(value="/deleteCategory", method = RequestMethod.POST)
+	String deleteCategoryPost(@RequestParam(value="category") String category, HttpSession s, Model m) {
+			int id = ((User) s.getAttribute("logedUser")).getId();
+			System.out.println("category: " + category);
+			System.out.println(m.containsAttribute("categories"));
+			DBPaymentDAO.getInstance().deleteCategory(category, id);
+			
+			ArrayList<String> categories = DBBudgetDAO.getInstance().getCustomCategories(id);		
+			m.addAttribute("categories", categories);
+			
+			return "UserProfile";
+	}
+
+	
 }

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +16,8 @@
 <!-- Bootstrap Core CSS -->
 <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
 <!-- css for datepicker -->
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
 
 <style>
@@ -25,18 +26,18 @@ body {
 	padding-bottom: 20px;
 }
 
-	/*START JQUERY VALIDATE STYLE*/
-	/*the error message from jquery validate function will hava this styles*/
-	.error{
-		color: #a94442;
-	}
-	input.error{
-		/*color: #a94442;*/
-	  	background-color: #f2dede;
-	  	border-color: #a94442;
-	}
-	/*END JQUERY VALIDATE STYLE*/
+/*START JQUERY VALIDATE STYLE*/
+/*the error message from jquery validate function will hava this styles*/
+.error {
+	color: #a94442;
+}
 
+input.error {
+	/*color: #a94442;*/
+	background-color: #f2dede;
+	border-color: #a94442;
+}
+/*END JQUERY VALIDATE STYLE*/
 </style>
 
 <!-- jQueryV2.2.2 -->
@@ -50,10 +51,12 @@ body {
 
 <!-- JQuery Validation plugin -->
 <!-- Plugins for Form validation with jquery -->
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/additional-methods.min.js"></script>
-	
- 
+<script
+	src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
+<script
+	src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/additional-methods.min.js"></script>
+
+
 <script>
 	$(document).ready(function() {
 		$("#addForm").css("display", "block")
@@ -69,14 +72,14 @@ body {
 		lists[4].childNodes[0].setAttribute("href", hostname + "/shopping");
 		lists[5].childNodes[0].setAttribute("href", hostname + "/simulator"); */
 	});
-	
+
 	$(function() {
-	    $( "#datepicker" ).datepicker({
-	    	dateFormat:"dd-mm-yy",
-	    	appendText: "(dd-mm-yyyy)"
-	    });
-	  });
-	
+		$("#datepicker").datepicker({
+			dateFormat : "dd-mm-yy",
+			appendText : "(dd-mm-yyyy)"
+		});
+	});
+
 	//with ajax
 	/* function addSelectOptions(type){
 		$.get("/Cashguide1/getCategories", {
@@ -91,102 +94,93 @@ body {
 			}
 		});
 	}	 */
-	
+
 	//without ajax: the categories are loaded during the request for add.jsp in HomePageController -> /add
-	function addSelectOptions(type){
+	function addSelectOptions(type) {
 		var categoryTypes = ${categories};//categories map in model from controller
 		var categories;
-		if(type=='Income'){
+		if (type == 'Income') {
 			categories = categoryTypes["INCOME"];
-		}else if(type=='Expense'){
+		} else if (type == 'Expense') {
 			categories = categoryTypes["EXPENSE"];
 		}
-		
+
 		var select = document.getElementById("sel1");
-		select.innerHTML='';
-				
-		for(i=0;i<categories.length; i++){
+		select.innerHTML = '';
+
+		for (i = 0; i < categories.length; i++) {
 			var option = document.createElement("option");
 			option.text = categories[i];
 			option.setAttribute("value", categories[i]);
+			option.setAttribute("style", "border-right: 1px solid #A9A9A9");
 			select.add(option);
-		}		
+		}
 	}
-		
-	//form validation -> javascript
-	$(function(){
-		
-		$.validator.addMethod(
-				"customNumber",
-				function(value, event){
-					return (value.match(/^[+]?\d+(\.)?\d*$/));
-				},
-				"Please enter a correct positive number."
-		);
-		
-		$.validator.addMethod(
-				"customDate",
-					function(value, event){
-						return (value.match(/^\d\d?\-\d\d?\-\d\d\d\d$/));
-					},
-					"Please enter a date in the format dd-mm-yyyy."
-		);
-		
-		
-		$("#addForm").validate({
-			// Specify the validation rules
-	        rules: {
-	            amount: {
-	                required: true,
-	                customNumber: true
-	            },
-	            date: {
-	                required: true,
-	                customDate:true
-	            },
-	            description: {
-	 	                maxlength: 100
-	            }
-	        },
 
-	        // Specify the validation error messages
-	        messages: {
-	        	amount: {
-	                required: "Please enter amount of money",
-	                number: "Amount must be a number"
-	            },
-	            date: {
-	            	required: "Please enter a date",
-	            },
-	            description: {
-	                manlength: "Your description must be at less than 100 characters long"
-	            }
-	        },
-	        //if error occurs the request won't be send
-	        submitHandler: function(form) {
-	            form.submit();
-	        }
-		});
-		
+	//form validation -> javascript
+	$(function() {
+
+		$.validator.addMethod("customNumber", function(value, event) {
+			return (value.match(/^[+]?\d+(\.)?\d*$/));
+		}, "Please enter a correct positive number.");
+
+		$.validator.addMethod("customDate", function(value, event) {
+			return (value.match(/^\d\d?\-\d\d?\-\d\d\d\d$/));
+		}, "Please enter a date in the format dd-mm-yyyy.");
+
+		$("#addForm")
+				.validate(
+						{
+							// Specify the validation rules
+							rules : {
+								amount : {
+									required : true,
+									customNumber : true
+								},
+								date : {
+									required : true,
+									customDate : true
+								},
+								description : {
+									maxlength : 100
+								}
+							},
+
+							// Specify the validation error messages
+							messages : {
+								amount : {
+									required : "Please enter amount of money",
+									number : "Amount must be a number"
+								},
+								date : {
+									required : "Please enter a date",
+								},
+								description : {
+									manlength : "Your description must be at less than 100 characters long"
+								}
+							},
+							//if error occurs the request won't be send
+							submitHandler : function(form) {
+								form.submit();
+							}
+						});
+
 	});
-	
-	
+
 	//server side validation->java
-	
-	
 </script>
 </head>
 <body>
-	
+
 
 	<div class="container">
 
 		<!-- Fixed navbar -->
 		<c:import url="header.jsp"></c:import>
-		
-		
+
+
 		<div class="row" name="content" style="margin-top: 50px;">
-		<!-- Menu start-->
+			<!-- Menu start-->
 			<div class="col-md-3">
 				<ul id="navigation" class="nav nav-pills nav-stacked">
 					<li><a href="home">Home</a></li>
@@ -197,59 +191,88 @@ body {
 					<li><a href="simulator">Simulator</a></li>
 				</ul>
 			</div>
-		<!-- Menu end-->
-		<!-- Content start-->
+			<!-- Menu end-->
+			<!-- Content start-->
 			<div class="col-md-9">
 				<div class="panel panel-default">
 					<div class="panel-heading">Add</div>
 					<div class="panel-body">
 						<!-- FOR BROWSERS WITHOUT JAVASCRIPT -->
 						<noscript>
-						 For full functionality of this site it is necessary to enable JavaScript.
-						 Here are the <a href="http://www.enable-javascript.com/" target="_blank">
-						 instructions how to enable JavaScript in your web browser</a>.
+							For full functionality of this site it is necessary to enable
+							JavaScript. Here are the <a
+								href="http://www.enable-javascript.com/" target="_blank">
+								instructions how to enable JavaScript in your web browser</a>.
 						</noscript>
 						<!-- END -->
-						
-						<div class="balance">Your balance is: ${logedUser.budget.balance}</div>
+
+						<div class="balance">Your balance is:
+							${logedUser.budget.balance}</div>
 						<div class="income">Income: ${logedUser.budget.income}</div>
 						<div class="error">${errorBudgetMessage}</div>
-					
-						<form id="addForm" class="form-horizontal" method="POST" action="addPayment" style="display:none">
-							<div class="form-group">
-								<!--amount input-->
-								<label class="sr-only" for="exampleInputAmount">Amount</label>
-								<div class="input-group">
-									<div class="input-group-addon">$</div>
-									<input type="text" class="form-control" id="amount"
-										placeholder="Amount" name="amount">
-									<!--<div class="input-group-addon">.00</div>-->
+						<div class="col-md-6">
+							<form id="addForm" class="form-horizontal" method="POST" action="addPayment" style="display: none">
+								<div class="form-group">
+									<!--amount input-->
+									<!-- <label class="sr-only" for="exampleInputAmount">Amount</label> -->
+									<div class="input-group">
+										<div class="input-group-addon">$</div>
+										<input type="text" class="form-control" id="amount"
+											placeholder="Amount" name="amount">
+									</div>
+	
+									<!--Radio buttons-->
+									<div class="input-group">
+										<label class="radio-inline"> <input type="radio" name="payment_type" id="inlineRadio1" value="income" onclick='addSelectOptions("Income")' checked> Income
+										</label> <label class="radio-inline"> <input type="radio" name="payment_type" id="inlineRadio2" value="expense" onclick='addSelectOptions("Expense")'> Expense
+										</label>
+									</div>
+									
+									<!--Tags-->
+									<label for="sel1">Choose category:</label> 
+									<select class="form-control" id="sel1" name="category" >
+										<!-- options are automatically generated with js -->
+									</select>
+									<!--Date-->
+									<p>
+										Date: <input type="text" name="date" id="datepicker" class="form-control" placeholder="Date">
+									</p>
+									<!--Description-->
+									<label for="description">Description:</label>
+									<textarea class="form-control" rows="4" id="description" name="description"></textarea>
 								</div>
-
-								<!--Radio buttons-->
-								<label class="radio-inline"> <input type="radio"
-									name="payment_type" id="inlineRadio1" value="income" onclick='addSelectOptions("Income")' checked>
-									Income
-								</label> <label class="radio-inline"> 
-								<input type="radio" name="payment_type" id="inlineRadio2" value="expense" onclick='addSelectOptions("Expense")'>
-									Expense
-								</label>
-
-								<!--Tags-->
-								<label for="sel1">Choose tag:</label> 
-								<select class="form-control" id="sel1" name="category">
-								<!-- options are automatically generated with js -->
-								</select>
-
-								<!--Date-->								
-								<p>Date: <input type="text" name="date" id="datepicker" class="form-control" placeholder="Date"></p>
+									
+								<button type="submit" class="btn btn-primary">Add</button>
+							</form>
+						</div>
+					
+					<div class="row">
+						<div class="col-md-6" style="margin-top:48px">
+							<!--New category-->
+							<p>Or add new category:</p>
+							<span>${message}</span>
+							<form action="customCategory" method="POST">
+							
+								<div class="input-group">
+									<label class="radio-inline"> 
+										<input type="radio" name="type" id="inlineRadio1" value="income" checked>
+										 Income
+									</label> 
+									<label class="radio-inline">
+										<input type="radio" name="type" id="inlineRadio2" value="expense"> 
+										 Expense
+									</label>
+								</div>
 								
-								<!--Description-->
-								<label for="description">Description:</label>
-								<textarea class="form-control" rows="3" id="description" name="description"></textarea>
-							</div>
-							<button type="submit" class="btn btn-primary">Add</button>
-						</form>
+								<div class="input-group">
+									<input type="text" name="customCategory">
+								
+									<input type="submit" value="Add new category">
+								</div>
+							</form>
+						</div>
+					</div>
+						
 					</div>
 				</div>
 			</div>
@@ -257,18 +280,15 @@ body {
 		</div>
 	</div>
 	<!-- /container -->
-	
-	<script>
-	
-	
-	/*  $( "#addForm" ).submit(function( event ) {
-		var date = $("#datepicker").val();
-		//if(date)
-		//$("#datepicker").val("01-01-2001");
-		// alert($("#datepicker").val()); 
-		 //event.preventDefault();
-		});  */
 
+	<script>
+		/*  $( "#addForm" ).submit(function( event ) {
+			var date = $("#datepicker").val();
+			//if(date)
+			//$("#datepicker").val("01-01-2001");
+			// alert($("#datepicker").val()); 
+			 //event.preventDefault();
+			});  */
 	</script>
 </body>
 </html>

@@ -50,6 +50,7 @@ input[type=button], input[type=submit], input[type=reset] {
   <li><a href="changeUsername">Change Username</a></li>
   <li><a href="changePassword">Change Password</a></li>
    <li><a href="changeBudgetPercentage">Change budgetPercentage</a></li>
+   <li><a href="deleteCategory">Delete custom category</a></li>
   <li><a href="back">Back</a></li>
 </ul>
 
@@ -91,6 +92,20 @@ input[type=button], input[type=submit], input[type=reset] {
 				</div>
 			</c:if>
 
+			
+			<c:if test="${deleteCategory != null}">
+				<div>
+				<p>${errorMessage}</p>
+					<form method="POST" action="deleteCategory">
+						<select name="category">
+							<c:forEach var="category" items="${categories}">
+								<option><c:out value="${category}"></c:out></option>
+							</c:forEach>
+						</select>	
+					<input type="submit" value="delete">
+					</form>
+				</div>
+			</c:if>
 
 </body>
 </html>

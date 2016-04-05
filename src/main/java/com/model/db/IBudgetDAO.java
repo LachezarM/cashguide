@@ -37,15 +37,9 @@ public interface IBudgetDAO {
 	
 	void addPayment(Payment payment, Budget budget);
 	
-	void addIncome(Income income, int budgetId);
-	
-	void addExpense(Expense expense, int budgetId);
-	
-	void removeIncome(int incomeId);
-	
-	void removeExpense(int expenseId);
-		
 	List<Budget> getAllBudgets(int userId);
 	
-	 Map<String, ArrayList<String>> getAllCategories();
+	 //Map<String, ArrayList<String>> getAllCategories();
+	
+	Map<String, ArrayList<String>> getAllCategories(int id);
 }

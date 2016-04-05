@@ -25,8 +25,9 @@ public class HistoryController {
 	
 	@RequestMapping(value="/showOnlyTypes", method = RequestMethod.GET)
 	String showOnly(@RequestParam(value = "Show") String choise,HttpSession s,Model m) {
-		Map<String, ArrayList<String>> result = IBudgetDAO.getInstance().getAllCategories();
-		List<String> categories = new ArrayList();
+		User user = (User)s.getAttribute("logedUser");
+		Map<String, ArrayList<String>> result = IBudgetDAO.getInstance().getAllCategories(user.getId());
+		List<String> categories = new ArrayList<String>();
 		User u = (User) s.getAttribute("logedUser");
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
 		if(choise.equalsIgnoreCase("ALL")) {

@@ -381,53 +381,9 @@ public class DBBudgetDAO implements IBudgetDAO {
 				e.printStackTrace();
 			}
 		}
-		
-		
-	/*	try (PreparedStatement ps = DBManager.getDBManager().getConnection()
-				.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-			ps.setString(1, category);
-			ps.setString(2, description);
-			ps.setDouble(3, amount);
-			ps.setDate(4, sqlDate);
-			ps.setInt(5, budgetId);
-
-			int affectedRows = ps.executeUpdate();
-
-			if (affectedRows == 0) {
-				throw new SQLException(
-						"Adding payment failed, no rows affected.");
-			}
-			try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-				if (generatedKeys.next()) {
-					payment.setId((int) (generatedKeys.getLong(1)));
-				} else {
-					throw new SQLException(
-							"Adding payment failed, no ID obtained.");
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}*/
 	}
 
-	@Override
-	public void addIncome(Income income, int budgetId) {
 
-	}
-
-	@Override
-	public void addExpense(Expense expense, int budgetId) {
-
-	}
-
-	@Override
-	public void removeIncome(int incomeId) {
-
-	}
-
-	@Override
-	public void removeExpense(int expenseId) {
-	}
 
 	// not tested
 	@Override
@@ -544,7 +500,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 		return categories;
 	}
 
-	public Map<String, ArrayList<String>> getAllCategories() {
+	/*public Map<String, ArrayList<String>> getAllCategories() {
 		String sql = "SELECT category, type " + "FROM " + DBManager.DB_NAME
 				+ ".categories " + "JOIN " + DBManager.DB_NAME
 				+ ".payment_types ON typeId=payment_types.id;";
@@ -558,6 +514,61 @@ public class DBBudgetDAO implements IBudgetDAO {
 					String category = rs.getString("category");
 					String type = rs.getString("type");
 					categories.get(type).add(category);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return categories;
+	}*/
+	
+	
+	public Map<String, ArrayList<String>> getAllCategories(int userId) {
+		String sql = "SELECT category, type "
+				+ "FROM ((SELECT category, typeId "
+				+ "FROM "+DBManager.DB_NAME+".categories WHERE isDefault=TRUE) "
+				+ "UNION (SELECT category, typeId "
+				+ "FROM "+DBManager.DB_NAME+".categories "
+				+ "JOIN "+DBManager.DB_NAME+".customCategories ON categories.id=customCategories.categoryId "
+				+ "WHERE userId="+userId+")) as temp "
+				+ "JOIN "+DBManager.DB_NAME+".payment_types ON typeId=payment_types.id;";
+				
+		Map<String, ArrayList<String>> categories = new HashMap<String, ArrayList<String>>();
+		categories.put("EXPENSE", new ArrayList<String>());
+		categories.put("INCOME", new ArrayList<String>());
+		try (PreparedStatement ps = DBManager.getDBManager().getConnection().prepareStatement(sql)) {
+			//ps.setInt(1, userId);
+			try (ResultSet rs = ps.executeQuery(sql)) {
+				while (rs.next()) {
+					String category = rs.getString("category");
+					//System.out.println("category: " + category);
+					String type = rs.getString("type");
+					//System.out.println("type: " + type);
+					categories.get(type).add(category);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return categories;
+	}
+
+	public ArrayList<String> getCustomCategories(int id) {
+		String sql = "SELECT category "
+				+ "FROM "+DBManager.DB_NAME+".categories "
+				+ "JOIN "+DBManager.DB_NAME+".customCategories ON categories.id=customCategories.categoryId "
+				+ "WHERE userId="+id+";";
+		
+		ArrayList<String>categories = new ArrayList<String>();
+		try (PreparedStatement ps = DBManager.getDBManager().getConnection().prepareStatement(sql)) {
+			//ps.setInt(1, userId);
+			try (ResultSet rs = ps.executeQuery(sql)) {
+				while (rs.next()) {
+					String category = rs.getString("category");
+					System.out.println("cate:" + category);
+					categories.add(category);
 				}
 			}
 		} catch (SQLException e) {
