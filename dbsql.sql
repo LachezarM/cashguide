@@ -8,20 +8,28 @@ CREATE TABLE IF NOT EXISTS payment_types(
 
 CREATE TABLE IF NOT EXISTS categories(
 	id INTEGER NOT NULL AUTO_INCREMENT,
-    category VARCHAR(45),
+    category VARCHAR(45) UNIQUE,
+    isDefault BOOLEAN DEFAULT TRUE,
     typeId INTEGER NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(typeId) REFERENCES payment_types(id)
 );
+
+
 
 CREATE TABLE IF NOT EXISTS users(
 	id INTEGER AUTO_INCREMENT NOT NULL,
     username VARCHAR(45) NOT NULL,
     password VARCHAR(32) NOT NULL,
     email VARCHAR(45) NOT NULL,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50),
     PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS customCategories(
+	userId INTEGER NOT NULL,
+    categoryId INTEGER NOT NULL,
+    FOREIGN KEY(userId) REFERENCES users(id),
+    FOREIGN KEY(categoryId) REFERENCES categories(id)
 );
 
 CREATE TABLE IF NOT EXISTS budgets(
@@ -37,15 +45,12 @@ CREATE TABLE IF NOT EXISTS budgets(
 CREATE TABLE IF NOT EXISTS payments(
 	id INTEGER AUTO_INCREMENT NOT NULL,
     categoryId INTEGER NOT NULL,
-   /* typeId INTEGER NOT NULL,*/
 	description NVARCHAR(200),
     amount DOUBLE NOT NULL,
     date DATE NOT NULL,
     budgetId INTEGER NOT NULL,
-   /* periodInDays INTEGER,*/
     PRIMARY KEY(id),
     FOREIGN KEY (categoryId) REFERENCES categories(id),
-    /*FOREIGN KEY(typeId) REFERENCES payment_types(id),*/
 	FOREIGN KEY(budgetId) REFERENCES budgets(id)
 
 );
@@ -68,41 +73,48 @@ INSERT INTO categories(category, typeId) VALUE('transport', 2);
 INSERT INTO categories(category, typeId) VALUE('education', 2);
 INSERT INTO categories(category, typeId) VALUE('loan', 2);
 
-INSERT INTO users(username, password, email,first_name, last_name)
-VALUES ('mite', '123456', 'mite_sp@abv.bg', 'mite', 'spasov');
-
-INSERT INTO budgets(userId, percentage, date) 
-VALUES(1, 0.7, NOW());
-
-INSERT INTO budgets(userId, percentage, date)
-VALUE(1, 0.5, str_to_date('01,5,2016','%d, %m, %Y'));
 
 
-INSERT INTO payments(categoryId, description, amount, date, budgetId)
-VALUES(1,"first salary", 1000, NOW(), 1);
 
-INSERT INTO payments(categoryId, description, amount, date, budgetId)
-VALUES(4,"other", 500, NOW(), 1);
+SELECT categories.id 
+FROM categories 
+JOIN payment_types 
+ON categories.typeId=payment_types.id 
+WHERE category='mitee' AND type='EXPENSE';
 
-
-INSERT INTO payments(categoryId, description, amount, date, budgetId)
-VALUES(5,"first salary", 200, NOW(), 1);
-
-INSERT INTO payments(categoryId, description, amount, date, budgetId)
-VALUES(5,"first salary", 200, str_to_date('01,5,2016','%d, %m, %Y'), 2);
-
-INSERT INTO payments(categoryId, description, amount, date, budgetId)
-VALUES((SELECT id FROM categories WHERE category='food'), 'alavala', 100, str_to_date('01,5,2016','%d, %m, %Y'), 2);
-
-/***************************************************************/
 
 
 SELECT * FROM payment_types;
 SELECT * FROM categories;
+SELECT * FROM customCategories;
 SELECT * FROM users;
 SELECT * FROM payments;
 SELECT * FROM budgets;
 
+
+UPDATE budgets SET balance=100 WHERE id=2;
+
+SELECT category, type
+From ((select category, typeId
+From categories
+where isDefault=true)
+UNION
+(SELECT category, typeId
+FROM categories
+JOIN customCategories ON id=categoryId
+WHERE userId=1)) temp
+JOIN payment_types ON temp.typeId=payment_types.id;
+
+
+
+
+
+
+
+
+
+
+/*
 SELECT budgets.id, balance, percentage, budgets.date, description, amount, category, type
 FROM users
 JOIN budgets ON users.id=budgets.userId
@@ -127,3 +139,4 @@ JOIN payments ON budgets.id=payments.budgetId
 JOIN categories ON payments.categoryId=categories.id
 JOIN payment_types ON payment_types.id = payments.typeId
 WHERE username='mite';
+*/
