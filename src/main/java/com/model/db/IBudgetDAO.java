@@ -20,6 +20,8 @@ public interface IBudgetDAO {
 	
 	void removeBudget(int budgetId);
 	
+	void updateBudget(Budget budget);
+	
 	boolean changePercentage(int budgetId, double percentage);
 	
 	Budget getBudget(User user, LocalDate date);//get budget only

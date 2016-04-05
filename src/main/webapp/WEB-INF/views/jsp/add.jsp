@@ -94,7 +94,7 @@ body {
 	
 	//without ajax: the categories are loaded during the request for add.jsp in HomePageController -> /add
 	function addSelectOptions(type){
-		var categoryTypes = ${categories};//categories map from controller
+		var categoryTypes = ${categories};//categories map in model from controller
 		var categories;
 		if(type=='Income'){
 			categories = categoryTypes["INCOME"];
@@ -190,7 +190,7 @@ body {
 			<div class="col-md-3">
 				<ul id="navigation" class="nav nav-pills nav-stacked">
 					<li><a href="home">Home</a></li>
-					<li class="active"><a href="">Add</a></li>
+					<li class="active"><a href="add">Add</a></li>
 					<li><a href="history">Show history</a></li>
 					<li><a href="payment">Show payments</a></li>
 					<li><a href="">Shopping list</a></li>

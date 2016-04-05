@@ -50,6 +50,7 @@ public class IndexPageController {
 			//s.setAttribute("ErrorInfo","Fields empty");
 			return "index";
 	}
+	
 	@RequestMapping(value="/register",method = RequestMethod.POST)
 	String register(@RequestParam(value="username") String username,
 			@RequestParam(value ="email") String email,
@@ -89,7 +90,8 @@ public class IndexPageController {
 		for(User u : IUserDAO.getInstance().getAllUsers()) {
 			//ne sam mnogo siguren, no taka nqma li da se iziskva vsichki paroli da sa razlichni, 
 			//t.e. ne moje da ima 2-ma user-a s edna i sashta parola
-			if(u.getUsername().equals(username) || u.getPassword().equals(password)) {
+			//if(u.getUsername().equals(username) || u.getPassword().equals(password)) {
+			if(u.getUsername().equals(username)) {
 				result = "Username or password already in use";
 				break;
 			}

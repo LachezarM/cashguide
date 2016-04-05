@@ -36,7 +36,10 @@ public class Budget {
 	}
 
 	public void setPercentageOfIncome(double percentageOfIncome) {
-		this.percentageOfIncome = percentageOfIncome;
+		if(percentageOfIncome>0&&percentageOfIncome<=1)
+			this.percentageOfIncome = percentageOfIncome;
+		else
+			this.percentageOfIncome = 1;
 	}
 
 	public int getCurrentMonth() {
@@ -67,7 +70,7 @@ public class Budget {
 		//System.out.println("gg: " + this.percentageOfIncome*payment.getAmount());
 		
 		if(payment.getType().equalsIgnoreCase("expense")){
-			this.balance -= this.percentageOfIncome*payment.getAmount();
+			this.balance -= payment.getAmount();
 		}else if(payment.getType().equalsIgnoreCase("income")){
 			this.balance += this.percentageOfIncome*payment.getAmount();
 			this.income += payment.getAmount();

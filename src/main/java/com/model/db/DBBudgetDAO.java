@@ -88,6 +88,24 @@ public class DBBudgetDAO implements IBudgetDAO {
 		}
 	}
 
+	public void updateBudget(Budget budget){
+		String sql = "UPDATE " +DBManager.DB_NAME + ".budgets "
+				+ "SET balance=?, percentage=? "
+				+ "WHERE id=?;";
+		try(PreparedStatement ps = DBManager.getDBManager().getConnection().prepareStatement(sql)){
+			ps.setDouble(1, budget.getBalance());
+			ps.setDouble(2, budget.getPercentageOfIncome());
+			ps.setInt(3, budget.getId());
+			
+			ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
 	@Override
 	public boolean changePercentage(int budgetId, double percentage) {
 		String sql = "UPDATE " + DBManager.DB_NAME
@@ -133,13 +151,14 @@ public class DBBudgetDAO implements IBudgetDAO {
 				while (rs.next()) {
 					// budget
 					int id = rs.getInt("id");
-					double balance = rs.getDouble("balance");
+					//double balance = rs.getDouble("balance");
 					double percentage = rs.getDouble("Percentage");
 					LocalDate budgetDate = rs.getDate("date").toLocalDate();
 
 					budget = new Budget(budgetDate, percentage);
 					budget.setId(id);
-					budget.setBalance(balance);
+					//budget.setBalance(balance);
+					//the budget will be 0 and it'll be calculated with addPayment in Budget
 				}
 			}
 		} catch (SQLException e) {

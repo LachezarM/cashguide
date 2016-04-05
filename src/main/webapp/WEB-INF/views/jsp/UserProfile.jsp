@@ -49,11 +49,11 @@ input[type=button], input[type=submit], input[type=reset] {
   <li><a href="addBalance">Add Balance</a></li>
   <li><a href="changeUsername">Change Username</a></li>
   <li><a href="changePassword">Change Password</a></li>
+   <li><a href="changeBudgetPercentage">Change budgetPercentage</a></li>
   <li><a href="back">Back</a></li>
 </ul>
 
-  <c:if test="${changeUsername != null}">
-			
+  			<c:if test="${changeUsername != null}">
 				<div class="change">
 				<form action="changeUsername" method="post">
 					<input type="text" placeholder="New Username Here" name="username">
@@ -61,7 +61,6 @@ input[type=button], input[type=submit], input[type=reset] {
 					</form>
 					<c:out value="${change }"></c:out>
 				</div>	
-				
 			</c:if>
 			<c:if test="${changePassword != null}">
 				<div>
@@ -70,7 +69,6 @@ input[type=button], input[type=submit], input[type=reset] {
 					
 						<input type="submit" value="change">
 					</form>
-					
 					<c:out value="${change }"></c:out>
 				</div>
 			</c:if>
@@ -82,8 +80,17 @@ input[type=button], input[type=submit], input[type=reset] {
 					</form>
 				</div>
 			</c:if>
-	
-	
+			
+			<c:if test="${changeBudgetPercentage != null}">
+				<div>
+				<p>${errorMessage}</p>
+					<form method="POST" action="changeBudgetPercentage">
+						<input type="text" name = "percentage" placeholder="Your percentage">
+						 <input type="submit" value="change">
+					</form>
+				</div>
+			</c:if>
+
 
 </body>
 </html>

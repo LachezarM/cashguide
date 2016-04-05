@@ -22,20 +22,6 @@ import com.model.UserManager;
 @Controller
 public class AddController {
 
-	/*@RequestMapping(value="/getCategories", method=RequestMethod.GET, produces = "application/json")
-	public @ResponseBody String getCategories(@RequestParam(value="type") String type,HttpServletResponse r){
-		List<String> result = new LinkedList<String>();
-		if(type.equalsIgnoreCase("income"))
-			result = DBBudgetDAO.getInstance().getAllCategoriesByType("INCOME");
-		else
-			result = DBBudgetDAO.getInstance().getAllCategoriesByType("EXPENSE");
-		JsonArray arr = new JsonArray();
-		for(String category:result){
-			arr.add(category);
-			
-		}
-		return arr.toString();
-	}*/
 	@RequestMapping(value="/addPayment", method=RequestMethod.POST)
 	public String add(Model model, 
 			@RequestParam(value="amount") double amount,
@@ -62,16 +48,6 @@ public class AddController {
 		}
 		//exception 
 		
-		/*System.out.println("amount: " + amount);
-		System.out.println("payment_type: " + paymentType);
-		System.out.println("category: " + category);
-		System.out.println("date: " + date.toString());
-		System.out.println("description: " + description);*/
-		
-		
-		
-		
-		
 		
 		Payment payment = null;
 		//get user from session
@@ -95,9 +71,6 @@ public class AddController {
 			}else{
 			UserManager.addPayment(user, payment);
 		}
-		
-		//change to forward in future
-		//return "forward:add";
-		return "redirect:add"; 
+		return "add"; 
 	}
 }
