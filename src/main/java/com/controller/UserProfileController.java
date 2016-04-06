@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import scala.annotation.meta.setter;
+//import scala.annotation.meta.setter;
 
 import com.model.Budget;
 import com.model.User;

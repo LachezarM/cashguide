@@ -114,6 +114,7 @@ input.error {
 			option.setAttribute("value", categories[i]);
 			option.setAttribute("style", "border-right: 1px solid #A9A9A9");
 			select.add(option);
+			console.log(option);
 		}
 	}
 
@@ -186,7 +187,7 @@ input.error {
 					<li><a href="home">Home</a></li>
 					<li class="active"><a href="add">Add</a></li>
 					<li><a href="history">Show history</a></li>
-					<li><a href="payment">Show payments</a></li>
+					<li><a href="info">Info</a></li>
 					<li><a href="">Shopping list</a></li>
 					<li><a href="simulator">Simulator</a></li>
 				</ul>

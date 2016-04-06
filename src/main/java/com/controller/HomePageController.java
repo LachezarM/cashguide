@@ -1,5 +1,6 @@
 package com.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -19,6 +20,7 @@ import com.google.gson.JsonObject;
 import com.model.Payment;
 import com.model.User;
 import com.model.db.DBBudgetDAO;
+import com.model.db.IBudgetDAO;
 import com.model.db.IPaymentDAO;
 
 @Controller
@@ -48,6 +50,7 @@ public class HomePageController {
 		User u = (User) s.getAttribute("logedUser");
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
 		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(u.getId());
+		System.out.println(result.toString());
 		List<String> categories = new ArrayList<String>();
 		categories.addAll(result.get("EXPENSE"));
 		categories.addAll(result.get("INCOME"));
@@ -55,37 +58,39 @@ public class HomePageController {
 		m.addAttribute("currCategories",categories);
 		return 	"history";	
 	}	
-		
-	@RequestMapping(value="/showOnly", method = RequestMethod.GET)
-	String showOnly(@RequestParam(value = "Show") String choise,HttpSession s,Model m) {
+	
+	
+	@RequestMapping(value="/info" , method = RequestMethod.GET)
+	String showPayments(HttpServletResponse r,
+			HttpSession s,
+			Model m) {
 		User u = (User) s.getAttribute("logedUser");
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
-		if(choise.equalsIgnoreCase("ALL")) {
-			m.addAttribute("payments", payments);
-		}else if(choise.equalsIgnoreCase("EXPENSE")) {
-			for(Iterator<Payment> itt = payments.iterator();itt.hasNext();) {
-				Payment p = itt.next();
-				if(p.getType().equalsIgnoreCase("INCOME"))
-					itt.remove();
-			}
-			m.addAttribute("payments", payments);
-			System.out.println(payments.toString());
-		}else if(choise.equalsIgnoreCase("INCOME")) {
-			for(Iterator<Payment> itt = payments.iterator();itt.hasNext();) {
-				Payment p = itt.next();
-				if(p.getType().equalsIgnoreCase("EXPENSE"))
-					itt.remove();
-			}
-			m.addAttribute("payments", payments);
-			System.out.println(payments.toString());
+		int currMonth = LocalDate.now().getMonth().getValue();
+		for(Iterator<Payment> itt = payments.iterator();itt.hasNext();) {
+			Payment p = itt.next();
+			if(p.getDate().getMonth().getValue() != currMonth)
+				itt.remove();
 		}
-		return "history";
-	}
-	
-	@RequestMapping(value="/payment" , method = RequestMethod.GET)
-	String showPayments(HttpServletResponse r) {
-		System.out.println("priema se zaqvka");
-		return 	"payment";	
+		//payments has now only payments in currMonth
+		JsonObject obj = new JsonObject();
+		JsonArray arrIncomes = new JsonArray();
+		JsonArray arrExpenses = new JsonArray();
+		for(int i = 0;i< payments.size();i++ ) {
+			JsonObject tmp =  new JsonObject();
+			tmp.addProperty("amount", payments.get(i).getAmount());
+			tmp.addProperty("category", payments.get(i).getCategory());
+			if(payments.get(i).getType().equalsIgnoreCase("INCOME"))
+				arrIncomes.add(tmp);
+			else 
+				arrExpenses.add(tmp);
+			
+		}
+		obj.add("INCOMES", arrIncomes);
+		obj.add("EXPENSES", arrExpenses);
+		m.addAttribute("paymentsCurrMonth", obj);
+		System.out.println(obj.toString());
+		return 	"info";	
 	}
 	
 	@RequestMapping(value="/shopping" , method = RequestMethod.GET)
