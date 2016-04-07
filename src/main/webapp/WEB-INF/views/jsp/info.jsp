@@ -16,6 +16,41 @@
 <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
 
 <style>
+.select_style {
+	background: #FFF;
+	overflow: hidden;
+	display: inline-block;
+	color: #525252;
+	font-weight: 300;
+	-webkit-border-radius: 5px 4px 4px 5px/5px 5px 4px 4px;
+	-moz-border-radius: 5px 4px 4px 5px/5px 5px 4px 4px;
+	border-radius: 5px 4px 4px 5px/5px 5px 4px 4px;
+	-webkit-box-shadow: 0 0 5px rgba(123, 123, 123, 0.2);
+	-moz-box-shadow: 0 0 5px rgba(123, 123, 123, .2);
+	box-shadow: 0 0 5px rgba(123, 123, 123, 0.2);
+	border: solid 1px #DADADA;
+	font-family: "helvetica neue", arial;
+	position: relative;
+	cursor: pointer;
+	padding-right: 20px;
+}
+
+.select_style select {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 70%;
+	background: none;
+	background: transparent;
+	border: none;
+	outline: none;
+}
+
+#chartPayments {
+	position: relative;
+	left: 400px;
+	top: 0px;
+}
+
 body {
 	padding-top: 20px;
 	padding-bottom: 20px;
@@ -29,6 +64,101 @@ body {
 
 <!-- BootstrapV3.3.6 Core JavaScript -->
 <script src="js/bootstrap.min.js"></script>
+<script>
+	/*
+	function selectColor(colorNum, colors){
+	if (colors < 1) colors = 1; // defaults to one color - avoid divide by zero
+	return "hsl(" + (colorNum * (360 / colors) % 360) + ",100%,50%)";
+	}*/
+	//currently the best way to get distinguishable colors
+	Colors = {};
+	Colors.names = {
+		aqua : "#00ffff",
+		azure : "#f0ffff",
+		beige : "#f5f5dc",
+		black : "#000000",
+		blue : "#0000ff",
+		brown : "#a52a2a",
+		cyan : "#00ffff",
+		darkblue : "#00008b",
+		darkcyan : "#008b8b",
+		darkgrey : "#a9a9a9",
+		darkgreen : "#006400",
+		darkkhaki : "#bdb76b",
+		darkmagenta : "#8b008b",
+		darkolivegreen : "#556b2f",
+		darkorange : "#ff8c00",
+		darkorchid : "#9932cc",
+		darkred : "#8b0000",
+		darksalmon : "#e9967a",
+		darkviolet : "#9400d3",
+		fuchsia : "#ff00ff",
+		gold : "#ffd700",
+		green : "#008000",
+		indigo : "#4b0082",
+		khaki : "#f0e68c",
+		lightblue : "#add8e6",
+		lightcyan : "#e0ffff",
+		lightgreen : "#90ee90",
+		lightgrey : "#d3d3d3",
+		lightpink : "#ffb6c1",
+		lightyellow : "#ffffe0",
+		lime : "#00ff00",
+		magenta : "#ff00ff",
+		maroon : "#800000",
+		navy : "#000080",
+		olive : "#808000",
+		orange : "#ffa500",
+		pink : "#ffc0cb",
+		purple : "#800080",
+		violet : "#800080",
+		red : "#ff0000",
+		silver : "#c0c0c0",
+		white : "#ffffff",
+		yellow : "#ffff00"
+	};
+	Colors.random = function() {
+
+		var result;
+		var count = 0;
+		for ( var prop in this.names)
+			if (Math.random() < 1 / ++count)
+				result = prop;
+		return result;
+	};
+</script>
+<script>
+	function showPayments(type) {
+		var paymentsByType = ${paymentsCurrMonth};
+		
+		if (type == "INCOMES")
+			var payments = paymentsByType["INCOMES"];
+		else
+			var payments = paymentsByType["EXPENSES"];
+		var pieData;
+		var pieOptions = {
+			showTooltips : true,
+
+			animationEasing : "easeInOutQuart",
+			animationSteps : 70,
+			percentageInnerCutout : 0,
+			segmentShowStroke : false,
+			animateScale : true
+		};
+		var chartPayments = document.getElementById("chartPayments")
+				.getContext("2d");
+		var myChart = new Chart(chartPayments).Pie(pieData, pieOptions);
+
+		for (i = 0; i < payments.length; i++) {
+			var dataSet = {
+				value : payments[i]["amount"],
+				color : Colors.random(),
+				label : payments[i]["category"]
+			};
+			myChart.addData(dataSet);
+		}
+	}
+</script>
 <script>
 	/*adding hrefs to <a> in the menu, because the name of the project may differ, i.e my project name is Cashguide1*/
 	/*this should be in external js file*/
@@ -76,34 +206,13 @@ body {
 				<div class="panel panel-default">
 					<div class="panel-heading">Charts</div>
 					<div class="panel-body">
-
-						<canvas id="chartPayments" width="600" height="400"></canvas>
-
-						<script>
-							var paymentsByType = ${paymentsCurrMonth};
-							var payments = paymentsByType["EXPENSES"];
-							var pieData;
-							var pieOptions = {
-								segmentShowStroke : false,
-								animateScale : true
-							};
-							var chartPayments = document.getElementById("chartPayments")
-									.getContext("2d");
-							var myChart = new Chart(chartPayments).Pie(pieData,
-									pieOptions);
-
-							for (i = 0; i < payments.length; i++) {
-
-								var dataSet = {
-									value : 20,
-									color : red
-								};
-
-								alert("adva");
-								myChart.addData(dataSet);
-							}
-						</script>
-
+							<select id="typeChart" name="typeChart" onchange="showPayments(value);">
+								<option  value="EXPENSES">Expenses</option>
+								<option  value="INCOMES">Incomes</option>
+						</select>
+						<canvas id="chartPayments" width="300" height="300"></canvas>
+						
+	
 
 					</div>
 				</div>
