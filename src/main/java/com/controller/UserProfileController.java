@@ -1,18 +1,14 @@
 package com.controller;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-//import scala.annotation.meta.setter;
 
 import com.model.Budget;
 import com.model.User;
@@ -26,7 +22,6 @@ public class UserProfileController {
 	
 	@RequestMapping(value = "/changeUsername" , method = RequestMethod.GET)
 	String changeUsername(HttpSession s) {
-
 		s.removeAttribute("changePassword");
 		s.removeAttribute("addBalance");
 		s.removeAttribute("changeBudgetPercentage");
@@ -37,7 +32,6 @@ public class UserProfileController {
 	
 	@RequestMapping(value = "/changePassword" , method = RequestMethod.GET)
 	String changePassword(HttpSession s) {
-
 		s.removeAttribute("changeUsername");
 		s.removeAttribute("addBalance");
 		s.removeAttribute("changeBudgetPercentage");

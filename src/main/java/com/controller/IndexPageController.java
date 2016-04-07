@@ -24,7 +24,6 @@ public class IndexPageController {
 	
 	@RequestMapping(value="/home",method=RequestMethod.GET)
 	String test() {
-		
 		return "home";
 	}
 	@RequestMapping(value="/login",method = RequestMethod.POST)
@@ -43,11 +42,9 @@ public class IndexPageController {
 				}
 			}
 			model.addAttribute("LoginErrorInfo", "User doesnt exists");
-			//s.setAttribute("ErrorInfo", "User doesnt exists");
 			return "index";
 		} 
 			model.addAttribute("LoginErrorInfo", "Fields empty");
-			//s.setAttribute("ErrorInfo","Fields empty");
 			return "index";
 	}
 	
@@ -69,7 +66,6 @@ public class IndexPageController {
 			return "redirect:home";
 		}
 		model.addAttribute("RegisterErrorInfo", result);
-		//model.setAttribute("ErrorInfo", result);
 		return "index";
 	}
 	

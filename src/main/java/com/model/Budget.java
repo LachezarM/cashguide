@@ -11,6 +11,7 @@ public class Budget {
 	private HashMap<String, ArrayList<Payment>> payments;//income/expense->Income/Expense
 	private double balance;//precetage*income by default;
 	private double income;
+	private double expense;
 	
 	public Budget(LocalDate date, double percentageOfIncome) {
 		super();
@@ -21,6 +22,8 @@ public class Budget {
 		this.payments.put("EXPENSE", new ArrayList<Payment>());
 		this.balance = 0;
 		this.income = 0;
+		this.expense = 0;
+		
 	}
 
 	public int getId() {
@@ -64,13 +67,10 @@ public class Budget {
 	
 	public void addPayment(Payment payment){
 		this.payments.get(payment.getType()).add(payment);
-		//System.out.println("BALANCE BEFORE ADDING new payment: " + this.balance);
-		//System.out.println("Amount to be added: " + payment.getAmount());
-		//System.out.println("percentage: " + this.percentageOfIncome);
-		//System.out.println("gg: " + this.percentageOfIncome*payment.getAmount());
 		
 		if(payment.getType().equalsIgnoreCase("expense")){
 			this.balance -= payment.getAmount();
+			this.expense += payment.getAmount();
 		}else if(payment.getType().equalsIgnoreCase("income")){
 			this.balance += this.percentageOfIncome*payment.getAmount();
 			this.income += payment.getAmount();
@@ -83,6 +83,15 @@ public class Budget {
 		return "Budget [id=" + id + ", date=" + date + ", percentageOfIncome="
 				+ percentageOfIncome + ", payments=" + payments + ", balance="
 				+ balance + "]";
+	}
+
+	
+	public double getExpense() {
+		return expense;
+	}
+
+	public void setExpense(double expense) {
+		this.expense = expense;
 	}
 
 	public void addIncome(double income){

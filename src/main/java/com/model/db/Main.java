@@ -2,7 +2,6 @@ package com.model.db;
 
 import java.time.LocalDate;
 
-import com.model.Budget;
 import com.model.Expense;
 import com.model.Income;
 import com.model.Payment;

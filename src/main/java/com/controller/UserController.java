@@ -13,5 +13,12 @@ public class UserController {
 	String logout(HttpSession session){
 		session.invalidate();
 		return "redirect:index";
-	} 
+	}
+	
+	@RequestMapping(value="/settings", method = RequestMethod.GET)
+	String settings(HttpSession session){
+		
+		return "settings";
+	}
+	
 }

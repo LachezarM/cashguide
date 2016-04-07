@@ -7,7 +7,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="home">Cashguide</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <!--<ul class="nav navbar-nav">
@@ -21,9 +21,9 @@
 				<li class="dropdown">
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">User <span class="caret"></span></a>
 				  <ul class="dropdown-menu">
-					<li><a href="userProfile"><img src="img/user.png"></img>User Profile</a></li>
+					<li><a href="home"><img src="img/user.png"></img>User Profile</a></li>
 					<li role="separator" class="divider"></li>
-					<li><a href="userProfile"><img src="img/settings.png"></img>Settings</a></li>
+				 	<li><a href="settings"><img src="img/settings.png"></img>Settings</a></li>
 					<li role="separator" class="divider"></li>
 					<li><a href="logout"><img src="img/logout.png"></img>Logout</a></li>
 				  </ul>

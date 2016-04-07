@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.jstl.core.IteratedExpression;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +17,6 @@ import com.model.Payment;
 import com.model.User;
 import com.model.db.IBudgetDAO;
 import com.model.db.IPaymentDAO;
-import com.model.db.IUserDAO;
 
 @Controller
 public class HistoryController {
