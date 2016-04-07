@@ -80,22 +80,6 @@ input.error {
 		});
 	});
 
-	//with ajax
-	/* function addSelectOptions(type){
-		$.get("/Cashguide1/getCategories", {
-			"type": type
-		}, function(result){
-			var select = document.getElementById("sel1");
-			select.innerHTML='';
-			for(i=0;i<result.length; i++){
-				var option = document.createElement("option");
-				option.text = result[i];
-				select.add(option);
-			}
-		});
-	}	 */
-
-	//without ajax: the categories are loaded during the request for add.jsp in HomePageController -> /add
 	function addSelectOptions(type) {
 		var categoryTypes = ${categories};//categories map in model from controller
 		var categories;

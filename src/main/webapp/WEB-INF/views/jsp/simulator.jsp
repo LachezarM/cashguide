@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,12 +14,40 @@
 
 <!-- Bootstrap Core CSS -->
 <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
-
+<!-- css for datepicker -->
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <style>
 body {
 	padding-top: 20px;
 	padding-bottom: 20px;
 }
+
+.ui-datepicker-calendar {
+	display:none;
+}
+
+style>table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+th, td {
+	text-align: left;
+	padding: 8px;
+}
+
+tr:nth-child(even) {
+	background-color: #f2f2f2
+}
+
+th {
+	background-color: #337ab7;
+	color: white;
+}
+
+
+
 </style>
 
 <!-- jQueryV2.2.2 -->
@@ -27,31 +55,44 @@ body {
 
 <!-- BootstrapV3.3.6 Core JavaScript -->
 <script src="js/bootstrap.min.js"></script>
-<script>
 
-/*adding hrefs to <a> in the menu, because the name of the project may differ, i.e my project name is Cashguide1*/
-/*this should be in external js file*/
-	$(document).ready(function() {
-		/* console.log(location.href);
-		console.log(location.href.split("/")); */
-	/* 	var hostname = "/" + location.href.split("/")[3];
-		var links = document.getElementById("navigation");
-		var lists = links.getElementsByTagName("li");
-		lists[1].childNodes[0].setAttribute("href", hostname + "/add");
-		lists[2].childNodes[0].setAttribute("href", hostname + "/history");
-		lists[3].childNodes[0].setAttribute("href", hostname + "/payment");
-		lists[4].childNodes[0].setAttribute("href", hostname + "/shopping");
-		lists[5].childNodes[0].setAttribute("href", hostname + "/simulator"); */
+<!-- jquery datepicker -->
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+
+<script>
+	$(function() {
+		$("#datepicker")
+				.datepicker(
+					{
+						changeMonth : true,
+						changeYear : true,
+						dateFormat : "dd-mm-yy",
+						showButtonPanel : true,
+						onClose : function() {
+							var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+							var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+							console.log(iMonth);
+							console.log(iYear);
+							$(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+						}
+					});
 	});
+	
+	
+	function selectAll(){
+		var incomes = document.getElementsByName("income");
+		var expenses = document.getElementsByName("expense");
+		$('[name="income"]').each(function(){
+			$(this).prop("checked", true);
+		});
+		
+		$('[name="expense"]').each(function(){
+			$(this).prop("checked", true);
+		});
+		
+	}
 </script>
-<!--Only chrome supports type=date, so for firefox i added this datepicker from jquery-->
-<!-- DOES NOT WORK-->
-<script>
-	/* if ( $('[type="date"]').prop('type') != 'date' ) {
-		$('[type="date"]').datepicker();
-	} */
-</script>
-
 </head>
 <body>
 	<div class="container">
@@ -73,60 +114,96 @@ body {
 
 			<div class="col-md-9">
 				<div class="panel panel-default">
-					<div class="panel-heading">History</div>
+					<div class="panel-heading">Simulator</div>
 					<div class="panel-body">
-						<div class="panel-group" id="accordion">
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion"
-											href="#collapse1"> Collapsible Group 1</a>
-									</h4>
+					<%-- <c:if test="${showBudget==null}"> --%>
+						<form  method="POST" action="getBudget">
+							Date: <input type="text" name="date" id="datepicker" class="form-control" placeholder="Date"> 
+								<input type="submit" value="show" />						
+						</form>
+					 <%-- </c:if> --%>
+					 
+					 <c:if test="${error!=null}">
+						<div class="alert alert-danger" role="alert"><c:out value="${error}"></c:out></div>
+					</c:if>
+						<c:if test="${showBudget!=null}">
+							Balance:<c:out value="${showBudget.balance}"></c:out>
+							Income:<c:out value="${showBudget.income}"></c:out>
+							<c:set var="incomes" value='${showBudget.payments.get("INCOME")}'></c:set>
+							<c:set var="expenses" value='${showBudget.payments.get("EXPENSE")}'></c:set>
+							<c:set var="incomeSize" value="${incomes.size()}"></c:set>
+							<c:set var="expensesSize" value="${expenses.size()}"></c:set>
+							<form method="POST" action="calculate" id="calculation">
+								<table>
+										<tr>
+											<th>Type</th>
+											<th>Category</th>
+											<th>Description</th>
+											<th>Amount</th>
+											<th>Select</th>
+										</tr>
+			
+										<c:forEach var="income" items="${incomes}" varStatus="loop">
+										<tr>
+											<td>${income.type }</td>
+											<td>${income.category}</td>
+											<td>${income.description}</td>
+											<td>${income.amount}</td>
+											<td><input type="checkbox" name="income" value="${loop.count-1}"></td>
+										</tr>
+										</c:forEach>
+								
+										<c:forEach var="expense" items="${expenses}" varStatus="loop">
+										<tr>
+											<td>${expense.type }</td>
+											<td>${expense.category}</td>
+											<td>${expense.description}</td>
+											<td>${expense.amount}</td>
+											<td><input type="checkbox" name="expense" value="${loop.count-1}"></td>
+										</tr>
+										</c:forEach>
+								</table>
+								<div style="margin-left:20px; margin-bottom:20px">
+								<input type="text" name="period"/>
+								<input type="submit" value="calculate" />
 								</div>
-								<div id="collapse1" class="panel-collapse collapse in">
-									<div class="panel-body">Lorem ipsum dolor sit amet,
-										consectetur adipisicing elit, sed do eiusmod tempor incididunt
-										ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-										quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-										ea commodo consequat.</div>
-								</div>
-							</div>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion"
-											href="#collapse2"> Collapsible Group 2</a>
-									</h4>
-								</div>
-								<div id="collapse2" class="panel-collapse collapse">
-									<div class="panel-body">Lorem ipsum dolor sit amet,
-										consectetur adipisicing elit, sed do eiusmod tempor incididunt
-										ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-										quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-										ea commodo consequat.</div>
-								</div>
-							</div>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion"
-											href="#collapse3"> Collapsible Group 3</a>
-									</h4>
-								</div>
-								<div id="collapse3" class="panel-collapse collapse">
-									<div class="panel-body">Lorem ipsum dolor sit amet,
-										consectetur adipisicing elit, sed do eiusmod tempor incididunt
-										ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-										quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-										ea commodo consequat.</div>
-								</div>
-							</div>
-						</div>
+							</form>
+							</c:if>
+							<c:if test="${result!=nul}">
+							<c:choose>
+								<c:when test="${positiveSaving}">
+									<div class="alert alert-success" role="alert" ><c:out value="${result}"></c:out></div>
+								</c:when>
+								<c:otherwise>
+									<div class="alert alert-danger" role="alert"><c:out value="${result}"></c:out></div>
+								</c:otherwise>
+							</c:choose>
+							</c:if>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	
+	<script>
+	$('#calculation').submit(function () {
+
+		//get period value
+	    var period = $.trim($('[name="period"]').val());
+
+	    // Check if empty
+	    if (period  === ''){
+	    	$('[name="period"]').val("empty");
+	    	return false;
+	    }
+	    if(!$.isNumeric(period)) {
+	    	$('[name="period"]').val("number");
+	    	return false;
+	    }
+	});
+	
+	</script>
+	
 	<!-- /container -->
 </body>
 </html>

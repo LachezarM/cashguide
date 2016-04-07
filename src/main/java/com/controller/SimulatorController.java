@@ -55,9 +55,13 @@ public class SimulatorController {
 	}
 
 	@RequestMapping(value="/calculate", method=RequestMethod.POST)
-	String calculate(@RequestParam("period") double period, HttpServletRequest request, HttpSession session, Model model){
+	String calculate(@RequestParam("period") int period, HttpServletRequest request, HttpSession session, Model model){
+		
+		if(period<0){
+			model.addAttribute("error", "period must be positive");
+			return "simulator";
+		}
 		Budget budget = (Budget)(session.getAttribute("budget"));
-		//Budget budget = (Budget)(model.asMap().get("budget"));
 		
 		String[] incomesID = request.getParameterValues("income");
 		String[] expensesID = request.getParameterValues("expense");
@@ -81,8 +85,13 @@ public class SimulatorController {
 		}	
 		
 		balance = balance*period;
-		model.addAttribute("result", balance);
+		LocalDate startDate = budget.getDate();
+		LocalDate endDate = budget.getDate().plusMonths(period);
+		String result = "If you spend like you spent in "+ startDate.getMonth() + " " + startDate.getYear()+" after " + period +" months "
+				+"in " + endDate.getMonth() +" "+ endDate.getYear()+" you will have " + balance;
+		model.addAttribute("result", result);
 		model.addAttribute("showBudget",budget);
+		model.addAttribute("positiveSaving", balance>0);
 		return "simulator";
 	}
 	

@@ -22,7 +22,6 @@ body {
 	padding-bottom: 20px;
 }
 
-<
 style>table {
 	border-collapse: collapse;
 	width: 100%;
@@ -83,29 +82,6 @@ label {
 
 <!-- BootstrapV3.3.6 Core JavaScript -->
 <script src="js/bootstrap.min.js"></script>
-<script>
-	/*adding hrefs to <a> in the menu, because the name of the project may differ, i.e my project name is Cashguide1*/
-	/*this should be in external js file*/
-	$(document).ready(function() {
-		/* console.log(location.href);
-		console.log(location.href.split("/")); */
-		/* 	var hostname = "/" + location.href.split("/")[3];
-			var links = document.getElementById("navigation");
-			var lists = links.getElementsByTagName("li");
-			lists[1].childNodes[0].setAttribute("href", hostname + "/add");
-			lists[2].childNodes[0].setAttribute("href", hostname + "/history");
-			lists[3].childNodes[0].setAttribute("href", hostname + "/payment");
-			lists[4].childNodes[0].setAttribute("href", hostname + "/shopping");
-			lists[5].childNodes[0].setAttribute("href", hostname + "/simulator"); */
-	});
-</script>
-<!--Only chrome supports type=date, so for firefox i added this datepicker from jquery-->
-<!-- DOES NOT WORK-->
-<script>
-	/* if ( $('[type="date"]').prop('type') != 'date' ) {
-		$('[type="date"]').datepicker();
-	} */
-</script>
 </head>
 <body>
 
@@ -142,9 +118,7 @@ label {
 							</div>
 							</form>
 						<form action="showOnlyTypes" method="GET" >
-							<input checked="checked" type="radio" name="Show" id="rd1"
-								value="All" ${param.Show == 'ALL' ? 'checked' : ''}
-								onChange='this.form.submit();'/>
+							<input checked="checked" type="radio" name="Show" id="rd1" value="All" ${param.Show == 'ALL' ? 'checked' : ''} onChange='this.form.submit();'/>
 								 <label for="rd1">Show All</label><br /> 
 								<input  type="radio" name="Show" id="rd2"
 								value="EXPENSE" ${param.Show == 'EXPENSE' ? 'checked' : ''}

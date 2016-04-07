@@ -89,6 +89,7 @@ public class HomePageController {
 		obj.add("INCOMES", arrIncomes);
 		obj.add("EXPENSES", arrExpenses);
 		m.addAttribute("paymentsCurrMonth", obj);
+		System.out.println(obj.toString());
 		return 	"info";	
 	}
 	
