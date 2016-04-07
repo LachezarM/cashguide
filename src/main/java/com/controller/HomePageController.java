@@ -2,12 +2,16 @@ package com.controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import javax.naming.directory.InvalidAttributesException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.swing.JScrollBar;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.model.Payment;
 import com.model.User;
 import com.model.db.DBBudgetDAO;
@@ -64,13 +70,86 @@ public class HomePageController {
 			Model m) {
 		User u = (User) s.getAttribute("logedUser");
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
-		int currMonth = LocalDate.now().getMonth().getValue();
-		for(Iterator<Payment> itt = payments.iterator();itt.hasNext();) {
-			Payment p = itt.next();
-			if(p.getDate().getMonth().getValue() != currMonth)
-				itt.remove();
+		List<Payment> currMonthPayments = getCurrMonthPayments(payments);
+		JsonObject currMonthPaymentsJson = getPaymentsAsJson(currMonthPayments);
+		Map<String, List<Payment>> lastYearMonthlyAmounts = getLastYearPayments(payments);
+		JsonObject lastYearMonthlyExpensesJson = getAmountsAsJson(lastYearMonthlyAmounts,"Expense");
+		JsonObject lastYearMonthlyIncomesJson = getAmountsAsJson(lastYearMonthlyAmounts, "Income");
+		m.addAttribute("paymentsCurrMonth", currMonthPaymentsJson);
+		m.addAttribute("lastYearMonthlyExpenses",lastYearMonthlyExpensesJson);
+		m.addAttribute("lastYearMonthlyIncomes",lastYearMonthlyIncomesJson);
+		return 	"info";	
+	}
+	
+	private JsonObject getAmountsAsJson(Map<String, List<Payment>> lastYearMonthlyAmounts,String type) {
+		JsonObject result = new JsonObject();
+		for(Entry<String, List<Payment>> entry : lastYearMonthlyAmounts.entrySet()) {
+			double amoutForThisMonth = 0;
+			for(Payment p : entry.getValue()) {
+				if(p.getType().equalsIgnoreCase(type))
+					amoutForThisMonth += p.getAmount();
+			} 
+			JsonPrimitive pr = new JsonPrimitive(amoutForThisMonth);
+			result.add(entry.getKey(), pr);
 		}
-		//payments has now only payments in currMonth
+		return result;
+	}
+	
+
+	private Map<String, List<Payment>> getLastYearPayments(List<Payment> payments) {
+		Map<String, List<Payment>> result = new HashMap<String, List<Payment>>();
+		List<Payment> lastYearPayments = new ArrayList<Payment>();
+		lastYearPayments.addAll(payments);
+		LocalDate now = LocalDate.now();
+		LocalDate yearLater = now.minusYears(1);
+		System.out.println(now + " " + yearLater );
+		for(Iterator<Payment>  itt = lastYearPayments.iterator();itt.hasNext();) {
+			Payment p = itt.next();
+			if(
+					(now.getYear() == p.getDate().getYear() && now.getMonthValue() >= p.getDate().getMonthValue()) ||
+					(yearLater.getYear() == p.getDate().getYear() && yearLater.getMonthValue() <= p.getDate().getMonthValue())
+			  ) {
+				String month = null;
+				try {
+					month = getMonthByInt(p.getDate().getMonthValue());
+				} catch (InvalidAttributesException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(result.containsKey(month)) {
+					result.get(month).add(p);
+				} else {
+					result.put(month, new ArrayList<Payment>());
+					result.get(month).add(p);
+				}
+				
+			} else {
+				//invalid
+				itt.remove();
+			}
+		}
+		return result;
+	}
+
+	private String getMonthByInt(int monthValue) throws InvalidAttributesException {
+		switch(monthValue){
+		case 1: return "January";
+		case 2: return "February";
+		case 3: return "March";
+		case 4: return "April";
+		case 5: return "May";
+		case 6: return "June";
+		case 7: return "July";
+		case 8: return "August";
+		case 9: return "September";
+		case 10: return "Octomber";
+		case 11: return "November";
+		case 12: return "December";
+		default: throw new InvalidAttributesException("Invalid date number in getLastYearPayments");
+		}
+	}
+
+	private JsonObject getPaymentsAsJson(List<Payment> payments) {
 		JsonObject obj = new JsonObject();
 		JsonArray arrIncomes = new JsonArray();
 		JsonArray arrExpenses = new JsonArray();
@@ -86,11 +165,21 @@ public class HomePageController {
 		}
 		obj.add("INCOMES", arrIncomes);
 		obj.add("EXPENSES", arrExpenses);
-		m.addAttribute("paymentsCurrMonth", obj);
-		System.out.println(obj.toString());
-		return 	"info";	
+		return obj;
 	}
-	
+
+	private List<Payment> getCurrMonthPayments(List<Payment> payments) {
+		List<Payment> currMonthPayments = new ArrayList();
+		currMonthPayments.addAll(payments);
+		int currMonth = LocalDate.now().getMonth().getValue();
+		for(Iterator<Payment> itt = currMonthPayments.iterator();itt.hasNext();) {
+			Payment p = itt.next();
+			if(p.getDate().getMonth().getValue() != currMonth)
+				itt.remove();
+		}
+		return currMonthPayments;
+	}
+
 	@RequestMapping(value="/shopping" , method = RequestMethod.GET)
 	String shopingList(HttpServletResponse r) {
 		System.out.println("priema se zaqvka");

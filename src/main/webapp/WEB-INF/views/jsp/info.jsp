@@ -47,7 +47,7 @@
 
 #chartPayments {
 	position: relative;
-	left: 400px;
+	left: 350px;
 	top: 0px;
 }
 
@@ -130,36 +130,76 @@ body {
 <script>
 	function showPayments(type) {
 		var paymentsByType = ${paymentsCurrMonth};
-		
-		if (type == "INCOMES")
-			var payments = paymentsByType["INCOMES"];
-		else
-			var payments = paymentsByType["EXPENSES"];
-		var pieData;
-		var pieOptions = {
-			showTooltips : true,
-
-			animationEasing : "easeInOutQuart",
-			animationSteps : 70,
-			percentageInnerCutout : 0,
-			segmentShowStroke : false,
-			animateScale : true
-		};
-		var chartPayments = document.getElementById("chartPayments")
-				.getContext("2d");
-		var myChart = new Chart(chartPayments).Pie(pieData, pieOptions);
-
-		for (i = 0; i < payments.length; i++) {
-			var dataSet = {
-				value : payments[i]["amount"],
-				color : Colors.random(),
-				label : payments[i]["category"]
-			};
-			myChart.addData(dataSet);
+		var incomesYear = ${lastYearMonthlyIncomes};
+		var expensesYear = ${lastYearMonthlyExpenses}
+		if (type == "INCOMES" || type == "EXPENSES"){
+			var payments = paymentsByType[type];
+			createPieChart(payments);
 		}
+		else {
+			if(type == "YEARSINCOMES")
+				createLineChart(incomesYear);
+			else 
+				createLineChart(expensesYear);
+		}s
+		
 	}
 </script>
 <script>
+
+var myPieChart = null;
+function createPieChart(payments) {
+	var pieData;
+	var pieOptions = {
+		showTooltips : true,
+		animationEasing : "easeInOutQuart",
+		animationSteps : 70,
+		percentageInnerCutout : 0,
+		segmentShowStroke : false,
+		animateScale : true
+	};
+	if(myPieChart != null) {
+		myPieChart.destroy();
+	}
+	var ctx = document.getElementById("chartPayments")
+			.getContext("2d");
+	myPieChart = new Chart(ctx).Pie(pieData, pieOptions);
+
+	for (i = 0; i < payments.length; i++) {
+		var dataSet = {
+			value : payments[i]["amount"],
+			color : Colors.random(),
+			label : payments[i]["category"]
+		};
+		myPieChart.addData(dataSet);
+	}
+}
+</script>
+<script>
+var myLineChart = null;
+function createLineChart(payments) {
+	var lineData;
+	var lineOptions = {
+		scaleShowGridLines : true,
+	};
+	if(myLineChart != null) {
+		myLineChart.destroy();	
+	}
+	var ctx = document.getElementById("chartPayments")
+	.getContext("2d");
+	myLineChart = new Chart(ctx).Line(lineData, lineOptions);
+	for (i = 0; i < payments.length; i++) {
+		var dataSet = {
+			value : payments[i]["amount"],
+			color : Colors.random(),
+			label : payments[i]["category"]
+		};
+		myPieChart.addData(dataSet);
+	}
+}
+</script>
+<script>
+
 	/*adding hrefs to <a> in the menu, because the name of the project may differ, i.e my project name is Cashguide1*/
 	/*this should be in external js file*/
 	$(document).ready(function() {
@@ -207,8 +247,11 @@ body {
 					<div class="panel-heading">Charts</div>
 					<div class="panel-body">
 							<select id="typeChart" name="typeChart" onchange="showPayments(value);">
+								<option selected="selected" >Choose</option>
 								<option  value="EXPENSES">Expenses</option>
-								<option  value="INCOMES">Incomes</option>
+								<option   value="INCOMES">Incomes</option>
+								<option value="YEARSEXPENSES">YearBackExpenses</option>
+								<option value="YEARSINCOMES">YearBackIncomes</option>
 						</select>
 						<canvas id="chartPayments" width="300" height="300"></canvas>
 						
