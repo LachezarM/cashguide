@@ -125,17 +125,7 @@ public class AddController {
 	}
 
 	
-	@RequestMapping(value="/deleteCategory", method = RequestMethod.POST)
-	public String deleteCategoryPost(@RequestParam(value="category") String category, HttpSession session, Model model) {
-			int id = ((User) session.getAttribute("logedUser")).getId();
-			DBPaymentDAO.getInstance().deleteCategory(category, id);
-			ArrayList<String> categories = DBBudgetDAO.getInstance().getCustomCategories(id);
-			model.addAttribute("panel", "delete-category");
-			System.out.println(model.toString());
-			model.addAttribute("customCategories", categories);
-			model.addAttribute("successDeletingCategory", "category was successfully deleted");
-			return "add";
-	}
+	
 
 	
 	

@@ -18,7 +18,6 @@ import com.model.User;
 import com.model.db.IBudgetDAO;
 import com.model.db.IPaymentDAO;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 
 @Controller
 public class HistoryController {
@@ -41,7 +40,7 @@ public class HistoryController {
 	
 	private List<String> generateCategoriesByType(String choise, Map<String, ArrayList<String>> result,
 			List<Payment> payments) {
-		List<String> categories = new ArrayList();
+		List<String> categories = new ArrayList<String>();
 		if(choise.equalsIgnoreCase("ALL")) {
 			categories.addAll(result.get("EXPENSE"));
 			categories.addAll(result.get("INCOME"));

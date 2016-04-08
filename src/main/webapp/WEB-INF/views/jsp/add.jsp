@@ -78,15 +78,41 @@ input.error {
 
 <script>
 	$(document).ready(function() {
+		setActiiveTab();
+		addSelectOptions("Income");
+	});
+
+	function setActiiveTab(){
 		$('.nav-tabs li').removeClass('active');
 		$('.tab-pane').removeClass('active in');
 		var tab = '${panel}';
 		console.log(tab);
 		$('#'+tab).addClass('active in');
 		console.log('ggg');			
-		addSelectOptions("Income");
-	});
+	}
+	
+	function addSelectOptions(type) {
+		var categoryTypes = ${categories};//categories map in model from controller
+		var categories;
+		if (type == 'Income') {
+			categories = categoryTypes["INCOME"];
+		} else if (type == 'Expense') {
+			categories = categoryTypes["EXPENSE"];
+		}
 
+		var select = document.getElementById("sel1");
+		select.innerHTML = '';
+
+		for (i = 0; i < categories.length; i++) {
+			var option = document.createElement("option");
+			option.text = categories[i];
+			option.setAttribute("value", categories[i]);
+			option.setAttribute("style", "border-right: 1px solid #A9A9A9");
+			select.add(option);
+			console.log(option);
+		}
+	}
+	
 	$(function() {
 		$("#datepicker").datepicker({
 			dateFormat : "dd-mm-yy",
@@ -110,27 +136,10 @@ input.error {
 						}
 					});
 	});
-	function addSelectOptions(type) {
-		var categoryTypes = ${categories};//categories map in model from controller
-		var categories;
-		if (type == 'Income') {
-			categories = categoryTypes["INCOME"];
-		} else if (type == 'Expense') {
-			categories = categoryTypes["EXPENSE"];
-		}
-
-		var select = document.getElementById("sel1");
-		select.innerHTML = '';
-
-		for (i = 0; i < categories.length; i++) {
-			var option = document.createElement("option");
-			option.text = categories[i];
-			option.setAttribute("value", categories[i]);
-			option.setAttribute("style", "border-right: 1px solid #A9A9A9");
-			select.add(option);
-			console.log(option);
-		}
-	}
+	
+	
+	
+	
 
 	//form validation -> javascript
 	$(function() {
@@ -328,34 +337,6 @@ input.error {
 							</div>
 							
 							<%-- <div id="delete-category" class="tab-pane fade">
-								<div class="row" id="delete-category-form">
-									<div class="col-md-6" style="margin-top:8px">
-										<!--New category-->
-										<h1 style="margin-left: 20px; margin-bottom: 20px;">Delete Category</h1>
-										
-										<c:if test="${successDeletingCategory!=null}">
-											<div class="alert alert-success" role="alert">
-												${successDeletingCategory}
-											</div>
-										</c:if>
-										<c:if test="${errorCategory!=null}">
-											<div class="alert alert-danger" role="alert">
-												${errorCategory}
-											</div>
-										</c:if>
-										
-										<form method="POST" action="deleteCategory">
-											<select name="category">
-												<c:forEach var="category" items="${customCategories}">
-													<option><c:out value="${category}"></c:out></option>
-												</c:forEach>
-											</select>	
-											<input type="submit" value="delete">
-										</form>
-										
-									</div>
-								</div>
-							</div>
 							
 							
 							<div id="delete-payment" class="tab-pane fade">
