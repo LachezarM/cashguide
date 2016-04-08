@@ -177,25 +177,46 @@ function createPieChart(payments) {
 </script>
 <script>
 var myLineChart = null;
-function createLineChart(payments) {
-	var lineData;
-	var lineOptions = {
-		scaleShowGridLines : true,
-	};
+function createLineChart(payments) { 
+	var data =  {
+			labels: generateLabels(payments),
+			datasets:[
+			  {
+				  fillColor : "rgba(95,137,250,0.5)",
+                  strokeColor : "rgba(95,137,250,0.9)",
+                  highlightFill: "rgba(95,137,250,0.75)",
+                  highlightStroke: "rgba(95,137,250,1)",
+                  data : generateData(payments)
+			  }        
+			         ]
+	}
 	if(myLineChart != null) {
-		myLineChart.destroy();	
+		myLineChart.destroy();
+	}
+	if(myPieChart != null) {
+		myPieChart.destroy();
 	}
 	var ctx = document.getElementById("chartPayments")
 	.getContext("2d");
-	myLineChart = new Chart(ctx).Line(lineData, lineOptions);
-	for (i = 0; i < payments.length; i++) {
-		var dataSet = {
-			value : payments[i]["amount"],
-			color : Colors.random(),
-			label : payments[i]["category"]
-		};
-		myPieChart.addData(dataSet);
+	myLineChart = new Chart(ctx).Line(data);
+	
+}
+</script>
+<script>
+function generateLabels(payments) {
+		var labels = Object.keys(payments);
+		return labels;
+}
+
+</script>
+<script>
+function generateData(payments) {
+	var data = [];	
+	for(key in payments){
+		data.push(payments[key]);
 	}
+	return data;
+	
 }
 </script>
 <script>
