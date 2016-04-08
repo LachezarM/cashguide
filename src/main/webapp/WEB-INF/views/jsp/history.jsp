@@ -110,7 +110,7 @@ label {
 							<div class='select_style'>
 								<label for="categories"> Categories:</label>
 								<select id="categories" name="categories" onChange='this.form.submit();'>
-										<option value="All">All</option>
+										<option selected="selected" value="All" >All</option>
 								<c:forEach  var="categories" items="${currCategories }">
 										<option  value="${categories}" >${categories}</option>							
 								</c:forEach>

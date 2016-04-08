@@ -18,21 +18,33 @@ import com.model.User;
 import com.model.db.IBudgetDAO;
 import com.model.db.IPaymentDAO;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
+
 @Controller
 public class HistoryController {
-	
+	String showGlobal = "All";
+	String categoriesGlobal = null;
 	@RequestMapping(value="/showOnlyTypes", method = RequestMethod.GET)
-	String showOnly(@RequestParam(value = "Show") String choise,HttpSession s,Model m) {
+	String showOnly(@RequestParam(value = "Show") String choise,HttpSession s,
+			Model m) {
 		User user = (User)s.getAttribute("logedUser");
 		Map<String, ArrayList<String>> result = IBudgetDAO.getInstance().getAllCategories(user.getId());
-		List<String> categories = new ArrayList<String>();
-		User u = (User) s.getAttribute("logedUser");
-		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
+		showGlobal = choise;
+		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(user.getId());
+		List<String> categories = generateCategoriesByType(choise,result,payments);
+		//generates categories by type and modyfies payments to be only (all,expense or income)
+		m.addAttribute("currPayments", payments);
+		m.addAttribute("currCategories",categories);
+		s.setAttribute("currCategoriesSession", categories);
+		return "history";
+	}
+	
+	private List<String> generateCategoriesByType(String choise, Map<String, ArrayList<String>> result,
+			List<Payment> payments) {
+		List<String> categories = new ArrayList();
 		if(choise.equalsIgnoreCase("ALL")) {
 			categories.addAll(result.get("EXPENSE"));
 			categories.addAll(result.get("INCOME"));
-			m.addAttribute("currPayments", payments);
-			m.addAttribute("currCategories",categories);
 		}else if(choise.equalsIgnoreCase("EXPENSE")) {
 			for(Iterator<Payment> itt = payments.iterator();itt.hasNext();) {
 				Payment p = itt.next();
@@ -40,32 +52,30 @@ public class HistoryController {
 					itt.remove();
 			}
 			categories.addAll(result.get("EXPENSE"));
-			m.addAttribute("currPayments", payments);
-			m.addAttribute("currCategories",categories);
-
-		}else if(choise.equalsIgnoreCase("INCOME")) {
+		}
+		else if(choise.equalsIgnoreCase("INCOME")) {
 			for(Iterator<Payment> itt = payments.iterator();itt.hasNext();) {
 				Payment p = itt.next();
 				if(p.getType().equalsIgnoreCase("EXPENSE"))
 					itt.remove();
 			}
 			categories.addAll(result.get("INCOME"));
-			m.addAttribute("currPayments", payments);
-			m.addAttribute("currCategories",categories);
-		}
-		return "history";
 	}
+		return categories;
+	}
+
 	@RequestMapping(value="/showOnlyCategories",method=RequestMethod.GET)
 	String showOnlyCategories(@RequestParam(value = "categories") String choise,
 			HttpSession s,
 			Model m) {
-		User u = (User) s.getAttribute("logedUser");
+		User u = (User) s.getAttribute("logedUser"); 
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
 		for(Iterator<Payment> itt = payments.iterator();itt.hasNext();){
 			Payment p = itt.next();
 			if(!p.getCategory().equalsIgnoreCase(choise))
 				itt.remove();
 		}
+		m.addAttribute("currCategories",s.getAttribute("currCategoriesSession"));
 		m.addAttribute("currPayments",payments);
 		return "history";
 	}

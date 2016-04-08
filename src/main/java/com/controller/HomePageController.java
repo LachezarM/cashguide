@@ -50,11 +50,10 @@ public class HomePageController {
 	@RequestMapping(value="/history" , method = RequestMethod.GET)
 	String showHistory(HttpSession s,
 			Model m) {
-		//System.out.println("priema se zaqvka");
+		//System.out.println("priema se zaqvka");	
 		User u = (User) s.getAttribute("logedUser");
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
 		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(u.getId());
-		System.out.println(result.toString());
 		List<String> categories = new ArrayList<String>();
 		categories.addAll(result.get("EXPENSE"));
 		categories.addAll(result.get("INCOME"));
