@@ -35,7 +35,6 @@ public class UserProfileController {
 		s.removeAttribute("changeUsername");
 		s.removeAttribute("addBalance");
 		s.removeAttribute("changeBudgetPercentage");
-		s.removeAttribute("deleteCategory");
 		s.setAttribute("changePassword", true);
 		return "UserProfile";
 	}
@@ -46,7 +45,6 @@ public class UserProfileController {
 		s.removeAttribute("changePassword");
 		s.removeAttribute("changeUsername");
 		s.removeAttribute("changeBudgetPercentage");
-		s.removeAttribute("deleteCategory");
 		s.setAttribute("addBalance", true);
 		return "UserProfile";
 	}
@@ -57,13 +55,12 @@ public class UserProfileController {
 		s.removeAttribute("changePassword");
 		s.removeAttribute("addBalance");
 		s.removeAttribute("changeUsername");
-		s.removeAttribute("deleteCategory");
 		s.setAttribute("changeBudgetPercentage", true);
 		
 		return "UserProfile";
 	}
 	
-	@RequestMapping(value = "/deleteCategory" , method = RequestMethod.GET)
+	/*@RequestMapping(value = "/deleteCategory" , method = RequestMethod.GET)
 	String deleteCategory(HttpSession s, Model m){
 		s.removeAttribute("changePassword");
 		s.removeAttribute("addBalance");
@@ -79,13 +76,12 @@ public class UserProfileController {
 		m.addAttribute("categories", categories);
 		return "UserProfile";
 	}
-	
+	*/
 	@RequestMapping(value = "/back" , method = RequestMethod.GET)
 	String back(HttpSession s) {
 		s.removeAttribute("changePassword");
 		s.removeAttribute("changeUsername");
 		s.removeAttribute("addBalance");
-		s.removeAttribute("deleteCategory");
 		return "home";
 	}
 	
@@ -149,18 +145,6 @@ public class UserProfileController {
 	}
 	
 	
-	@RequestMapping(value="/deleteCategory", method = RequestMethod.POST)
-	String deleteCategoryPost(@RequestParam(value="category") String category, HttpSession s, Model m) {
-			int id = ((User) s.getAttribute("logedUser")).getId();
-			System.out.println("category: " + category);
-			System.out.println(m.containsAttribute("categories"));
-			DBPaymentDAO.getInstance().deleteCategory(category, id);
-			
-			ArrayList<String> categories = DBBudgetDAO.getInstance().getCustomCategories(id);		
-			m.addAttribute("categories", categories);
-			
-			return "UserProfile";
-	}
-
+	
 	
 }
