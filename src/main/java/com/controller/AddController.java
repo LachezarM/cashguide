@@ -107,7 +107,7 @@ public class AddController {
 			model.addAttribute("errorCategory", "Category is empty");
 		}else{
 			DBPaymentDAO.getInstance().addNewCategory(customCategory, paymentType, user);
-			Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(user.getId());
+/*			Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(user.getId());
 			JsonObject object = new JsonObject();
 			for(String type:result.keySet()){
 				JsonArray categories = new JsonArray();
@@ -116,7 +116,10 @@ public class AddController {
 				}
 				object.add(type, categories);
 			}
-			model.addAttribute("categories", object);
+*/			
+			JsonObject object = DBPaymentDAO.getInstance().getCategoriesJSON(user.getId());
+			//model.addAttribute("categories", object);
+			session.setAttribute("categories", object);
 			model.addAttribute("successCategory", "category was added");
 		}
 		model.addAttribute("panel", "add-category");

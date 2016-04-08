@@ -23,6 +23,7 @@ import com.google.gson.JsonPrimitive;
 import com.model.Payment;
 import com.model.User;
 import com.model.db.DBBudgetDAO;
+import com.model.db.DBPaymentDAO;
 import com.model.db.IPaymentDAO;
 
 @Controller
@@ -31,7 +32,7 @@ public class HomePageController {
 	@RequestMapping(value="/add" , method = RequestMethod.GET)
 	String add(HttpServletResponse r, Model model, HttpSession session) {
 		User user = (User)session.getAttribute("logedUser");
-		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(user.getId());
+		/*Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(user.getId());
 		JsonObject object = new JsonObject();
 		for(String type:result.keySet()){
 			JsonArray categories = new JsonArray();
@@ -39,15 +40,20 @@ public class HomePageController {
 				categories.add(category);
 			}
 			object.add(type, categories);
-		}
+		}*/
 		
-		ArrayList<String> categories = DBBudgetDAO.getInstance().getCustomCategories(user.getId());
+		JsonObject object = DBPaymentDAO.getInstance().getCategoriesJSON(user.getId());
+		
+		//ArrayList<String> categories = DBBudgetDAO.getInstance().getCustomCategories(user.getId());
 		
 		model.addAttribute("panel", "payment");
 		model.addAttribute("categories", object);
-		model.addAttribute("customCategories", categories);
+		//model.addAttribute("customCategories", categories);
+		session.setAttribute("categories", object);
 		return 	"add";	
 	}
+	
+	
 	
 	@RequestMapping(value="/history" , method = RequestMethod.GET)
 	String showHistory(HttpSession s,

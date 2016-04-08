@@ -78,21 +78,22 @@ input.error {
 
 <script>
 	$(document).ready(function() {
-		setActiiveTab();
+		setActiveTab();
 		addSelectOptions("Income");
 	});
 
-	function setActiiveTab(){
+	function setActiveTab(){
 		$('.nav-tabs li').removeClass('active');
 		$('.tab-pane').removeClass('active in');
-		var tab = '${panel}';
+		var tab = '${panel}'
 		console.log(tab);
 		$('#'+tab).addClass('active in');
 		console.log('ggg');			
 	}
 	
 	function addSelectOptions(type) {
-		var categoryTypes = ${categories};//categories map in model from controller
+		var categoryTypes = ${categories}//categories map in model from controller
+		console.log(categoryTypes)
 		var categories;
 		if (type == 'Income') {
 			categories = categoryTypes["INCOME"];

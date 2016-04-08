@@ -198,7 +198,7 @@ input.error {
 	$(function() {
 		$("#datepicker").datepicker({
 			dateFormat : "dd-mm-yy",
-			appendText : "(dd-mm-yyyy)"
+			appendText : "(1-mm-yyyy)"
 		});
 	});
 	$(function() {
@@ -360,48 +360,48 @@ input.error {
 									
 									
 									<c:if test="${panel=='deletePayment'}">
-										<form  method="POST" action="getBudgetForDeleting">
+										<form  method="POST" action="getBudgetDel">
 											Date: <input type="text" name="date" id="datepickerMonth" class="form-control" placeholder="Date"> 
 												<input type="submit" value="show" />						
 										</form>
-										<form method="POST" action="deletePayment" id="calculation">
-											<table>
-												<tr>
-													<th>Type</th>
-													<th>Category</th>
-													<th>Description</th>
-													<th>Amount</th>
-													<th>Date</th>
-													<th>Select</th>
-												</tr>
-					
-												<c:forEach var="income" items="${incomes}" varStatus="loop">
-												<tr>
-													<td>${income.type }</td>
-													<td>${income.category}</td>
-													<td>${income.description}</td>
-													<td>${income.amount}</td>
-													<td>${income.date}</td>
-													<td><input type="checkbox" name="income" value="${loop.count-1}"></td>
-												</tr>
-												</c:forEach>
-										
-												<c:forEach var="expense" items="${expenses}" varStatus="loop">
-												<tr>
-													<td>${expense.type }</td>
-													<td>${expense.category}</td>
-													<td>${expense.description}</td>
-													<td>${expense.amount}</td>
-													<td>${expense.date}</td>
-													<td><input type="checkbox" name="expense" value="${loop.count-1}"></td>
-												</tr>
-												</c:forEach>
-											</table>
-											<input type="submit" value="delete" />
-										</form>
-										
-										
-										
+										<c:if test="${month!=null}">
+											<c:set var="incomes" value='${delBudget.payments.get("INCOME")}'></c:set>
+											<c:set var="expenses" value='${delBudget.payments.get("EXPENSE")}'></c:set>
+											<form method="POST" action="deletePayment">
+												<input type="hidden" value="${delBudget.id}" name="budgetId"/>
+												<table>
+													<tr>
+														<th>Type</th>
+														<th>Category</th>
+														<th>Description</th>
+														<th>Amount</th>
+														<th>Select</th>
+													</tr>
+						
+													<c:forEach var="income" items="${incomes}" varStatus="loop">
+													<tr>
+														<td>${income.type}</td>
+														<td>${income.category}</td>
+														<td>${income.description}</td>
+														<td>${income.amount}</td>
+														<td><input type="checkbox" name="income" value="${loop.count-1}"></td>
+													</tr>
+													</c:forEach>
+											
+													<c:forEach var="expense" items="${expenses}" varStatus="loop">
+													<tr>
+														<td>${expense.type }</td>
+														<td>${expense.category}</td>
+														<td>${expense.description}</td>
+														<td>${expense.amount}</td>
+														<td><input type="checkbox" name="expense" value="${loop.count-1}"></td>
+													</tr>
+													</c:forEach>
+												</table>
+												
+												<input type="submit" value="delete" />
+											</form>
+										</c:if>
 									</c:if>
 									
 									
