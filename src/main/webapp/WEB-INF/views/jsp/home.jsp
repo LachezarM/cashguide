@@ -55,28 +55,42 @@
 							<div class="user">
 								<h1>Hello, ${logedUser.username}</h1>
 								<!-- <p>You can change your default budget percentage for current month <a href="changeBudgetPercentage">here.</a></p>-->
-							</div>					
+							</div>
+							<!-- INIT -->			
+							<c:choose>
+								<c:when test="${logedUser.budget.expense==0&&logedUser.budget.income==0}">
+									<c:set var="expensePercent" value="0"></c:set>
+									<c:set var="remainingPercent" value="0"></c:set>
+									<c:set var="budgetPercent" value="0"></c:set>
+								</c:when>
+								<c:otherwise>
+									<c:set var="expensePercent" value="${(logedUser.budget.expense/logedUser.budget.income)*100}"></c:set>
+									<%-- <c:set var="incomePercent" value="${(logedUser.budget.income/logedUser.budget.income)*100}"></c:set> --%>
+									<c:set var="remainingPercent" value="${100-expensePercent}"></c:set> 
+									<c:set var="budgetPercent" value="${logedUser.budget.percentageOfIncome*100}"></c:set>
+								</c:otherwise>
+							
+							</c:choose>
 							
 							
-							
-							<c:set var="expensePercent" value="${(logedUser.budget.expense/logedUser.budget.income)*100}"></c:set>
-							<c:set var="incomePercent" value="${(logedUser.budget.income/logedUser.budget.income)*100}"></c:set>
-							<c:set var="remainingPercent" value="${100-expensePercent}"></c:set> 
-							<c:set var="budgetPercent" value="${logedUser.budget.percentageOfIncome*100}"></c:set>
-							
-							TOTAL INCOME
+							TOTAL INCOME${expensePercent}| ${remainingPercent}
 							<div class="progress" style="height:40px; font-size: 20px; margin-top: 10px; margin-bottom: 100px;" >	
-								<div id="expense" class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" 
-		  						aria-valuenow="${expensePercent}" aria-valuemin="0" aria-valuemax="100" 
-		  						style="width: ${expensePercent}%">
-		  							<span style="font-size: 20px;"><fmt:formatNumber value="${expensePercent}" type="number" maxFractionDigits="1"></fmt:formatNumber>% expenses</span>
-		  						</div>
-
-		  						<div id="remaining"class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" 
-		  						aria-valuenow="${remainingPercent}" aria-valuemin="0" aria-valuemax="100" 
-		  						style="width: ${remainingPercent}%">
-		  							<span style="font-size: 20px;"><fmt:formatNumber value="${remainingPercent}" type="number" maxFractionDigits="1"></fmt:formatNumber>% remaining</span>
-		  						</div>
+								
+								<c:if test="${expensePercent>0&&expensePercent<=100}">
+									<div id="expense" class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" 
+			  						aria-valuenow="${expensePercent}" aria-valuemin="0" aria-valuemax="100" 
+			  						style="width: ${expensePercent}%">
+			  							<span style="font-size: 20px;"><fmt:formatNumber value="${expensePercent}" type="number" maxFractionDigits="1"></fmt:formatNumber>% expenses</span>
+			  						</div>
+								</c:if>
+								
+								<c:if test="${remainingPercent>0&&remainingPercent<=100}">
+			  						<div id="remaining"class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" 
+			  						aria-valuenow="${remainingPercent}" aria-valuemin="0" aria-valuemax="100" 
+			  						style="width: ${remainingPercent}%">
+			  							<span style="font-size: 20px;"><fmt:formatNumber value="${remainingPercent}" type="number" maxFractionDigits="1"></fmt:formatNumber>% remaining</span>
+			  						</div>
+		  						</c:if>
 		  						<c:if test="${budgetPercent>0&&budgetPercent<100}">
 			  						<div style="width: 2px; height: 100px; padding-top: 0px; margin-left: 5px; position:absolute; background: black; left: ${budgetPercent}%;">
 			  							  <div style="padding-top: 40px; margin-left:5px;">Budget: ${budgetPercent}%</div>

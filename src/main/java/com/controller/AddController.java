@@ -3,8 +3,6 @@ package com.controller;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -14,14 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.model.Expense;
 import com.model.Income;
 import com.model.Payment;
 import com.model.User;
 import com.model.UserManager;
-import com.model.db.DBBudgetDAO;
 import com.model.db.DBPaymentDAO;
 
 
@@ -68,16 +64,17 @@ public class AddController {
 		}
 		
 		//this will add payment to db+all foreign keys and to user's budget in session
-		if(payment.getType().equalsIgnoreCase("EXPENSE")){
-				if(payment.getAmount()>user.getBudget().getBalance()){
+		if(payment.getType().equalsIgnoreCase("EXPENSE") 
+				&& payment.getAmount()>(user.getBudget().getIncome()-user.getBudget().getExpense())){
+				//if(payment.getAmount()>user.getBudget().getBalance()){
 					errorMessage="You don't have enought money in your budget";
 					System.out.println("error you can't do this");
-				}
-				else{
-					UserManager.addPayment(user, payment);
-					successMessage="Payment was added";
-				}
-			}else{
+				//}
+				//else{
+				//	UserManager.addPayment(user, payment);
+				//	successMessage="Payment was added";
+				//}
+		}else{
 			UserManager.addPayment(user, payment);
 			successMessage="Payment was added";
 		}
