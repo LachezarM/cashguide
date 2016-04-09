@@ -98,8 +98,8 @@ public class IndexPageController {
 			//ne sam mnogo siguren, no taka nqma li da se iziskva vsichki paroli da sa razlichni, 
 			//t.e. ne moje da ima 2-ma user-a s edna i sashta parola
 			//if(u.getUsername().equals(username) || u.getPassword().equals(password)) {
-			if(IUserDAO.getInstance().checkIfUserExests(username)) {
-				result = "Username already in use";
+			if(IUserDAO.getInstance().checkIfUserExists(username, email)) {
+				result = "Username/email already in use";
 				//break;
 			}
 		//}

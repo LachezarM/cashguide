@@ -26,7 +26,23 @@
 		<script src="js/jquery-2.2.2.min.js"></script>
 		
 		<!-- BootstrapV3.3.6 Core JavaScript -->
-		<script src="js/bootstrap.min.js"></script>		
+		<script src="js/bootstrap.min.js"></script>	
+		
+		<script>
+		$(function(){
+			var percentage = ${logedUser.budget.percentageOfIncome};
+			percentage *= 100;
+			if(percentage<50){
+				$("#budgetLine").css("margin-left", "15px");
+			}
+			else if(percentage>50){
+				$("#budgetLine").css("margin-left", "-15px");
+			}else{
+				$("#budgetLine").css("margin-left", "0px;");
+			}
+			
+		});
+		</script>
 	</head>
 	<body>
 	    <div class="container">
@@ -42,7 +58,6 @@
 				<li><a  href="add">Add</a></li>
 				<li><a  href="history">Show history</a></li>
 				<li><a  href="info">Info</a></li>
-				<li><a  href="">Shopping list</a></li>
 				<li><a  href="simulator">Simulator</a></li>
 			  </ul>
 			</div>
@@ -65,7 +80,7 @@
 								</c:when>
 								<c:otherwise>
 									<c:set var="expensePercent" value="${(logedUser.budget.expense/logedUser.budget.income)*100}"></c:set>
-									<%-- <c:set var="incomePercent" value="${(logedUser.budget.income/logedUser.budget.income)*100}"></c:set> --%>
+									<c:set var="budget" value="${(logedUser.budget.income*logedUser.budget.percentageOfIncome)}"></c:set>
 									<c:set var="remainingPercent" value="${100-expensePercent}"></c:set> 
 									<c:set var="budgetPercent" value="${logedUser.budget.percentageOfIncome*100}"></c:set>
 								</c:otherwise>
@@ -92,8 +107,8 @@
 			  						</div>
 		  						</c:if>
 		  						<c:if test="${budgetPercent>0&&budgetPercent<100}">
-			  						<div style="width: 2px; height: 100px; padding-top: 0px; margin-left: 5px; position:absolute; background: black; left: ${budgetPercent}%;">
-			  							  <div style="padding-top: 40px; margin-left:5px;">Budget: ${budgetPercent}%</div>
+			  						<div id="budgetLine" style="width: 2px; height: 100px; padding-top: 0px; position:absolute; background: black; left: ${budgetPercent}%;">
+			  							  <div style="padding-top: 40px; margin-left:5px;">Budget: ${budget}</div>
 			  						</div>
 								</c:if>
 							</div>
@@ -103,7 +118,7 @@
 							      <div class="caption">
 							        <h3>INCOME</h3>
 							        <p><span>Your income is: ${logedUser.budget.income}</span></p>
-							         <p><span>Your last income was is: ${logedUser.budget.income}</span></p>
+							         <p><span> WTF>Your last income was is: ${logedUser.budget.income}</span></p>
 							        <p><a href="history" class="btn btn-primary" role="button">Show more payments</a></p>
 							      </div>
 							    </div>
@@ -113,10 +128,10 @@
 							    <div class="thumbnail">
 							      <div class="caption">
 							        <h3>BUDGET</h3>
-							        <p><span>Your budget is: ${logedUser.budget.income*logedUser.budget.percentageOfIncome}</span></p>
+							        <span>Your budget is: ${logedUser.budget.income*logedUser.budget.percentageOfIncome}</span>
 							        <h3>Percentage</h3>
-							        <p>Your percentage is: ${logedUser.budget.percentageOfIncome}</span></p>
-							        <p><a href="changeBudgetPercentage" class="btn btn-primary" role="button">Change percentage</a></p>
+							        <p>Your percentage is: ${logedUser.budget.percentageOfIncome}</p>
+							    	<p><a href="changeBudgetPercentage" class="btn btn-primary" role="button">Change percentage</a></p>
 							      </div>
 							    </div>
 							  </div>
@@ -126,7 +141,7 @@
 							      <div class="caption">
 							        <h3>EXPENSE</h3>
 							        <p><span>Your income is: ${logedUser.budget.expense}</span></p>
-							        <p><span>Your last income was is: ${logedUser.budget.expense}</span></p>
+							        <p><span>WTF>Your last income was is: ${logedUser.budget.expense}</span></p>
 							        <p><a href="history" class="btn btn-primary" role="button">Show more payments</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
 							      </div>
 							    </div>
@@ -136,9 +151,9 @@
 							    <div class="thumbnail">
 							      <div class="caption">
 							        <h3>BALANCE</h3>
-							        <p><span>Your income is: ${logedUser.budget.income}</span></p>
-							        <p><span>Your last income was is: ${logedUser.budget.income}</span></p>
-							        <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+							        <p><span>Your balance is: ${logedUser.budget.balance}</span></p>
+							       <%--  <p><span>Your last income was is: ${logedUser.budget.income}</span></p> --%>
+							         <p><a href="info" class="btn btn-primary" role="button">Info</a> <a href="history" class="btn btn-default" role="button">History</a></p>
 							      </div>
 							    </div>
 							  </div>

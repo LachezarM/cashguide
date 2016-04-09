@@ -42,12 +42,38 @@ public class DBUserDAO implements IUserDAO{
 		return instance;
 	}
 	
+	public boolean checkIfEmailExists(String email){
+		String sql = "SELECT email FROM " + DBManager.DB_NAME + ".users WHERE email=?;";
+		boolean result = false;
+		try(PreparedStatement pr = DBManager.getDBManager().getConnection().prepareStatement(sql)){
+			pr.setString(1, email);
+			ResultSet rs= pr.executeQuery();
+			while(rs.next()){
+				String user = rs.getString("email");
+				if(user==null){
+					result = false;
+					break;
+				}else{
+					result = true;
+					break;
+				}
+			}
+			rs.close();
+		} catch (SQLException e) {
+			System.out.println("Error in DB");
+			e.printStackTrace();
+		}
+		return result;
+		
+	}
+	
 	@Override
-	public boolean checkIfUserExests(String username) {
-		String sql = "SELECT username FROM " + DBManager.DB_NAME + ".users WHERE username=?;";
+	public boolean checkIfUserExists(String username, String email) {
+		String sql = "SELECT username, email FROM " + DBManager.DB_NAME + ".users WHERE username=? OR email=?;";
 		boolean result = false;
 		try(PreparedStatement pr = DBManager.getDBManager().getConnection().prepareStatement(sql)){
 			pr.setString(1, username);
+			pr.setString(2, email);
 			ResultSet rs= pr.executeQuery();
 			while(rs.next()){
 				String user = rs.getString("username");

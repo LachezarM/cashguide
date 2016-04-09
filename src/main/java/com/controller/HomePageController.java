@@ -37,20 +37,23 @@ import scala.annotation.meta.companionClass;
 
 @Controller
 public class HomePageController {
+	
 	static User currentUser = null;
 
-	@RequestMapping(value = "/add", method = RequestMethod.GET)
-	String add(HttpServletResponse r, Model model, HttpSession session) {
-		User user = (User) session.getAttribute("logedUser");
-		/*
-		 * Map<String, ArrayList<String>> result =
-		 * DBBudgetDAO.getInstance().getAllCategories(user.getId()); JsonObject
-		 * object = new JsonObject(); for(String type:result.keySet()){
-		 * JsonArray categories = new JsonArray(); for(String
-		 * category:result.get(type)){ categories.add(category); }
-		 * object.add(type, categories); }
-		 */
-
+	
+	@RequestMapping(value="/add" , method = RequestMethod.GET)
+	String add(Model model, HttpSession session) {
+		User user = (User)session.getAttribute("logedUser");
+		/*Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(user.getId());
+		JsonObject object = new JsonObject();
+		for(String type:result.keySet()){
+			JsonArray categories = new JsonArray();
+			for(String category:result.get(type)){
+				categories.add(category);
+			}
+			object.add(type, categories);
+		}*/
+	
 		JsonObject object = DBPaymentDAO.getInstance().getCategoriesJSON(user.getId());
 
 		// ArrayList<String> categories =
@@ -135,7 +138,7 @@ public class HomePageController {
 			currMonth = getMonthByInt(entry.getKey().getMonthValue());
 			if (previousMonth != null) {
 				if (currMonth.equalsIgnoreCase(previousMonth)) {
-					arr.remove(obj);
+						arr.remove(obj);
 					amount += entry.getValue();
 				} else {;
 					amount = entry.getValue();
@@ -243,16 +246,15 @@ public class HomePageController {
 		return currMonthPayments;
 	}
 
-	@RequestMapping(value = "/shopping", method = RequestMethod.GET)
-	String shopingList(HttpServletResponse r) {
-		System.out.println("priema se zaqvka");
-		return "index";
-	}
 
-	@RequestMapping(value = "/simulator", method = RequestMethod.GET)
-	String simulator(HttpServletResponse r) {
-		System.out.println("priema se zaqvka");
-		return "simulator";
+	@RequestMapping(value="/shopping" , method = RequestMethod.GET)
+	String shopingList() {
+		return 	"index";	
+	}
+	
+	@RequestMapping(value="/simulator" , method = RequestMethod.GET)
+	String simulator() {
+		return 	"simulator";	
 	}
 
 	@RequestMapping(value = "/userProfile", method = RequestMethod.GET)

@@ -77,6 +77,8 @@ th {
 							$(this).datepicker('setDate', new Date(iYear, iMonth, 1));
 						}
 					});
+		
+		selectAll();
 	});
 	
 	
@@ -107,7 +109,6 @@ th {
 					<li><a href="add">Add</a></li>
 					<li><a href="history">Show history</a></li>
 					<li><a href="info">Info</a></li>
-					<li><a href="">Shopping list</a></li>
 					<li class="active"><a href="simulator">Simulator</a></li>
 				</ul>
 			</div>

@@ -194,6 +194,7 @@ function createPieChart(payments) {
 <script>
 var myLineChart = null;
 function createLineChart(payments) { 
+<<<<<<< HEAD
 	if(payments.length == 0) {
 		var data = {
 				labels : "NOT ENOUGHT DATA",
@@ -204,6 +205,10 @@ function createLineChart(payments) {
 	}
 	else {
 		var data =  {
+=======
+	console.log(payments);
+	var data =  {
+>>>>>>> 481c5f73de8b950be760e74ac8f4b656b5f9c4fd
 			labels: generateLabels(payments),
 			datasets:[
 			  {
@@ -296,7 +301,6 @@ function generateData(payments) {
 					<li><a href="add">Add</a></li>
 					<li><a href="history">Show history</a></li>
 					<li class="active"><a href="info">Info</a></li>
-					<li><a href="">Shopping list</a></li>
 					<li><a href="simulator">Simulator</a></li>
 				</ul>
 			</div>
