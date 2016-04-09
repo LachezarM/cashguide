@@ -170,7 +170,7 @@ public class DBUserDAO implements IUserDAO{
 		try(Statement st = DBManager.getDBManager().getConnection().createStatement()){
 			ResultSet rs = st.executeQuery(sql);
 			while(rs.next()){
-				System.out.println(rs.getString("username") + " : "  + rs.getInt("id"));
+				//System.out.println(rs.getString("username") + " : "  + rs.getInt("id"));
 				int id = rs.getInt("id");
 				String username = rs.getString("username");
 				String password = rs.getString("password");
