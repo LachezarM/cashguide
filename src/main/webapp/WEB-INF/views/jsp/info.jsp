@@ -76,7 +76,6 @@ body {
 		aqua : "#00ffff",
 		azure : "#f0ffff",
 		beige : "#f5f5dc",
-		black : "#000000",
 		blue : "#0000ff",
 		brown : "#a52a2a",
 		cyan : "#00ffff",
@@ -97,12 +96,6 @@ body {
 		green : "#008000",
 		indigo : "#4b0082",
 		khaki : "#f0e68c",
-		lightblue : "#add8e6",
-		lightcyan : "#e0ffff",
-		lightgreen : "#90ee90",
-		lightgrey : "#d3d3d3",
-		lightpink : "#ffb6c1",
-		lightyellow : "#ffffe0",
 		lime : "#00ff00",
 		magenta : "#ff00ff",
 		maroon : "#800000",
@@ -113,8 +106,6 @@ body {
 		purple : "#800080",
 		violet : "#800080",
 		red : "#ff0000",
-		silver : "#c0c0c0",
-		white : "#ffffff",
 		yellow : "#ffff00"
 	};
 	Colors.random = function() {
@@ -129,19 +120,25 @@ body {
 </script>
 <script>
 	function showPayments(type) {
-		var paymentsByType = ${paymentsCurrMonth};
-		var incomesYear = ${lastYearMonthlyIncomes};
-		var expensesYear = ${lastYearMonthlyExpenses}
-		if (type == "INCOMES" || type == "EXPENSES"){
-			var payments = paymentsByType[type];
+		var currMonthIncomes = ${currMonthIncomesJson};
+		var currMonthExpenses = ${currMonthExpensesJson};
+		var lastYearMonthlyExpenses = ${lastYearMonthlyExpenses};
+		var lastYearMonthlyIncomes = ${lastYearMonthlyIncomes};
+		if (type == "INCOMES") {
+			var payments = currMonthIncomes["payments"];
+			createPieChart(payments);
+		} else if(type == "EXPENSES"){
+			var payments = currMonthExpenses["payments"];
 			createPieChart(payments);
 		}
+		else if(type == "YEARSINCOMES") {
+			var payments = lastYearMonthlyIncomes["amounts"];
+			createLineChart(payments);
+		}
 		else {
-			if(type == "YEARSINCOMES")
-				createLineChart(incomesYear);
-			else 
-				createLineChart(expensesYear);
-		}s
+			var payments = lastYearMonthlyExpenses["amounts"];
+			createLineChart(payments);
+		}
 		
 	}
 </script>
@@ -149,6 +146,25 @@ body {
 
 var myPieChart = null;
 function createPieChart(payments) {
+	
+	if(payments.length == 0) {
+		var pieData;
+		var dataSet = {
+				value : 1,
+				color : Colors.random(),
+				label : "NOT ENOUGHT DATA"
+			};
+		var pieOptions = {
+				animateScale : true
+		};
+		destroyCharts();
+		var ctx = document.getElementById("chartPayments")
+				.getContext("2d");
+		myPieChart = new Chart(ctx).Pie(pieData, pieOptions);
+
+		myPieChart.addData(dataSet);
+
+	} else {
 	var pieData;
 	var pieOptions = {
 		showTooltips : true,
@@ -158,9 +174,8 @@ function createPieChart(payments) {
 		segmentShowStroke : false,
 		animateScale : true
 	};
-	if(myPieChart != null) {
-		myPieChart.destroy();
-	}
+	
+	destroyCharts();
 	var ctx = document.getElementById("chartPayments")
 			.getContext("2d");
 	myPieChart = new Chart(ctx).Pie(pieData, pieOptions);
@@ -173,12 +188,22 @@ function createPieChart(payments) {
 		};
 		myPieChart.addData(dataSet);
 	}
+	}
 }
 </script>
 <script>
 var myLineChart = null;
 function createLineChart(payments) { 
-	var data =  {
+	if(payments.length == 0) {
+		var data = {
+				labels : "NOT ENOUGHT DATA",
+				datasets: [
+				           {  data: 0}
+				           ]
+		}
+	}
+	else {
+		var data =  {
 			labels: generateLabels(payments),
 			datasets:[
 			  {
@@ -190,12 +215,8 @@ function createLineChart(payments) {
 			  }        
 			         ]
 	}
-	if(myLineChart != null) {
-		myLineChart.destroy();
 	}
-	if(myPieChart != null) {
-		myPieChart.destroy();
-	}
+	destroyCharts();
 	var ctx = document.getElementById("chartPayments")
 	.getContext("2d");
 	myLineChart = new Chart(ctx).Line(data);
@@ -204,20 +225,37 @@ function createLineChart(payments) {
 </script>
 <script>
 function generateLabels(payments) {
-		var labels = Object.keys(payments);
+	var labels = [];
+		for(i = 0 ; i < payments.length ; i++){
+			var key = Object.keys(payments[i]);
+			labels.push(key);
+		}
 		return labels;
 }
 
 </script>
 <script>
 function generateData(payments) {
-	var data = [];	
-	for(key in payments){
-		data.push(payments[key]);
+	var data = [];
+	for(i=0;i < payments.length;i++){
+		
+		for(key in payments[i]){
+		data.push(payments[i][key]);
+		}
 	}
 	return data;
 	
 }
+</script>
+<script>
+	function destroyCharts(){
+		if(myLineChart != null) {
+			myLineChart.destroy();
+		}
+		if(myPieChart != null) {
+			myPieChart.destroy();
+		}
+	}
 </script>
 <script>
 

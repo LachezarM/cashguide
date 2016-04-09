@@ -2,15 +2,19 @@ package com.controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.naming.directory.InvalidAttributesException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.swing.text.LayeredHighlighter;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,46 +22,49 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.model.Payment;
 import com.model.User;
 import com.model.db.DBBudgetDAO;
 import com.model.db.DBPaymentDAO;
+import com.model.db.IBudgetDAO;
 import com.model.db.IPaymentDAO;
+
+import ch.qos.logback.core.net.SyslogOutputStream;
+import scala.annotation.meta.companionClass;
 
 @Controller
 public class HomePageController {
 	static User currentUser = null;
-	@RequestMapping(value="/add" , method = RequestMethod.GET)
+
+	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	String add(HttpServletResponse r, Model model, HttpSession session) {
-		User user = (User)session.getAttribute("logedUser");
-		/*Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(user.getId());
-		JsonObject object = new JsonObject();
-		for(String type:result.keySet()){
-			JsonArray categories = new JsonArray();
-			for(String category:result.get(type)){
-				categories.add(category);
-			}
-			object.add(type, categories);
-		}*/
-		
+		User user = (User) session.getAttribute("logedUser");
+		/*
+		 * Map<String, ArrayList<String>> result =
+		 * DBBudgetDAO.getInstance().getAllCategories(user.getId()); JsonObject
+		 * object = new JsonObject(); for(String type:result.keySet()){
+		 * JsonArray categories = new JsonArray(); for(String
+		 * category:result.get(type)){ categories.add(category); }
+		 * object.add(type, categories); }
+		 */
+
 		JsonObject object = DBPaymentDAO.getInstance().getCategoriesJSON(user.getId());
-		
-		//ArrayList<String> categories = DBBudgetDAO.getInstance().getCustomCategories(user.getId());
-		
+
+		// ArrayList<String> categories =
+		// DBBudgetDAO.getInstance().getCustomCategories(user.getId());
+
 		model.addAttribute("panel", "payment");
 		model.addAttribute("categories", object);
-		//model.addAttribute("customCategories", categories);
+		// model.addAttribute("customCategories", categories);
 		session.setAttribute("categories", object);
-		return 	"add";	
+		return "add";
 	}
-	
-	
-	
-	@RequestMapping(value="/history" , method = RequestMethod.GET)
-	String showHistory(HttpSession s,
-			Model m) {
+
+	@RequestMapping(value = "/history", method = RequestMethod.GET)
+	String showHistory(HttpSession s, Model m) {
 		currentUser = (User) s.getAttribute("logedUser");
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(currentUser.getId());
 		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(currentUser.getId());
@@ -65,112 +72,162 @@ public class HomePageController {
 		categories.addAll(result.get("EXPENSE"));
 		categories.addAll(result.get("INCOME"));
 		m.addAttribute("currPayments", payments);
-		m.addAttribute("currCategories",categories);
-		return 	"history";	
-	}	
-	
-	
-	@RequestMapping(value="/info" , method = RequestMethod.GET)
-	String showPayments(HttpServletResponse r,
-			HttpSession s,
-			Model m) {
+		m.addAttribute("currCategories", categories);
+		return "history";
+	}
+
+	@RequestMapping(value = "/info", method = RequestMethod.GET)
+	String showPayments(HttpServletResponse r, HttpSession s, Model m) {
 		User u = (User) s.getAttribute("logedUser");
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
 		List<Payment> currMonthPayments = getCurrMonthPayments(payments);
-		JsonObject currMonthPaymentsJson = getPaymentsAsJson(currMonthPayments);
-		Map<String, List<Payment>> lastYearMonthlyAmounts = getLastYearPayments(payments);
-		JsonObject lastYearMonthlyExpensesJson = getAmountsAsJson(lastYearMonthlyAmounts,"Expense");
-		JsonObject lastYearMonthlyIncomesJson = getAmountsAsJson(lastYearMonthlyAmounts, "Income");
-		m.addAttribute("paymentsCurrMonth", currMonthPaymentsJson);
-		m.addAttribute("lastYearMonthlyExpenses",lastYearMonthlyExpensesJson);
-		m.addAttribute("lastYearMonthlyIncomes",lastYearMonthlyIncomesJson);
-		return 	"info";	
-	}
-	
-	private JsonObject getAmountsAsJson(Map<String, List<Payment>> lastYearMonthlyAmounts,String type) {
-		JsonObject result = new JsonObject();
-		for(Entry<String, List<Payment>> entry : lastYearMonthlyAmounts.entrySet()) {
-			double amoutForThisMonth = 0;
-			for(Payment p : entry.getValue()) {
-				if(p.getType().equalsIgnoreCase(type))
-					amoutForThisMonth += p.getAmount();
-			} 
-			JsonPrimitive pr = new JsonPrimitive(amoutForThisMonth);
-			result.add(entry.getKey(), pr);
+		HashMap<String, Double> currMonthIncomesMap = getAsMap(currMonthPayments, "Income");
+		HashMap<String, Double> currMonthExpensesMap = getAsMap(currMonthPayments, "Expense");
+		JsonObject currMonthIncomesJson = getPaymentsAsJson(currMonthIncomesMap);
+		JsonObject currMonthExpensesJson = getPaymentsAsJson(currMonthExpensesMap);
+		TreeMap<LocalDate, Double> lastYearMonthlyIncomes = getPaymentsBetweenDates(payments, LocalDate.now(),
+				LocalDate.now().minusYears(1), "Income");
+		TreeMap<LocalDate, Double> lastYearMonthlyExpenses = getPaymentsBetweenDates(payments, LocalDate.now(),
+				LocalDate.now().minusYears(1), "Expense");
+		JsonObject lastYearMonthlyExpensesJson = null;
+		try {
+			lastYearMonthlyExpensesJson = getAmountsAsJson(lastYearMonthlyExpenses);
+		} catch (InvalidAttributesException e) {
+			e.printStackTrace();
 		}
-		return result;
+		System.out.println(lastYearMonthlyExpensesJson.toString());
+		JsonObject lastYearMonthlyIncomesJson = null;
+		try {
+			lastYearMonthlyIncomesJson = getAmountsAsJson(lastYearMonthlyIncomes);
+		} catch (InvalidAttributesException e) {
+			e.printStackTrace();
+		}
+		System.out.println(lastYearMonthlyIncomesJson.toString());
+		m.addAttribute("currMonthIncomesJson", currMonthIncomesJson);
+		m.addAttribute("currMonthExpensesJson",currMonthExpensesJson);
+		m.addAttribute("lastYearMonthlyExpenses", lastYearMonthlyExpensesJson);
+		m.addAttribute("lastYearMonthlyIncomes", lastYearMonthlyIncomesJson);
+		return "info";
 	}
-	
 
-	private Map<String, List<Payment>> getLastYearPayments(List<Payment> payments) {
-		Map<String, List<Payment>> result = new HashMap<String, List<Payment>>();
-		List<Payment> lastYearPayments = new ArrayList<Payment>();
-		lastYearPayments.addAll(payments);
-		LocalDate now = LocalDate.now();
-		LocalDate yearLater = now.minusYears(1);
-		System.out.println(now + " " + yearLater );
-		for(Iterator<Payment>  itt = lastYearPayments.iterator();itt.hasNext();) {
-			Payment p = itt.next();
-			if(
-					(now.getYear() == p.getDate().getYear() && now.getMonthValue() >= p.getDate().getMonthValue()) ||
-					(yearLater.getYear() == p.getDate().getYear() && yearLater.getMonthValue() <= p.getDate().getMonthValue())
-			  ) {
-				String month = null;
-				try {
-					month = getMonthByInt(p.getDate().getMonthValue());
-				} catch (InvalidAttributesException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if(result.containsKey(month)) {
-					result.get(month).add(p);
+	private HashMap<String, Double> getAsMap(List<Payment> currMonthPayments, String type) {
+		HashMap<String, Double> result = new HashMap();
+		for (Payment payment : currMonthPayments) {
+			if (payment.getType().equalsIgnoreCase(type)) {
+				if (result.containsKey(payment.getCategory())) {
+					result.put(payment.getCategory(), result.get(payment.getCategory()) + payment.getAmount());
 				} else {
-					result.put(month, new ArrayList<Payment>());
-					result.get(month).add(p);
+					result.put(payment.getCategory(), payment.getAmount());
 				}
-				
-			} else {
-				//invalid
-				itt.remove();
 			}
 		}
 		return result;
 	}
 
-	private String getMonthByInt(int monthValue) throws InvalidAttributesException {
-		switch(monthValue){
-		case 1: return "January";
-		case 2: return "February";
-		case 3: return "March";
-		case 4: return "April";
-		case 5: return "May";
-		case 6: return "June";
-		case 7: return "July";
-		case 8: return "August";
-		case 9: return "September";
-		case 10: return "Octomber";
-		case 11: return "November";
-		case 12: return "December";
-		default: throw new InvalidAttributesException("Invalid date number in getLastYearPayments");
+	private JsonObject getAmountsAsJson(TreeMap<LocalDate, Double> lastYearMonthlyIncomes)
+			throws InvalidAttributesException {
+		String currMonth = null;
+		String previousMonth = null;
+		double amount = 0;
+		JsonArray arr = new JsonArray();
+		JsonObject obj = new JsonObject();
+		for (Entry<LocalDate, Double> entry : lastYearMonthlyIncomes.entrySet()) {
+			currMonth = getMonthByInt(entry.getKey().getMonthValue());
+			if (previousMonth != null) {
+				if (currMonth.equalsIgnoreCase(previousMonth)) {
+					arr.remove(obj);
+					amount += entry.getValue();
+				} else {;
+					amount = entry.getValue();
+				}
+				
+			} else {
+				amount += entry.getValue();
+			}
+			obj = new JsonObject();
+			obj.addProperty(currMonth, amount);
+			arr.add(obj);
+			previousMonth = currMonth;
+		}
+		JsonObject result = new JsonObject();
+		result.add("amounts", arr);
+		return result;
+	}
+
+	private TreeMap<LocalDate, Double> getPaymentsBetweenDates(List<Payment> payments, LocalDate now,
+			LocalDate minusYears, String type) {
+		TreeMap<LocalDate, Double> result = new TreeMap();
+		for (Payment payment : payments) {
+			if (payment.getDate().isAfter(minusYears) && payment.getDate().isBefore(now)) {
+				// the date is in the period we want
+				if (payment.getType().equalsIgnoreCase(type)) {
+					// payments is the type we want
+					if (result.containsKey(payment.getDate())) {
+						result.put(payment.getDate(), result.get(payment.getDate()) + payment.getAmount());
+					} else {
+						result.put(payment.getDate(), payment.getAmount());
+					}
+				}
+			}
+		}
+		// the map has now (date -> amount) only of the type we want
+		return result;
+	}
+
+	private void fillMapByMonths(Map<String, List<Payment>> result, List<Payment> payments)
+			throws InvalidAttributesException {
+		for (int i = 1; i <= 12; i++) {
+			String month = getMonthByInt(i);
+			result.put(month, new ArrayList<Payment>());
+			for (Payment p : payments) {
+				if (p.getDate().getMonthValue() == i)
+					result.get(month).add(p);
+			}
 		}
 	}
 
-	private JsonObject getPaymentsAsJson(List<Payment> payments) {
-		JsonObject obj = new JsonObject();
-		JsonArray arrIncomes = new JsonArray();
-		JsonArray arrExpenses = new JsonArray();
-		for(int i = 0;i< payments.size();i++ ) {
-			JsonObject tmp =  new JsonObject();
-			tmp.addProperty("amount", payments.get(i).getAmount());
-			tmp.addProperty("category", payments.get(i).getCategory());
-			if(payments.get(i).getType().equalsIgnoreCase("INCOME"))
-				arrIncomes.add(tmp);
-			else 
-				arrExpenses.add(tmp);
-			
+	private String getMonthByInt(int monthValue) throws InvalidAttributesException {
+		switch (monthValue) {
+		case 1:
+			return "January";
+		case 2:
+			return "February";
+		case 3:
+			return "March";
+		case 4:
+			return "April";
+		case 5:
+			return "May";
+		case 6:
+			return "June";
+		case 7:
+			return "July";
+		case 8:
+			return "August";
+		case 9:
+			return "September";
+		case 10:
+			return "Octomber";
+		case 11:
+			return "November";
+		case 12:
+			return "December";
+		default:
+			throw new InvalidAttributesException("Invalid date number in getLastYearPayments");
 		}
-		obj.add("INCOMES", arrIncomes);
-		obj.add("EXPENSES", arrExpenses);
+	}
+
+	private JsonObject getPaymentsAsJson(HashMap<String, Double> currMonthPaymentsMap) {
+		JsonObject obj = new JsonObject();
+		JsonArray arrPayments = new JsonArray();
+		for (Entry<String, Double> entry : currMonthPaymentsMap.entrySet()) {
+			JsonObject tmp = new JsonObject();
+			tmp.addProperty("amount", entry.getValue());
+			tmp.addProperty("category", entry.getKey());
+			arrPayments.add(tmp);
+
+		}
+		obj.add("payments", arrPayments);
 		return obj;
 	}
 
@@ -178,27 +235,27 @@ public class HomePageController {
 		List<Payment> currMonthPayments = new ArrayList<Payment>();
 		currMonthPayments.addAll(payments);
 		int currMonth = LocalDate.now().getMonth().getValue();
-		for(Iterator<Payment> itt = currMonthPayments.iterator();itt.hasNext();) {
+		for (Iterator<Payment> itt = currMonthPayments.iterator(); itt.hasNext();) {
 			Payment p = itt.next();
-			if(p.getDate().getMonth().getValue() != currMonth)
+			if (p.getDate().getMonth().getValue() != currMonth)
 				itt.remove();
 		}
 		return currMonthPayments;
 	}
 
-	@RequestMapping(value="/shopping" , method = RequestMethod.GET)
+	@RequestMapping(value = "/shopping", method = RequestMethod.GET)
 	String shopingList(HttpServletResponse r) {
 		System.out.println("priema se zaqvka");
-		return 	"index";	
-	}
-	
-	@RequestMapping(value="/simulator" , method = RequestMethod.GET)
-	String simulator(HttpServletResponse r) {
-		System.out.println("priema se zaqvka");
-		return 	"simulator";	
+		return "index";
 	}
 
-	@RequestMapping(value="/userProfile" , method=RequestMethod.GET)
+	@RequestMapping(value = "/simulator", method = RequestMethod.GET)
+	String simulator(HttpServletResponse r) {
+		System.out.println("priema se zaqvka");
+		return "simulator";
+	}
+
+	@RequestMapping(value = "/userProfile", method = RequestMethod.GET)
 	String userProfile(HttpSession s) {
 
 		s.removeAttribute("changePassword");
