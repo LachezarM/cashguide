@@ -79,4 +79,10 @@ public class HistoryController {
 		m.addAttribute("currPayments",payments);
 		return "history";
 	}
+	
+	@RequestMapping(value="/showByDate", method = RequestMethod.POST)
+	String showByDate(@RequestParam(value = "date") String  date) {
+		System.out.println(date);
+		return "history";
+}
 }

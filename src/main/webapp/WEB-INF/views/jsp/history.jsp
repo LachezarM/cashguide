@@ -42,7 +42,7 @@ th {
 }
 
 label {
-	padding: 5px;
+	padding: 3px;
 	color: #222;
 	font-family: corbel, sans-serif;
 	font-size: 14px;
@@ -64,7 +64,9 @@ label {
     font-family: "helvetica neue",arial;
     position: relative;
     cursor: pointer;
-    padding-right:20px;
+    padding-right:10px;
+    left:140px;
+    top: 120px
 }
 .select_style select {
     -webkit-appearance: none;
@@ -79,7 +81,25 @@ label {
 
 <!-- jQueryV2.2.2 -->
 <script src="js/jquery-2.2.2.min.js"></script>
-
+<script>
+$(function() {
+	$("#datepicker")
+			.datepicker(
+				{
+					changeMonth : true,
+					changeYear : true,
+					dateFormat : "dd-mm-yy",
+					showButtonPanel : true,
+					onClose : function() {
+						var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+						var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+						console.log(iMonth);
+						console.log(iYear);
+						$(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+					}
+				});
+});
+</script>
 <!-- BootstrapV3.3.6 Core JavaScript -->
 <script src="js/bootstrap.min.js"></script>
 </head>
@@ -115,6 +135,12 @@ label {
 										<option  value="${categories}" >${categories}</option>							
 								</c:forEach>
 								</select>
+							</div>
+							<div class='select_style2'>
+								<form  method="POST" action="showByDate">
+							Date: <input type="text" name="date" id="datepicker" class="form-control" placeholder="Date"> 
+								<input type="submit" value="show" />						
+						</form>
 							</div>
 							</form>
 						<form action="showOnlyTypes" method="GET" >
