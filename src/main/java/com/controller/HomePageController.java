@@ -28,7 +28,7 @@ import com.model.db.IPaymentDAO;
 
 @Controller
 public class HomePageController {
-	
+	static User currentUser = null;
 	@RequestMapping(value="/add" , method = RequestMethod.GET)
 	String add(HttpServletResponse r, Model model, HttpSession session) {
 		User user = (User)session.getAttribute("logedUser");
@@ -58,9 +58,9 @@ public class HomePageController {
 	@RequestMapping(value="/history" , method = RequestMethod.GET)
 	String showHistory(HttpSession s,
 			Model m) {
-		User u = (User) s.getAttribute("logedUser");
-		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
-		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(u.getId());
+		currentUser = (User) s.getAttribute("logedUser");
+		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(currentUser.getId());
+		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(currentUser.getId());
 		List<String> categories = new ArrayList<String>();
 		categories.addAll(result.get("EXPENSE"));
 		categories.addAll(result.get("INCOME"));

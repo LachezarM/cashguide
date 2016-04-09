@@ -44,7 +44,9 @@ th {
 	background-color: #337ab7;
 	color: white;
 }
-
+a#dateLink {
+ color: white;
+}
 label {
 	padding: 3px;
 	color: #222;
@@ -90,21 +92,9 @@ label {
 
 <script>
 $(function() {
-	$("#datepicker")
-			.datepicker(
-				{
-					changeMonth : true,
-					changeYear : true,
-					dateFormat : "dd-mm-yy",
-					showButtonPanel : true,
-					onClose : function() {
-						var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-						var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-						console.log(iMonth);
-						console.log(iYear);
-						$(this).datepicker('setDate', new Date(iYear, iMonth, 1));
-					}
-				});
+	$("#datepicker").datepicker({
+		dateFormat : "dd-mm-yy"
+	});
 });
 </script>
 <!-- BootstrapV3.3.6 Core JavaScript -->
@@ -142,13 +132,15 @@ $(function() {
 								</c:forEach>
 								</select>
 							</div>
-							<div class='select_style2'>
-								<form  method="POST" action="showByDate">
+						</form>	
+							
+							<div >
+								<form  method="GET" action="showByDate">
 							Date: <input type="text" name="date" id="datepicker" class="form-control" placeholder="Date"> 
 								<input type="submit" value="show" />						
-						</form>
+								</form>
 							</div>
-							</form>
+							
 						<form action="showOnlyTypes" method="GET" >
 							<input checked="checked" type="radio" name="Show" id="rd1" value="All" ${param.Show == 'ALL' ? 'checked' : ''} onChange='this.form.submit();'/>
 								 <label for="rd1">Show All</label><br /> 
@@ -180,7 +172,7 @@ $(function() {
 								<th>Category</th>
 								<th>Description</th>
 								<th>Amount</th>
-								<th>Date</th>
+								<th><a id="dateLink" href ="sortByDate">Date</a></th>
 							</thead>
 							<c:forEach var="payments" items="${payments}"
 								varStatus="paymentsCounter" begin="${pageStart}"

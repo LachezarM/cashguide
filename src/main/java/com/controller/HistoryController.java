@@ -1,12 +1,18 @@
 package com.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.format.datetime.joda.LocalDateParser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,10 +32,10 @@ public class HistoryController {
 	@RequestMapping(value="/showOnlyTypes", method = RequestMethod.GET)
 	String showOnly(@RequestParam(value = "Show") String choise,HttpSession s,
 			Model m) {
-		User user = (User)s.getAttribute("logedUser");
-		Map<String, ArrayList<String>> result = IBudgetDAO.getInstance().getAllCategories(user.getId());
 		showGlobal = choise;
-		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(user.getId());
+		User u = (User) s.getAttribute("logedUser");
+		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
+		Map<String, ArrayList<String>> result = IBudgetDAO.getInstance().getAllCategories(u.getId());
 		List<String> categories = generateCategoriesByType(choise,result,payments);
 		//generates categories by type and modyfies payments to be only (all,expense or income)
 		m.addAttribute("currPayments", payments);
@@ -79,9 +85,57 @@ public class HistoryController {
 		return "history";
 	}
 	
-	@RequestMapping(value="/showByDate", method = RequestMethod.POST)
-	String showByDate(@RequestParam(value = "date") String  date) {
-		System.out.println(date);
+	@RequestMapping(value="/showByDate", method = RequestMethod.GET)
+	String showByDate(@RequestParam(value = "date") String  date,
+			HttpSession s,
+			Model m) {
+		User u = (User) s.getAttribute("logedUser");
+		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
+		modifyByDate(date,payments);
+		m.addAttribute("currCategories",s.getAttribute("currCategoriesSession"));
+		m.addAttribute("currPayments",payments);
 		return "history";
+		
 }
+	@RequestMapping(value="/sortByDate" ,method = RequestMethod.GET)
+	String sortByDate(Model m,HttpSession s) {
+		User u = (User) s.getAttribute("logedUser");
+		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
+		if(!showGlobal.equalsIgnoreCase("ALL"))
+			modifyByType(showGlobal,payments);
+		Collections.sort(payments, new Comparator<Payment>() {
+
+			@Override
+			public int compare(Payment o1, Payment o2) {
+				if(o1.getDate().isAfter(o2.getDate()))
+					return 1;
+				return -1;
+			}
+		});
+		
+		m.addAttribute("currCategories",s.getAttribute("currCategoriesSession"));
+		m.addAttribute("currPayments",payments);
+		return "history";
+		
+	}
+	
+	private void modifyByType(String showGlobal2, List<Payment> payments) {
+		for(Iterator<Payment> itt = payments.iterator();itt.hasNext();){
+			Payment p = itt.next();
+			if(!p.getType().equalsIgnoreCase(showGlobal2)) 
+				itt.remove();
+		}
+	}
+
+	private void modifyByDate(String date, List<Payment> payments) {
+		LocalDate dateJava;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		dateJava = LocalDate.parse(date, formatter);
+		for(Iterator<Payment> itt = payments.iterator();itt.hasNext();) {
+			Payment p = itt.next();
+			if(!p.getDate().equals(dateJava)){
+				itt.remove();
+			}
+		}
+	}
 }
