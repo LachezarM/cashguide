@@ -96,7 +96,6 @@ public class DBUserDAO implements IUserDAO{
 			e.printStackTrace();
 		}
 		
-		
 		return result;
 	}
 	
@@ -262,6 +261,7 @@ public class DBUserDAO implements IUserDAO{
 		
 	}
 
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public boolean checkIfPasswordExists(String newPassword) {
 		String sql = "SELECT password FROM " + DBManager.DB_NAME + ".users WHERE password=?;";

@@ -2,12 +2,14 @@ package com.model;
 
 import java.time.LocalDate;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import com.model.db.DBBudgetDAO;
 import com.model.db.DBUserDAO;
 
 //Tested
 public class UserManager {
-	
+	private static final String TOKEN = "cashguide";
 	//register
 	public static User createUserAfterRegister(String username, String password, String email){
 		User user = new User(username,email, password);
@@ -75,6 +77,12 @@ public class UserManager {
 				DBBudgetDAO.getInstance().addPayment(payment, budgetForOtherDate);
 			}
 		}
-			
-	}	
+	}
+	
+	public static String hashPassword(String password){
+		String hash = DigestUtils.md5Hex(TOKEN+password);
+		return hash;
+	}
+	
+	
 }

@@ -29,10 +29,13 @@ public class IndexPageController {
 	@RequestMapping(value="/login",method = RequestMethod.POST)
 	String login(@RequestParam(value ="username") String username,
 			@RequestParam(value ="password") String password,
-			HttpSession s, Model model) {
+			HttpSession session, Model model) {
 		
 		if(valid(username,password)) {
-			for(User u : IUserDAO.getInstance().getAllUsers()) {
+			
+			String hashed = UserManager.hashPassword(password);
+			System.out.println("-----hashPassword: " + hashed);
+			/*for(User u : IUserDAO.getInstance().getAllUsers()) {
 				if(username.equals(u.getUsername()) && password.equals(u.getPassword())) {
 					//User x = IUserDAO.getInstance().getUser(username);
 					User user = UserManager.createUserAfterLogin(username, password);
@@ -40,6 +43,12 @@ public class IndexPageController {
 					System.out.println(user.getId());
 					return "redirect:home";
 				}
+			}*/
+			if(IUserDAO.getInstance().checkForCorrectUsernameAndPassword(username, hashed)){
+				User user = UserManager.createUserAfterLogin(username, hashed);
+				session.setAttribute("logedUser",user);
+				System.out.println(user.getId());
+				return "redirect:home";
 			}
 			model.addAttribute("LoginErrorInfo", "User doesnt exists");
 			return "index";
@@ -53,15 +62,17 @@ public class IndexPageController {
 			@RequestParam(value ="email") String email,
 			@RequestParam(value ="password") String password,
 			@RequestParam(value ="confirm-password") String confirmPassword,
-			HttpSession s, Model model, HttpServletResponse response){
+			HttpSession session, Model model, HttpServletResponse response){
 		String result = valid(username,email,password,confirmPassword);
 		if(result.equals("correct"))
 		{
 			//User x = new User(username,email,password);
 			//IUserDAO.getInstance().addUser(x);
 			//use UserManager.createUserAfterRegister();
-			User user = UserManager.createUserAfterRegister(username, password, email);
-			s.setAttribute("logedUser",user);
+			
+			String hashed = UserManager.hashPassword(password);
+			User user = UserManager.createUserAfterRegister(username, hashed, email);
+			session.setAttribute("logedUser",user);
 			//this will change the url.If it's only return home, the url will looks like ..../register but the user will be in home page
 			return "redirect:home";
 		}

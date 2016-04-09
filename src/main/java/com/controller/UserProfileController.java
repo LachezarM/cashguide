@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.model.Budget;
 import com.model.Payment;
 import com.model.User;
+import com.model.UserManager;
 import com.model.db.DBBudgetDAO;
 import com.model.db.DBPaymentDAO;
 import com.model.db.IBudgetDAO;
@@ -97,10 +98,11 @@ public class UserProfileController {
 			@RequestParam(value="oldPassword") String oldPassword, HttpSession session,
 	Model model) {
 		User user = (User)session.getAttribute("logedUser");
+		String oldHashedPass = UserManager.hashPassword(oldPassword);
 		if(user!=null){
-			if(user.getPassword().equals(oldPassword)&&(newPassword.length() > 6)&& !(IUserDAO.getInstance().checkIfPasswordExists(newPassword))) {
-					
-					IUserDAO.getInstance().changePassword(user.getId(), newPassword);
+			if(user.getPassword().equals(oldHashedPass)&&(newPassword.length() >= 6)/*&& !(IUserDAO.getInstance().checkIfPasswordExists(newPassword))*/) {
+					String newHashedPassword = UserManager.hashPassword(newPassword);
+					IUserDAO.getInstance().changePassword(user.getId(), newHashedPassword);
 					model.addAttribute("successMessage","successful");
 			}else{
 				model.addAttribute("errorMessage","unsuccessful");
@@ -163,7 +165,8 @@ public class UserProfileController {
 				Payment payment = budget.getPayments().get("INCOME").get(intId);
 				incomes += payment.getAmount();
 				budget.getPayments().get("INCOME").remove(intId);
-				
+				//probvai sas remove all
+				//PROBLEM SAS trieneto na elementi ot payments trqbva da se pravi s iterator zastoto indexite se barkat
 				IPaymentDAO.getInstance().deletePayment(payment.getId());
 			}
 		}		
