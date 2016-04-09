@@ -7,7 +7,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.model.Expense;
 import com.model.Income;
 import com.model.Payment;
@@ -131,11 +134,11 @@ public class DBPaymentDAO implements IPaymentDAO{
 		}
 	}
 
-	public void deleteCategory(String category, int id){
+	public void deleteCategory(String category, int userId){
 		String sql = "DELETE FROM "+DBManager.DB_NAME+".customCategories "
 				+ "WHERE userId=? AND categoryId=(SELECT categories.id FROM "+DBManager.DB_NAME+".categories WHERE category=?)";
 		try(PreparedStatement ps = DBManager.getDBManager().getConnection().prepareStatement(sql)){
-			ps.setInt(1, id);
+			ps.setInt(1, userId);
 			ps.setString(2, category);
 			ps.executeUpdate();
 		} catch (SQLException e) {
@@ -144,4 +147,28 @@ public class DBPaymentDAO implements IPaymentDAO{
 		
 	}
 	
+	public void deletePayment(int paymentId){
+		String sql = "DELETE FROM "+DBManager.DB_NAME+".payments WHERE id=?";
+		try(PreparedStatement ps = DBManager.getDBManager().getConnection().prepareStatement(sql)){
+			ps.setInt(1, paymentId);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public JsonObject getCategoriesJSON(int userId){
+		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(userId);
+		JsonObject object = new JsonObject();
+		for(String type:result.keySet()){
+			JsonArray categories = new JsonArray();
+			for(String category:result.get(type)){
+				categories.add(category);
+			}
+			object.add(type, categories);
+		}
+		return object;
+
+	}
 }

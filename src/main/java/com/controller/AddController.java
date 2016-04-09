@@ -36,6 +36,10 @@ public class AddController {
 			@RequestParam(value="date") String d,
 			@RequestParam(value="description") String description,
 			HttpSession session){
+		
+		String errorMessage = null;
+		String successMessage=null;
+		
 		LocalDate date;
 		try{
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -66,15 +70,22 @@ public class AddController {
 		//this will add payment to db+all foreign keys and to user's budget in session
 		if(payment.getType().equalsIgnoreCase("EXPENSE")){
 				if(payment.getAmount()>user.getBudget().getBalance()){
-					model.addAttribute("errorBudgetMessage", "You don't have enought money in your budget");
+					errorMessage="You don't have enought money in your budget";
 					System.out.println("error you can't do this");
 				}
 				else{
 					UserManager.addPayment(user, payment);
+					successMessage="Payment was added";
 				}
 			}else{
 			UserManager.addPayment(user, payment);
+			successMessage="Payment was added";
 		}
+		
+		model.addAttribute("errorPayment", errorMessage);
+		model.addAttribute("successPayment", successMessage);
+		model.addAttribute("panel", "payment");
+		
 		return "add"; 
 	}
 
@@ -92,23 +103,32 @@ public class AddController {
 		}
 		
 		//save to db
-		DBPaymentDAO.getInstance().addNewCategory(customCategory, paymentType, user);
-		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(user.getId());
-		JsonObject object = new JsonObject();
-		for(String type:result.keySet()){
-			JsonArray categories = new JsonArray();
-			for(String category:result.get(type)){
-				categories.add(category);
+		if(customCategory.trim().length()<=0){
+			model.addAttribute("errorCategory", "Category is empty");
+		}else{
+			DBPaymentDAO.getInstance().addNewCategory(customCategory, paymentType, user);
+/*			Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(user.getId());
+			JsonObject object = new JsonObject();
+			for(String type:result.keySet()){
+				JsonArray categories = new JsonArray();
+				for(String category:result.get(type)){
+					categories.add(category);
+				}
+				object.add(type, categories);
 			}
-			object.add(type, categories);
+*/			
+			JsonObject object = DBPaymentDAO.getInstance().getCategoriesJSON(user.getId());
+			//model.addAttribute("categories", object);
+			session.setAttribute("categories", object);
+			model.addAttribute("successCategory", "category was added");
 		}
-		model.addAttribute("categories", object);
-		model.addAttribute("message", "category is added");
-
-		
+		model.addAttribute("panel", "add-category");
 		
 		return "add";
 	}
+
+	
+	
 
 	
 	

@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import javax.naming.directory.InvalidAttributesException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.swing.JScrollBar;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.model.Payment;
 import com.model.User;
 import com.model.db.DBBudgetDAO;
+import com.model.db.DBPaymentDAO;
 import com.model.db.IPaymentDAO;
 
 @Controller
@@ -33,7 +32,7 @@ public class HomePageController {
 	@RequestMapping(value="/add" , method = RequestMethod.GET)
 	String add(HttpServletResponse r, Model model, HttpSession session) {
 		User user = (User)session.getAttribute("logedUser");
-		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(user.getId());
+		/*Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(user.getId());
 		JsonObject object = new JsonObject();
 		for(String type:result.keySet()){
 			JsonArray categories = new JsonArray();
@@ -41,16 +40,24 @@ public class HomePageController {
 				categories.add(category);
 			}
 			object.add(type, categories);
-		}
+		}*/
 		
+		JsonObject object = DBPaymentDAO.getInstance().getCategoriesJSON(user.getId());
+		
+		//ArrayList<String> categories = DBBudgetDAO.getInstance().getCustomCategories(user.getId());
+		
+		model.addAttribute("panel", "payment");
 		model.addAttribute("categories", object);
+		//model.addAttribute("customCategories", categories);
+		session.setAttribute("categories", object);
 		return 	"add";	
 	}
+	
+	
 	
 	@RequestMapping(value="/history" , method = RequestMethod.GET)
 	String showHistory(HttpSession s,
 			Model m) {
-		//System.out.println("priema se zaqvka");	
 		User u = (User) s.getAttribute("logedUser");
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
 		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(u.getId());
@@ -168,7 +175,7 @@ public class HomePageController {
 	}
 
 	private List<Payment> getCurrMonthPayments(List<Payment> payments) {
-		List<Payment> currMonthPayments = new ArrayList();
+		List<Payment> currMonthPayments = new ArrayList<Payment>();
 		currMonthPayments.addAll(payments);
 		int currMonth = LocalDate.now().getMonth().getValue();
 		for(Iterator<Payment> itt = currMonthPayments.iterator();itt.hasNext();) {

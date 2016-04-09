@@ -13,7 +13,7 @@ public class DBManager {
 	private static final String DB_URL = "jdbc:mysql://localhost:3306/";
 	private static final String DB_USER = "root";
 	//password different for users
-	private static final String DB_PASS = "mysqlpassword";
+	private static final String DB_PASS = "ds941213";
 	private Connection con;
 
 	private DBManager() {

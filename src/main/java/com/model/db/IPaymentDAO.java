@@ -11,4 +11,6 @@ public interface IPaymentDAO {
 	}	
 	List<Payment> getAllPayments(int userId);
 	
+	void deletePayment(int paymentId);
+	
 }

@@ -67,7 +67,7 @@ public class Budget {
 	
 	public void addPayment(Payment payment){
 		this.payments.get(payment.getType()).add(payment);
-		
+
 		if(payment.getType().equalsIgnoreCase("expense")){
 			this.balance -= payment.getAmount();
 			this.expense += payment.getAmount();
@@ -96,6 +96,10 @@ public class Budget {
 
 	public void addIncome(double income){
 		this.income+=income;
+	}
+	
+	public void setIncome(double income){
+		this.income=income;
 	}
 	
 	public double getIncome(){
