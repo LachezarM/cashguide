@@ -179,7 +179,7 @@ public class UserProfileController {
 			for(String id:expensesID){
 				int intId = Integer.valueOf(id);
 				Payment payment = budget.getPayments().get("EXPENSE").get(intId);
-				expenses= payment.getAmount();
+				expenses+= payment.getAmount();
 				
 				deleted.add(payment);
 				//budget.getPayments().get("EXPENSE").remove(intId);
