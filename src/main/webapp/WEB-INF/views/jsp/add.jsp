@@ -120,28 +120,7 @@ input.error {
 			appendText : "(dd-mm-yyyy)"
 		});
 	});
-	$(function() {
-		$("#datepickerMonth")
-				.datepicker(
-					{
-						changeMonth : true,
-						changeYear : true,
-						dateFormat : "dd-mm-yy",
-						showButtonPanel : true,
-						onClose : function() {
-							var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-							var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-							console.log(iMonth);
-							console.log(iYear);
-							$(this).datepicker('setDate', new Date(iYear, iMonth, 1));
-						}
-					});
-	});
-	
-	
-	
-	
-
+		
 	//form validation -> javascript
 	$(function() {
 
@@ -212,7 +191,6 @@ input.error {
 					<li class="active"><a href="add">Add</a></li>
 					<li><a href="history">Show history</a></li>
 					<li><a href="info">Info</a></li>
-					<li><a href="">Shopping list</a></li>
 					<li><a href="simulator">Simulator</a></li>
 				</ul>
 			</div>

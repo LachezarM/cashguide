@@ -10,7 +10,9 @@ public interface IUserDAO {
 		return DBUserDAO.getInstance();
 	}
 	
-	boolean checkIfUserExests(String username);
+	boolean checkIfUserExists(String username, String email);
+	
+	boolean checkIfEmailExists(String email);
 	
 	boolean checkForCorrectUsernameAndPassword(String username, String password);
 	

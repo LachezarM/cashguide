@@ -53,14 +53,10 @@ public class User {
 		return email;
 	}
 
-	/*public String getFirstName() {
-		return firstName;
+	public void setEmail(String email){
+		this.email = email;
 	}
-
-	public String getLastName() {
-		return lastName;
-	}*/
-
+	
 	public void setId(int id) {
 		this.id = id;
 	}

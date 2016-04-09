@@ -178,6 +178,7 @@ function createPieChart(payments) {
 <script>
 var myLineChart = null;
 function createLineChart(payments) { 
+	console.log(payments);
 	var data =  {
 			labels: generateLabels(payments),
 			datasets:[
@@ -258,7 +259,6 @@ function generateData(payments) {
 					<li><a href="add">Add</a></li>
 					<li><a href="history">Show history</a></li>
 					<li class="active"><a href="info">Info</a></li>
-					<li><a href="">Shopping list</a></li>
 					<li><a href="simulator">Simulator</a></li>
 				</ul>
 			</div>

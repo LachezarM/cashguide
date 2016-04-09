@@ -1,117 +1,3 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%-- <!DOCTYPE html>
-<html>
-<head>
-<style>
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-}
-
-li {
-    float: left;
-}
-
-li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-li a:hover {
-    background-color: #337ab7;
-}
-input[type=text] ,input[type=password]{
-    width: 100%;
-    padding: 6px 10px;
-    margin: 8px 0;
-    box-sizing: border-box;
-}
-input[type=button], input[type=submit], input[type=reset] {
-    background-color: #337ab7;
-    border: none;
-    color: white;
-    padding: 8px 10px;
-    text-decoration: none;
-    margin: 4px 2px;
-    cursor: pointer;
-}
-</style>
-</head>
-<body bgcolor="#B0C4DE">
-
-<ul>
- <!--  <li><a href="addBalance">Add Balance</a></li> -->
-<!--   <li><a href="changeUsername">Change Username</a></li>
- -->  <li><a href="changePassword">Change Password</a></li>
-   <li><a href="changeBudgetPercentage">Change budgetPercentage</a></li>
-   <li><a href="deleteCategory">Delete custom category</a></li>
-  <li><a href="back">Back</a></li>
-</ul>
-
-  			<c:if test="${changeUsername != null}">
-				<div class="change">
-				<form action="changeUsername" method="post">
-					<input type="text" placeholder="New Username Here" name="username">
-					<input type="submit" value="change">
-					</form>
-					<c:out value="${change }"></c:out>
-				</div>	
-			</c:if>
-			<c:if test="${changePassword != null}">
-				<div>
-				<form action="changePasswordUser" method="get">
-					 <input type="password" placeholder="Input new password" name="newPassword">
-					
-						<input type="submit" value="change">
-					</form>
-					<c:out value="${change }"></c:out>
-				</div>
-			</c:if>
-			<c:if test="${addBalance != null}">
-				<div>
-					<form>
-						<input type="text" placeholder="Your balance">
-						 <input type="submit" value="add">
-					</form>
-				</div>
-			</c:if>
-			
-			<c:if test="${changeBudgetPercentage != null}">
-				<div>
-				<p>${errorMessage}</p>
-					<form method="POST" action="changeBudgetPercentage">
-						<input type="text" name = "percentage" placeholder="Your percentage">
-						 <input type="submit" value="change">
-					</form>
-				</div>
-			</c:if>
-
-			
-			<c:if test="${deleteCategory != null}">
-				<div>
-				<p>${errorMessage}</p>
-					<form method="POST" action="deleteCategory">
-						<select name="category">
-							<c:forEach var="category" items="${categories}">
-								<option><c:out value="${category}"></c:out></option>
-							</c:forEach>
-						</select>	
-					<input type="submit" value="delete">
-					</form>
-				</div>
-			</c:if>
-
-</body>
-</html> --%>
-
-
-
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -196,12 +82,6 @@ input.error {
 	});
 
 	$(function() {
-		$("#datepicker").datepicker({
-			dateFormat : "dd-mm-yy",
-			appendText : "(1-mm-yyyy)"
-		});
-	});
-	$(function() {
 		$("#datepickerMonth")
 				.datepicker(
 					{
@@ -220,7 +100,7 @@ input.error {
 	});
 	
 	//form validation -> javascript
-	$(function() {
+	/* $(function() {
 
 		$.validator.addMethod("customNumber", function(value, event) {
 			return (value.match(/^[+]?\d+(\.)?\d*$/));
@@ -267,7 +147,7 @@ input.error {
 							}
 						});
 
-	});
+	}); */
 	
 	//server side validation->java
 </script>
@@ -290,6 +170,7 @@ input.error {
 					<li><a href="changeBudgetPercentage">Change budgetPercentage</a></li>
 					<li><a href="deleteCategory">Delete custom category</a></li>
 					<li><a href="deletePayment">Delete payment</a></li>
+					<li><a href="changeEmail">Change Email</a></li>
 				</ul>
 			</div>
 			<!-- Menu end-->
@@ -322,12 +203,12 @@ input.error {
 									</div>
 								</c:if>
 										
-										
+									
 									<c:if test="${panel == 'changePassword'}">
 										<div>
 											<form action="changePasswordUser" method="POST">
-												<input type="password" placeholder="Input old password" name="oldPassword">	
-												<input type="password" placeholder="Input new password" name="newPassword">		
+											Old password: <input type="password" placeholder="Input old password" name="oldPassword"><br/>
+											New password: <input type="password" placeholder="Input new password" name="newPassword"><br/>	
 												<input type="submit" value="change">
 											</form>
 											<c:out value="${change}"></c:out>
@@ -336,6 +217,7 @@ input.error {
 								
 									<c:if test="${panel=='changePercentage'}">
 										<div>
+										Percentage (0;100]
 											<form method="POST" action="changeBudgetPercentage">
 												<input type="text" name = "percentage" placeholder="Your percentage">
 												<input type="submit" value="change">
@@ -347,6 +229,7 @@ input.error {
 									<c:if test="${panel=='deleteCategory'}">
 										<div>
 										<p>${errorMessage}</p>
+											Choose category:
 											<form method="POST" action="deleteCategory">
 												<select name="category">
 													<c:forEach var="category" items="${categories}">
@@ -364,6 +247,8 @@ input.error {
 											Date: <input type="text" name="date" id="datepickerMonth" class="form-control" placeholder="Date"> 
 												<input type="submit" value="show" />						
 										</form>
+									
+										
 										<c:if test="${month!=null}">
 											<c:set var="incomes" value='${delBudget.payments.get("INCOME")}'></c:set>
 											<c:set var="expenses" value='${delBudget.payments.get("EXPENSE")}'></c:set>
@@ -405,71 +290,16 @@ input.error {
 									</c:if>
 									
 									
-									
-								</div>							
-							<%-- 
-							<div id="delete-payment" class="tab-pane fade">
-								<div class="row" id="delete-payment-form">
-									<div class="col-md-6" style="margin-top:8px">
-										<!--New category-->
-										<h1 style="margin-left: 20px; margin-bottom: 20px;">Delete Payment</h1>
-										
-										<c:if test="${successDeletingPayment!=null}">
-											<div class="alert alert-success" role="alert">
-												${successDeletingPayment}
-											</div>
-										</c:if>
-										<c:set var="incomes" value='${budget.payments.get("INCOME")}'></c:set>
-										<c:set var="expenses" value='${budget.payments.get("EXPENSE")}'></c:set>
-										
-										<form  method="POST" action="getBudgetForDeleting">
-											Date: <input type="text" name="date" id="datepickerMonth" class="form-control" placeholder="Date"> 
-												<input type="submit" value="show" />						
-										</form>
-										
-										
-										<form method="POST" action="deletePayment" id="calculation">
-											<table>
-												<tr>
-													<th>Type</th>
-													<th>Category</th>
-													<th>Description</th>
-													<th>Amount</th>
-													<th>Date</th>
-													<th>Select</th>
-												</tr>
-					
-												<c:forEach var="income" items="${incomes}" varStatus="loop">
-												<tr>
-													<td>${income.type }</td>
-													<td>${income.category}</td>
-													<td>${income.description}</td>
-													<td>${income.amount}</td>
-													<td>${income.date}</td>
-													<td><input type="checkbox" name="income" value="${loop.count-1}"></td>
-												</tr>
-												</c:forEach>
-										
-												<c:forEach var="expense" items="${expenses}" varStatus="loop">
-												<tr>
-													<td>${expense.type }</td>
-													<td>${expense.category}</td>
-													<td>${expense.description}</td>
-													<td>${expense.amount}</td>
-													<td>${expense.date}</td>
-													<td><input type="checkbox" name="expense" value="${loop.count-1}"></td>
-												</tr>
-												</c:forEach>
-											</table>
-											<input type="submit" value="delete" />
-										</form>
-									</div>
-								</div>
-							</div>  --%>
-							
-							
-										
-					
+									<c:if test="${panel=='changeEmail'}">
+										<div>
+										<p>${errorMessage}</p>
+											<form method="POST" action="changeEmail">
+											New email <input type="email" name="email"/><br/>
+											<input type="submit" value="change">
+											</form>
+										</div>
+									</c:if>
+								</div>					
 					</div>
 				</div>
 			</div>

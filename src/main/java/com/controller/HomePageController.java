@@ -28,9 +28,11 @@ import com.model.db.IPaymentDAO;
 
 @Controller
 public class HomePageController {
+	
 	static User currentUser = null;
+	
 	@RequestMapping(value="/add" , method = RequestMethod.GET)
-	String add(HttpServletResponse r, Model model, HttpSession session) {
+	String add(Model model, HttpSession session) {
 		User user = (User)session.getAttribute("logedUser");
 		/*Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(user.getId());
 		JsonObject object = new JsonObject();
@@ -187,14 +189,12 @@ public class HomePageController {
 	}
 
 	@RequestMapping(value="/shopping" , method = RequestMethod.GET)
-	String shopingList(HttpServletResponse r) {
-		System.out.println("priema se zaqvka");
+	String shopingList() {
 		return 	"index";	
 	}
 	
 	@RequestMapping(value="/simulator" , method = RequestMethod.GET)
-	String simulator(HttpServletResponse r) {
-		System.out.println("priema se zaqvka");
+	String simulator() {
 		return 	"simulator";	
 	}
 
