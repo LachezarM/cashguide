@@ -16,6 +16,10 @@
 <!-- Bootstrap Core CSS -->
 <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
 
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+
 <style>
 body {
 	padding-top: 20px;
@@ -81,6 +85,9 @@ label {
 
 <!-- jQueryV2.2.2 -->
 <script src="js/jquery-2.2.2.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
 <script>
 $(function() {
 	$("#datepicker")
@@ -101,7 +108,6 @@ $(function() {
 });
 </script>
 <!-- BootstrapV3.3.6 Core JavaScript -->
-<script src="js/bootstrap.min.js"></script>
 </head>
 <body>
 

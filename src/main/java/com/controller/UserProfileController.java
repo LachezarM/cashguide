@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -139,7 +141,7 @@ public class UserProfileController {
 	}
 
 	@RequestMapping(value="/deleteCategory", method = RequestMethod.POST)
-	public String deleteCategoryPost(@RequestParam(value="category") String category, HttpSession session, Model model) {
+	String deleteCategoryPost(@RequestParam(value="category") String category, HttpSession session, Model model) {
 			int id = ((User) session.getAttribute("logedUser")).getId();
 			DBPaymentDAO.getInstance().deleteCategory(category, id);
 			ArrayList<String> categories = DBBudgetDAO.getInstance().getCustomCategories(id);
@@ -159,26 +161,34 @@ public class UserProfileController {
 		
 		double incomes = 0;
 		double expenses = 0;
+		List<Payment> deleted = new LinkedList<Payment>();
 		if(incomesID!=null){
 			for(String id:incomesID){
 				int intId = Integer.valueOf(id);
 				Payment payment = budget.getPayments().get("INCOME").get(intId);
+				deleted.add(payment);
 				incomes += payment.getAmount();
-				budget.getPayments().get("INCOME").remove(intId);
-				//probvai sas remove all
-				//PROBLEM SAS trieneto na elementi ot payments trqbva da se pravi s iterator zastoto indexite se barkat
+				//budget.getPayments().get("INCOME").remove(intId);
 				IPaymentDAO.getInstance().deletePayment(payment.getId());
 			}
+			
+			budget.getPayments().get("INCOME").removeAll(deleted);
+			deleted.clear();
 		}		
 		if(expensesID!=null){
 			for(String id:expensesID){
 				int intId = Integer.valueOf(id);
 				Payment payment = budget.getPayments().get("EXPENSE").get(intId);
 				expenses= payment.getAmount();
-				budget.getPayments().get("EXPENSE").remove(intId);
+				
+				deleted.add(payment);
+				//budget.getPayments().get("EXPENSE").remove(intId);
 				
 				IPaymentDAO.getInstance().deletePayment(payment.getId());
 			}
+			
+			budget.getPayments().get("EXPENSE").removeAll(deleted);
+			deleted.clear();
 		}
 		
 		budget.setIncome(budget.getIncome()-incomes);

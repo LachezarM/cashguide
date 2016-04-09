@@ -87,7 +87,7 @@ public class SimulatorController {
 		balance = balance*period;
 		LocalDate startDate = budget.getDate();
 		LocalDate endDate = budget.getDate().plusMonths(period);
-		String result = "If you spend like you spent in "+ startDate.getMonth() + " " + startDate.getYear()+" after " + period +" months "
+		String result = "If you spend like "+ startDate.getMonth() + " " + startDate.getYear()+" after " + period +" months "
 				+"in " + endDate.getMonth() +" "+ endDate.getYear()+" you will have " + balance;
 		model.addAttribute("result", result);
 		model.addAttribute("showBudget",budget);
