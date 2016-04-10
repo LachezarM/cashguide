@@ -9,10 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.format.datetime.joda.LocalDateParser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.model.Payment;
 import com.model.User;
+import com.model.Utils;
 import com.model.db.IBudgetDAO;
 import com.model.db.IPaymentDAO;
 
@@ -41,6 +40,7 @@ public class HistoryController {
 		m.addAttribute("currPayments", payments);
 		m.addAttribute("currCategories",categories);
 		s.setAttribute("currCategoriesSession", categories);
+		Utils.logger.info("showOnlyTypes link was clicked");
 		return "history";
 	}
 	
@@ -82,6 +82,7 @@ public class HistoryController {
 		}
 		m.addAttribute("currCategories",s.getAttribute("currCategoriesSession"));
 		m.addAttribute("currPayments",payments);
+		Utils.logger.info("showOnlyCategories link was clicked");
 		return "history";
 	}
 	
@@ -94,6 +95,7 @@ public class HistoryController {
 		modifyByDate(date,payments);
 		m.addAttribute("currCategories",s.getAttribute("currCategoriesSession"));
 		m.addAttribute("currPayments",payments);
+		Utils.logger.info("showByDate link was clicked");
 		return "history";
 		
 }
@@ -115,6 +117,7 @@ public class HistoryController {
 		
 		m.addAttribute("currCategories",s.getAttribute("currCategoriesSession"));
 		m.addAttribute("currPayments",payments);
+		Utils.logger.info("sortByDate link was clicked");
 		return "history";
 		
 	}

@@ -7,19 +7,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.model.Utils;
+
 @Controller
 public class UserController {
 	
 	@RequestMapping(value="/logout", method = RequestMethod.GET)
 	String logout(HttpSession session){
 		session.invalidate();
+		Utils.logger.info("User is logout");
 		return "redirect:index";
 	}
-	
-	@RequestMapping(value="/settings", method = RequestMethod.GET)
-	String settings(Model model){
-		model.addAttribute("panel", "changePassword");
-		return "settings";
-	}
-	
 }

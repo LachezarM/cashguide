@@ -205,7 +205,7 @@ function createLineChart(payments) {
 		}
 	}
 	else {
-		var data =  {
+	var data =  {
 			labels: generateLabels(payments),
 			datasets:[
 			  {
@@ -217,12 +217,10 @@ function createLineChart(payments) {
 			  }        
 			         ]
 	}
-	}
 	destroyCharts();
-	var ctx = document.getElementById("chartPayments")
-	.getContext("2d");
+	var ctx = document.getElementById("chartPayments").getContext("2d");
 	myLineChart = new Chart(ctx).Line(data);
-	
+}
 }
 </script>
 <script>

@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS customCategories(
 	userId INTEGER NOT NULL,
     categoryId INTEGER NOT NULL,
     FOREIGN KEY(userId) REFERENCES users(id),
-    FOREIGN KEY(categoryId) REFERENCES categories(id)
+    FOREIGN KEY(categoryId) REFERENCES categories(id),
+    CONSTRAINT uc_UserCategory UNIQUE(userId, categoryId)
 );
 
 CREATE TABLE IF NOT EXISTS budgets(

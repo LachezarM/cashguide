@@ -11,51 +11,68 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.model.User;
 import com.model.UserManager;
+import com.model.Utils;
 import com.model.db.IUserDAO;
 
 @Controller
 public class IndexPageController {
 	
+	private static final String FORM= "form";
+	private static final String LOGIN_FORM="login-form";
+	private static final String REGISTER_FORM="register-form";
+	
+	private static final String LOGIN_ERROR="LoginErrorInfo";
+	private static final String REGISTER_ERROR = "RegisterErrorInfo";
+	
+	private static final String WRONG_USERNAME = "Wrong username/password";
+	private static final String INCORECT_LOGIN="Incorrect input";
+	
 	
 	@RequestMapping(value = "/index",method = RequestMethod.GET)
-	String startUp() {
+	String startUp(Model model) {
+		model.addAttribute(FORM, LOGIN_FORM);
+		System.out.println(model.asMap().get(FORM));
 		return "index";
 	}
 	
-	@RequestMapping(value="/home",method=RequestMethod.GET)
-	String test() {
-		return "home";
-	}
 	@RequestMapping(value="/login",method = RequestMethod.POST)
 	String login(@RequestParam(value ="username") String username,
 			@RequestParam(value ="password") String password,
 			HttpSession session, Model model) {
+		//normalization
+		username = username.trim();
+		password = password.trim();
 		
-		if(valid(username,password)) {
-			
+		if(Utils.isValidUsername(username)&&Utils.isValidPassword(password)) {
 			String hashed = UserManager.hashPassword(password);
-			System.out.println("-----hashPassword: " + hashed);
-			/*for(User u : IUserDAO.getInstance().getAllUsers()) {
-				if(username.equals(u.getUsername()) && password.equals(u.getPassword())) {
-					//User x = IUserDAO.getInstance().getUser(username);
-					User user = UserManager.createUserAfterLogin(username, password);
-					s.setAttribute("logedUser",user);
-					System.out.println(user.getId());
-					return "redirect:home";
-				}
-			}*/
 			if(IUserDAO.getInstance().checkForCorrectUsernameAndPassword(username, hashed)){
 				User user = UserManager.createUserAfterLogin(username, hashed);
 				session.setAttribute("logedUser",user);
 				System.out.println(user.getId());
+				Utils.logger.info("user is logged");
 				return "redirect:home";
 			}
-			model.addAttribute("LoginErrorInfo", "User doesnt exists");
+			model.addAttribute(LOGIN_ERROR, WRONG_USERNAME);
+			model.addAttribute(FORM, LOGIN_FORM);
 			return "index";
 		} 
-			model.addAttribute("LoginErrorInfo", "Fields empty");
+			model.addAttribute(LOGIN_ERROR, INCORECT_LOGIN);
+			model.addAttribute(FORM, LOGIN_FORM);
 			return "index";
 	}
+	
+	@RequestMapping(value="/register",method = RequestMethod.GET)
+	String registerGET(Model model){
+		model.addAttribute(FORM, REGISTER_FORM);
+		return "index";
+	}
+	
+	@RequestMapping(value="/login",method = RequestMethod.GET)
+	String loginGET(Model model){
+		model.addAttribute(FORM, LOGIN_FORM);
+		return "index";
+	}
+	
 	
 	@RequestMapping(value="/register",method = RequestMethod.POST)
 	String register(@RequestParam(value="username") String username,
@@ -64,57 +81,36 @@ public class IndexPageController {
 			@RequestParam(value ="confirm-password") String confirmPassword,
 			HttpSession session, Model model, HttpServletResponse response){
 		String result = valid(username,email,password,confirmPassword);
-		if(result.equals("correct"))
-		{
-			//User x = new User(username,email,password);
-			//IUserDAO.getInstance().addUser(x);
-			//use UserManager.createUserAfterRegister();
-			
+		if(result.equals("correct")){
 			String hashed = UserManager.hashPassword(password);
 			User user = UserManager.createUserAfterRegister(username, hashed, email);
 			session.setAttribute("logedUser",user);
-			//this will change the url.If it's only return home, the url will looks like ..../register but the user will be in home page
+			Utils.logger.info("user is register and logged");
 			return "redirect:home";
 		}
-		model.addAttribute("RegisterErrorInfo", result);
+		model.addAttribute(REGISTER_ERROR, result);
+		model.addAttribute(FORM, REGISTER_FORM);
+		Utils.logger.info("incorect registration");
 		return "index";
 	}
 	
 	private String valid(String username, String email, String password, String confirmPassword) {
 		String result = "correct";
 		if(username.length() == 0 || email.length() == 0 || password.length() == 0 || confirmPassword.length() == 0) {
-			result = "Some fields are empty";
+			return "Empty fields";
 		}
 		if(!password.equals(confirmPassword)) {
-			result = "Passwords do not match";
+			return "Passwords do not match";
 		}
-		if(password.length() < 6) {
-			result = "Password must be atleast 6 characters";
+		if(!Utils.isValidPassword(password)) {
+			return "Password must be between 6 and 16 characters and can contain letters, number and_ @ # $ %";
 		}
-		if(!validMail(email)) {
-			result = "Invalid email";
+		if(!Utils.isValidEmail(email)) {
+			return "Invalid email";
 		}
-		//for(User u : IUserDAO.getInstance().getAllUsers()) {
-			//ne sam mnogo siguren, no taka nqma li da se iziskva vsichki paroli da sa razlichni, 
-			//t.e. ne moje da ima 2-ma user-a s edna i sashta parola
-			//if(u.getUsername().equals(username) || u.getPassword().equals(password)) {
-			if(IUserDAO.getInstance().checkIfUserExists(username, email)) {
-				result = "Username/email already in use";
-				//break;
-			}
-		//}
+		if(IUserDAO.getInstance().checkIfUserExists(username, email)) {
+			return "Username/email already in use";
+		}
 		return result;
-	}
-	
-	private boolean validMail(String email) {
-		 String EMAIL_REGEX = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
-		 return email.matches(EMAIL_REGEX);
-	}
-	
-	private boolean valid(String username, String password) {
-		if(username.length() == 0 || password.length() == 0) {
-			return false;
-		}
-		return true;
 	}
 }
