@@ -292,9 +292,9 @@ input.error {
 									
 									<c:if test="${panel=='changeEmail'}">
 										<div>
-										<p>${errorMessage}</p>
+										
 											<form method="POST" action="changeEmail">
-											New email <input type="email" name="email"/><br/>
+											New email <input type="text" name="email"/><br/>
 											<input type="submit" value="change">
 											</form>
 										</div>

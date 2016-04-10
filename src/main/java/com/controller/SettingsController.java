@@ -49,25 +49,37 @@ public class SettingsController {
 	
 	
 	@RequestMapping(value="/settings", method = RequestMethod.GET)
-	String settings(Model model){
+	String settings(HttpSession session, Model model){
+		if(session.getAttribute("logedUser")==null){
+			return "redirect:index";
+		}
 		model.addAttribute("panel", "changePassword");
 		return "settings";
 	}
 	
 	@RequestMapping(value = "/changePassword" , method = RequestMethod.GET)
-	String changePassword(Model model) {
+	String changePassword(HttpSession session, Model model) {
+		if(session.getAttribute("logedUser")==null){
+			return "redirect:index";
+		}
 		model.addAttribute(panel, "changePassword");
 		return "settings";
 	}
 	
 	@RequestMapping(value = "/changeBudgetPercentage" , method = RequestMethod.GET)
-	String changeBudgetPercentage(Model model) {
+	String changeBudgetPercentage(HttpSession session, Model model) {
+		if(session.getAttribute("logedUser")==null){
+			return "redirect:index";
+		}
 		model.addAttribute(panel, "changePercentage");
 		return "settings";
 	}
 	
 	@RequestMapping(value = "/changeEmail" , method = RequestMethod.GET)
-	String changeEmail(Model model) {
+	String changeEmail(HttpSession session, Model model) {
+		if(session.getAttribute("logedUser")==null){
+			return "redirect:index";
+		}
 		model.addAttribute(panel, "changeEmail");
 		return "settings";
 	}
@@ -79,6 +91,8 @@ public class SettingsController {
 			int id = user.getId();
 			ArrayList<String> categories = DBBudgetDAO.getInstance().getCustomCategories(id);
 			model.addAttribute("categories", categories);
+		}else{
+			return "redirect:index";
 		}
 		model.addAttribute(panel, "deleteCategory");
 		return "settings";
@@ -86,6 +100,9 @@ public class SettingsController {
 	
 	@RequestMapping(value = "/deletePayment" , method = RequestMethod.GET)
 	String deletePayment(HttpSession session, Model model) {
+		if(session.getAttribute("logedUser")==null){
+			return "redirect:index";
+		}
 		model.addAttribute(panel, "deletePayment");
 		return "settings";
 	}
@@ -175,7 +192,7 @@ public class SettingsController {
 
 	@RequestMapping(value="/changeEmail", method = RequestMethod.POST)
 	String changeEmail(HttpServletRequest request, HttpSession session, Model model) {
-		String newEmail = request.getParameter("email");
+		String newEmail = request.getParameter("email").trim();
 		if(Utils.isValidEmail(newEmail)){
 			User user = (User)session.getAttribute("logedUser");
 			if(IUserDAO.getInstance().checkIfEmailExists(newEmail)){

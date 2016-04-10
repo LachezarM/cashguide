@@ -92,7 +92,7 @@ public class DBPaymentDAO implements IPaymentDAO{
 			
 			//category doesn't exist
 			int id = 0;
-			
+			//false if rs is empty
 			boolean result = rs.next();
 			if(!result){
 				ps2.setString(1, category);

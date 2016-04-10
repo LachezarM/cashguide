@@ -45,12 +45,15 @@ public class HomePageController {
 		if(session.getAttribute("logedUser")!=null)
 			return "home";
 		else
-			return "index";
+			return "redirect:index";
 	}
 	
 	@RequestMapping(value="/add" , method = RequestMethod.GET)
 	String add(Model model, HttpSession session) {
 		User user = (User)session.getAttribute("logedUser");
+		if(user==null){
+			return "redirect:index";
+		}
 		/*Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(user.getId());
 		JsonObject object = new JsonObject();
 		for(String type:result.keySet()){
@@ -76,6 +79,9 @@ public class HomePageController {
 	@RequestMapping(value = "/history", method = RequestMethod.GET)
 	String showHistory(HttpSession s, Model m) {
 		currentUser = (User) s.getAttribute("logedUser");
+		if(currentUser==null){
+			return "redirect:index";
+		}
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(currentUser.getId());
 		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(currentUser.getId());
 		List<String> categories = new ArrayList<String>();
@@ -89,6 +95,9 @@ public class HomePageController {
 	@RequestMapping(value = "/info", method = RequestMethod.GET)
 	String showPayments(HttpServletResponse r, HttpSession s, Model m) {
 		User u = (User) s.getAttribute("logedUser");
+		if(u==null){
+			return "redirect:index";
+		}
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(u.getId());
 		List<Payment> currMonthPayments = getCurrMonthPayments(payments);
 		HashMap<String, Double> currMonthIncomesMap = getAsMap(currMonthPayments, "Income");
@@ -253,14 +262,12 @@ public class HomePageController {
 		return currMonthPayments;
 	}
 
-
-	@RequestMapping(value="/shopping" , method = RequestMethod.GET)
-	String shopingList() {
-		return 	"index";	
-	}
 	
 	@RequestMapping(value="/simulator" , method = RequestMethod.GET)
-	String simulator() {
+	String simulator(HttpSession session) {
+		if(session.getAttribute("logedUser")==null){
+			return "redirect:index";
+		}
 		return 	"simulator";	
 	}
 
