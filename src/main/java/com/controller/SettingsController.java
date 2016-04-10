@@ -1,6 +1,5 @@
 package com.controller;
 
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -21,6 +20,7 @@ import com.model.Budget;
 import com.model.Payment;
 import com.model.User;
 import com.model.UserManager;
+import com.model.Utils;
 import com.model.db.DBBudgetDAO;
 import com.model.db.DBPaymentDAO;
 import com.model.db.IBudgetDAO;
@@ -28,8 +28,8 @@ import com.model.db.IPaymentDAO;
 import com.model.db.IUserDAO;
 
 @Controller
-public class UserProfileController {
-	/*
+public class SettingsController {
+
 	private static final String success = "successMessage";
 	private static final String error = "errorMessage";
 	private static final String panel = "panel";
@@ -46,6 +46,13 @@ public class UserProfileController {
 	private static final String invalidDate = "Invalid date";
 	private static final String categoryError = "No such category";
 	private static final String emailError = "This email is taken";
+	
+	
+	@RequestMapping(value="/settings", method = RequestMethod.GET)
+	String settings(Model model){
+		model.addAttribute("panel", "changePassword");
+		return "settings";
+	}
 	
 	@RequestMapping(value = "/changePassword" , method = RequestMethod.GET)
 	String changePassword(Model model) {
@@ -76,7 +83,6 @@ public class UserProfileController {
 		model.addAttribute(panel, "deleteCategory");
 		return "settings";
 	}
-	
 	
 	@RequestMapping(value = "/deletePayment" , method = RequestMethod.GET)
 	String deletePayment(HttpSession session, Model model) {
@@ -117,28 +123,28 @@ public class UserProfileController {
 	}
 	
 	@RequestMapping(value="/changePasswordUser", method = RequestMethod.POST)
-	String changePasswordPost(@RequestParam(value="newPassword") String newPassword,
-			@RequestParam(value="oldPassword") String oldPassword, HttpSession session,
-	Model model) {
-		User user = (User)session.getAttribute("logedUser");
-		String oldHashedPass = UserManager.hashPassword(oldPassword);
-		if(user!=null){
-			if(user.getPassword().equals(oldHashedPass)&&(newPassword.length() >= 6)&& !(IUserDAO.getInstance().checkIfPasswordExists(newPassword))) {
-					String newHashedPassword = UserManager.hashPassword(newPassword);
-					IUserDAO.getInstance().changePassword(user.getId(), newHashedPassword);
-					model.addAttribute(success,passwordSuccess);
+	String changePasswordPost(@RequestParam(value="newPassword") String newPassword, @RequestParam(value="oldPassword") String oldPassword, HttpSession session, Model model) {
+		newPassword=newPassword.trim();
+		oldPassword = oldPassword.trim();
+		if(Utils.isValidPassword(newPassword)&&Utils.isValidPassword(oldPassword)){
+			User user = (User)session.getAttribute("logedUser");
+			String oldHashedPass = UserManager.hashPassword(oldPassword);
+			if((user!=null)&&(!user.getPassword().equals(oldHashedPass))){/*&& !(IUserDAO.getInstance().checkIfPasswordExists(newPassword))*/
+				String newHashedPassword = UserManager.hashPassword(newPassword);
+				IUserDAO.getInstance().changePassword(user.getId(), newHashedPassword);
+				model.addAttribute(success,passwordSuccess);
 			}else{
-				model.addAttribute(error,passwordError);
+				model.addAttribute(error, passwordError);
 			}
 		}else{
-			model.addAttribute(error, passwordError);
+			model.addAttribute(error,passwordError);
 		}
 		model.addAttribute(panel, "changePassword");
 		return "settings";
 	}
 	
 	@RequestMapping(value="/changeBudgetPercentage", method = RequestMethod.POST)
-	String changeBudgetPercentagePost(@RequestParam(value="percentage") double percentage,
+	String changeBudgetPercentagePost(/*@RequestParam(value="percentage") double percentage,*/
 	HttpSession s, HttpServletRequest request,
 	Model model) {
 		String param = request.getParameter("percentage");
@@ -168,21 +174,22 @@ public class UserProfileController {
 	}
 
 	@RequestMapping(value="/changeEmail", method = RequestMethod.POST)
-	String changeEmail(HttpServletRequest request, HttpSession session,
-	Model model) {
+	String changeEmail(HttpServletRequest request, HttpSession session, Model model) {
 		String newEmail = request.getParameter("email");
-		//if email is valid
-		User user = (User)session.getAttribute("logedUser");
-		if(IUserDAO.getInstance().checkIfEmailExists(newEmail)){
-			model.addAttribute(error, emailError);
+		if(Utils.isValidEmail(newEmail)){
+			User user = (User)session.getAttribute("logedUser");
+			if(IUserDAO.getInstance().checkIfEmailExists(newEmail)){
+				model.addAttribute(error, emailError);
+			}else{
+				model.addAttribute(success, emailSuccess);
+				IUserDAO.getInstance().changeEmail(user.getId(), newEmail);
+			}
 		}else{
-			model.addAttribute(success, emailSuccess);
-			IUserDAO.getInstance().changeEmail(user.getId(), newEmail);
+			model.addAttribute(error, emailError);
 		}
 		model.addAttribute(panel, "changeEmail");
 		return "settings";
 	}
-	
 	
 	@RequestMapping(value="/deleteCategory", method = RequestMethod.POST)
 	String deleteCategoryPost(HttpServletRequest request, HttpSession session, Model model) {
@@ -252,13 +259,7 @@ public class UserProfileController {
 		return "settings";
 	}
 
-	
-	
-	
-	
-	
-	
-	@RequestMapping(value = "/addBalance" , method = RequestMethod.GET)
+	/*@RequestMapping(value = "/addBalance" , method = RequestMethod.GET)
 	String addBalance(HttpSession s) {
 
 		s.removeAttribute("changePassword");
@@ -266,9 +267,9 @@ public class UserProfileController {
 		s.removeAttribute("changeBudgetPercentage");
 		s.setAttribute("addBalance", true);
 		return "UserProfile";
-	}
+	}*/
 	
-	@RequestMapping(value = "/changeUsername" , method = RequestMethod.POST)
+	/*@RequestMapping(value = "/changeUsername" , method = RequestMethod.POST)
 	String changeUsernamePost(@RequestParam(value ="username") String username,
 			HttpSession s,
 			Model m) {
@@ -283,7 +284,5 @@ public class UserProfileController {
 		}
 		m.addAttribute("change", "UnSucessful");
 		return "UserProfile";
-	}
-}*/
-	
+	}*/
 }

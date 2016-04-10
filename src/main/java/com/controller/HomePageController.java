@@ -40,6 +40,13 @@ public class HomePageController {
 	
 	static User currentUser = null;
 
+	@RequestMapping(value="/home" , method = RequestMethod.GET)
+	String home(Model model, HttpSession session) {
+		if(session.getAttribute("logedUser")!=null)
+			return "home";
+		else
+			return "index";
+	}
 	
 	@RequestMapping(value="/add" , method = RequestMethod.GET)
 	String add(Model model, HttpSession session) {

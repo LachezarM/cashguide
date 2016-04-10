@@ -194,7 +194,6 @@ function createPieChart(payments) {
 <script>
 var myLineChart = null;
 function createLineChart(payments) { 
-<<<<<<< HEAD
 	if(payments.length == 0) {
 		var data = {
 				labels : "NOT ENOUGHT DATA",
@@ -204,11 +203,7 @@ function createLineChart(payments) {
 		}
 	}
 	else {
-		var data =  {
-=======
-	console.log(payments);
 	var data =  {
->>>>>>> 481c5f73de8b950be760e74ac8f4b656b5f9c4fd
 			labels: generateLabels(payments),
 			datasets:[
 			  {
@@ -220,12 +215,10 @@ function createLineChart(payments) {
 			  }        
 			         ]
 	}
-	}
 	destroyCharts();
-	var ctx = document.getElementById("chartPayments")
-	.getContext("2d");
+	var ctx = document.getElementById("chartPayments").getContext("2d");
 	myLineChart = new Chart(ctx).Line(data);
-	
+}
 }
 </script>
 <script>

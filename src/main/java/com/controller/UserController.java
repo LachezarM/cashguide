@@ -15,11 +15,4 @@ public class UserController {
 		session.invalidate();
 		return "redirect:index";
 	}
-	
-	@RequestMapping(value="/settings", method = RequestMethod.GET)
-	String settings(Model model){
-		model.addAttribute("panel", "changePassword");
-		return "settings";
-	}
-	
 }
