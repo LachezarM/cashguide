@@ -14,7 +14,9 @@
 
 <!-- Bootstrap Core CSS -->
 <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
-
+<!-- css for datepicker -->
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <style>
 .select_style {
 	background: #FFF;
@@ -194,7 +196,6 @@ function createPieChart(payments) {
 <script>
 var myLineChart = null;
 function createLineChart(payments) { 
-<<<<<<< HEAD
 	if(payments.length == 0) {
 		var data = {
 				labels : "NOT ENOUGHT DATA",
@@ -205,10 +206,6 @@ function createLineChart(payments) {
 	}
 	else {
 		var data =  {
-=======
-	console.log(payments);
-	var data =  {
->>>>>>> 481c5f73de8b950be760e74ac8f4b656b5f9c4fd
 			labels: generateLabels(payments),
 			datasets:[
 			  {
@@ -260,6 +257,9 @@ function generateData(payments) {
 		if(myPieChart != null) {
 			myPieChart.destroy();
 		}
+		if(lineChartComparison != null) {
+			lineChartComparison.destroy();
+		}
 	}
 </script>
 <script>
@@ -279,14 +279,112 @@ function generateData(payments) {
 			lists[5].childNodes[0].setAttribute("href", hostname + "/simulator"); */
 	});
 </script>
-<!--Only chrome supports type=date, so for firefox i added this datepicker from jquery-->
-<!-- DOES NOT WORK-->
-<script>
-	/* if ( $('[type="date"]').prop('type') != 'date' ) {
-		$('[type="date"]').datepicker();
-	} */
-</script>
+<!-- jQueryV2.2.2 -->
+<script src="js/jquery-2.2.2.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="js/bootstrap.min.js"></script>
 
+<script>
+$(function() {
+	$("#datepicker1").datepicker({
+		dateFormat : "dd-mm-yy"
+	});
+	$("#datepicker2").datepicker({
+		dateFormat : "dd-mm-yy"
+	});
+});
+</script>
+<script>
+function opa() {
+	var date1 = document.getElementById('datepicker1').value;
+	var date2 = document.getElementById('datepicker2').value;
+	var type = $('input[name="choise"]:checked').val();
+	
+	var dates = {"date1":date1,
+    	 	"date2":date2
+ 		};
+	 $.ajax({
+         type: "POST",
+         url: "compare",
+         data: dates,
+         success: function (result) {
+        	 createLineChartComparison(result,type);
+         },
+         error: function (result) {
+               alert("oops");
+         }
+     });
+
+}
+</script>
+<script>
+var lineChartComparison = null;
+function createLineChartComparison(result,type){
+	obj = JSON.parse(result);
+	var labels = [];
+	var dataFirst = [];
+	var dataSecond = [];
+	if(type == "Incomes") {
+		var array = obj.firstDateIncomesJson.payments;
+		labels = getLabels(array);
+		dataFirst = getData(array);
+		var array = obj.secondDateIncomesJson.payments;
+		dataSecond = getData(array);
+	} else if(type == "Expenses"){
+		var array = obj.firstDateExpensesJson.payments;
+		labels = getLabels(array);
+		dataFirst = getData(array);
+		var array = obj.secondDateExpensesJson.payments;
+		dataSecond = getData(array);
+	}
+	var data =  {
+			labels: labels,
+			datasets:[
+			  {
+				  label: "First Month",
+		            fillColor: "rgba(220,220,220,0.2)",
+		            strokeColor: "rgba(220,220,220,1)",
+		            pointColor: "rgba(220,220,220,1)",
+		            pointStrokeColor: "#fff",
+		            pointHighlightFill: "#fff",
+		            pointHighlightStroke: "rgba(220,220,220,1)",
+                  data : dataFirst
+			  }   ,
+			 { 
+				  label: "Second Month",
+		            fillColor: "rgba(151,187,205,0.2)",
+		            strokeColor: "rgba(151,187,205,1)",
+		            pointColor: "rgba(151,187,205,1)",
+		            pointStrokeColor: "#fff",
+		            pointHighlightFill: "#fff",
+		            pointHighlightStroke: "rgba(151,187,205,1)",
+                 	 data : dataSecond
+			  }       
+			        ]
+	}
+	destroyCharts();
+	var ctx = document.getElementById("chartPayments")
+	.getContext("2d");
+	lineChartComparison = new Chart(ctx).Line(data);
+	
+}
+function getLabels(array){
+	var labels = [];
+	for(i = 0;i < array.length;i++) {
+		var category = array[i].category;
+		labels.push(category);
+	}
+	return labels;
+}
+function getData(array){
+	var data = [];
+	for(i = 0;i < array.length;i++) {
+		var amount = array[i].amount;
+		data.push(amount);
+	}
+	return data;
+}
+</script>
 </head>
 <body>
 	<div class="container">
@@ -316,6 +414,15 @@ function generateData(payments) {
 								<option value="YEARSEXPENSES">YearBackExpenses</option>
 								<option value="YEARSINCOMES">YearBackIncomes</option>
 						</select>
+						OR
+						<div id="choise" >
+							Compare By Month: <input type="text" name="date1" id="datepicker1" class="form-control" placeholder="Month"> 
+											<input type="text" name="date2" id="datepicker2" class="form-control" placeholder="Month"> 
+										<button onclick="opa();">Compare : </button>	
+										Expenses <input checked="checked" type="radio" name="choise" value="Expenses" '>
+										Incomes <input type="radio" name="choise" value="Incomes"> 		
+								
+							</div>
 						<canvas id="chartPayments" width="300" height="300"></canvas>
 						
 	

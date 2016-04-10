@@ -127,7 +127,7 @@ public class HistoryController {
 		}
 	}
 
-	private void modifyByDate(String date, List<Payment> payments) {
+	public static void modifyByDate(String date, List<Payment> payments) {
 		LocalDate dateJava;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		dateJava = LocalDate.parse(date, formatter);
