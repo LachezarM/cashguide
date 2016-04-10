@@ -1,6 +1,12 @@
 package com.model;
 
+import org.apache.log4j.Logger;
+
+import com.controller.HomePageController;
+
 public class Utils {
+
+	public final static Logger logger = Logger.getLogger("LOGS");
 
 	//private static final String EMAIL_REGEX = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
 	private final static String EMAIL_REGEX = "^[A-Za-z0-9]+(\\.[_A-Za-z0-9-]+)*@([A-Za-z0-9-]{3,7})(\\.[A-Za-z]{2,})$";

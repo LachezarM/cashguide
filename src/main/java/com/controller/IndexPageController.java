@@ -45,20 +45,11 @@ public class IndexPageController {
 		
 		if(Utils.isValidUsername(username)&&Utils.isValidPassword(password)) {
 			String hashed = UserManager.hashPassword(password);
-			System.out.println("-----hashPassword: " + hashed);
-			/*for(User u : IUserDAO.getInstance().getAllUsers()) {
-				if(username.equals(u.getUsername()) && password.equals(u.getPassword())) {
-					//User x = IUserDAO.getInstance().getUser(username);
-					User user = UserManager.createUserAfterLogin(username, password);
-					s.setAttribute("logedUser",user);
-					System.out.println(user.getId());
-					return "redirect:home";
-				}
-			}*/
 			if(IUserDAO.getInstance().checkForCorrectUsernameAndPassword(username, hashed)){
 				User user = UserManager.createUserAfterLogin(username, hashed);
 				session.setAttribute("logedUser",user);
 				System.out.println(user.getId());
+				Utils.logger.info("user is logged");
 				return "redirect:home";
 			}
 			model.addAttribute(LOGIN_ERROR, WRONG_USERNAME);
@@ -94,10 +85,12 @@ public class IndexPageController {
 			String hashed = UserManager.hashPassword(password);
 			User user = UserManager.createUserAfterRegister(username, hashed, email);
 			session.setAttribute("logedUser",user);
+			Utils.logger.info("user is register and logged");
 			return "redirect:home";
 		}
 		model.addAttribute(REGISTER_ERROR, result);
 		model.addAttribute(FORM, REGISTER_FORM);
+		Utils.logger.info("incorect registration");
 		return "index";
 	}
 	

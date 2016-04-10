@@ -18,6 +18,7 @@ import com.model.Income;
 import com.model.Payment;
 import com.model.User;
 import com.model.UserManager;
+import com.model.Utils;
 import com.model.db.DBPaymentDAO;
 
 
@@ -42,12 +43,14 @@ public class AddController {
 			date = LocalDate.parse(d, formatter);
 		}catch(DateTimeParseException e){
 			System.out.println("Date cann't be parsed");
+			Utils.logger.info("Incorect date in add payments");
 			return "redirect:add";
 		}
 		
 		
 		if(amount<0){
 			System.out.println("must be positive");
+			Utils.logger.info("Negative amount in add payments");
 			amount = -amount;
 		}
 		//exception 
@@ -66,17 +69,13 @@ public class AddController {
 		//this will add payment to db+all foreign keys and to user's budget in session
 		if(payment.getType().equalsIgnoreCase("EXPENSE") 
 				&& payment.getAmount()>(user.getBudget().getIncome()-user.getBudget().getExpense())){
-				//if(payment.getAmount()>user.getBudget().getBalance()){
 					errorMessage="You don't have enought money in your budget";
 					System.out.println("error you can't do this");
-				//}
-				//else{
-				//	UserManager.addPayment(user, payment);
-				//	successMessage="Payment was added";
-				//}
+					Utils.logger.info("Payment wasn't added because its amount is greater than total incomes");
 		}else{
 			UserManager.addPayment(user, payment);
 			successMessage="Payment was added";
+			Utils.logger.info("Payment was added");
 		}
 		
 		model.addAttribute("errorPayment", errorMessage);
@@ -100,24 +99,16 @@ public class AddController {
 		}
 		
 		//save to db
-		if(customCategory.trim().length()<=0){
+		if(customCategory.trim().length()==0){
 			model.addAttribute("errorCategory", "Category is empty");
+			Utils.logger.info("custom category wasn't added because its length is 0");
+			
 		}else{
-			DBPaymentDAO.getInstance().addNewCategory(customCategory, paymentType, user);
-/*			Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(user.getId());
-			JsonObject object = new JsonObject();
-			for(String type:result.keySet()){
-				JsonArray categories = new JsonArray();
-				for(String category:result.get(type)){
-					categories.add(category);
-				}
-				object.add(type, categories);
-			}
-*/			
+			DBPaymentDAO.getInstance().addNewCategory(customCategory, paymentType, user);		
 			JsonObject object = DBPaymentDAO.getInstance().getCategoriesJSON(user.getId());
-			//model.addAttribute("categories", object);
 			session.setAttribute("categories", object);
 			model.addAttribute("successCategory", "category was added");
+			Utils.logger.info("custom category was added");
 		}
 		model.addAttribute("panel", "add-category");
 		

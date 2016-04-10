@@ -15,13 +15,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.model.Budget;
 import com.model.User;
+import com.model.Utils;
 import com.model.db.DBBudgetDAO;
 
 @Controller
 public class SimulatorController {
 
 	@RequestMapping(value="/getBudget", method=RequestMethod.GET)
-	String budget() {	
+	String budget() {
 		return "simulator";
 	}
 	
@@ -34,6 +35,7 @@ public class SimulatorController {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 			date = LocalDate.parse(d, formatter);
 			}catch(DateTimeParseException e){
+				Utils.logger.error("Simulator>getBudget>date couldn't be parsed");
 				model.addAttribute("error","invalid date");
 				return "simulator";
 			}
@@ -49,6 +51,7 @@ public class SimulatorController {
 			model.addAttribute("showBudget", budget);
 		}else{
 			session.removeAttribute("budget");
+			Utils.logger.error("No such budget");
 			model.addAttribute("error","No such budget");
 		}
 		return "simulator";
@@ -92,6 +95,8 @@ public class SimulatorController {
 		model.addAttribute("result", result);
 		model.addAttribute("showBudget",budget);
 		model.addAttribute("positiveSaving", balance>0);
+		
+		Utils.logger.info("Simulator: calculating future wealth");
 		return "simulator";
 	}
 	

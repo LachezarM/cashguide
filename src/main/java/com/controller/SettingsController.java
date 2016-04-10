@@ -54,6 +54,7 @@ public class SettingsController {
 			return "redirect:index";
 		}
 		model.addAttribute("panel", "changePassword");
+		Utils.logger.info("settings link was clicked");
 		return "settings";
 	}
 	
@@ -63,6 +64,7 @@ public class SettingsController {
 			return "redirect:index";
 		}
 		model.addAttribute(panel, "changePassword");
+		Utils.logger.info("chagepassword link was clicked");
 		return "settings";
 	}
 	
@@ -72,6 +74,7 @@ public class SettingsController {
 			return "redirect:index";
 		}
 		model.addAttribute(panel, "changePercentage");
+		Utils.logger.info("changePercentage link was clicked");
 		return "settings";
 	}
 	
@@ -81,11 +84,13 @@ public class SettingsController {
 			return "redirect:index";
 		}
 		model.addAttribute(panel, "changeEmail");
+		Utils.logger.info("changeEmail link was clicked");
 		return "settings";
 	}
 	
 	@RequestMapping(value = "/deleteCategory" , method = RequestMethod.GET)
 	String deleteCategory(HttpSession session, Model model){
+		Utils.logger.info("delete category link was clicked");
 		User user = (User)session.getAttribute("logedUser");
 		if(user!=null){
 			int id = user.getId();
@@ -95,11 +100,13 @@ public class SettingsController {
 			return "redirect:index";
 		}
 		model.addAttribute(panel, "deleteCategory");
+		
 		return "settings";
 	}
 	
 	@RequestMapping(value = "/deletePayment" , method = RequestMethod.GET)
 	String deletePayment(HttpSession session, Model model) {
+		Utils.logger.info("delete category link was clicked");
 		if(session.getAttribute("logedUser")==null){
 			return "redirect:index";
 		}
@@ -109,6 +116,7 @@ public class SettingsController {
 	
 	@RequestMapping(value = "/getBudgetDel" , method = RequestMethod.POST)
 	String getBudget(@RequestParam(value="date") String d, HttpSession session, Model model) {
+		Utils.logger.info("getDeleteBudget link was clicked");
 		LocalDate date = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), 1);
 		if(d.trim().length()!=0){
 			try{
@@ -116,20 +124,15 @@ public class SettingsController {
 			date = LocalDate.parse(d, formatter);
 			}catch(DateTimeParseException e){
 				model.addAttribute(error,invalidDate);
+				Utils.logger.error("Parsing date in getDeleteBudget");
 				return "settings";
 			}
 		}
 		User user = (User)session.getAttribute("logedUser");
-		
-		Budget budget = DBBudgetDAO.getInstance().getBudget(user.getId(), date);
-		
-		System.out.println("Budget: " + budget);
-		
+		Budget budget = DBBudgetDAO.getInstance().getBudget(user.getId(), date);		
 		if(budget!=null){
-			//session.setAttribute("budget", budget);
 			model.addAttribute(panel, "deletePayment");
 			session.setAttribute("delBudget", budget);
-			//model.addAttribute("delBudget", budget);
 			model.addAttribute("month", true);
 		}else{
 			session.removeAttribute("delBudget");
@@ -150,10 +153,13 @@ public class SettingsController {
 				String newHashedPassword = UserManager.hashPassword(newPassword);
 				IUserDAO.getInstance().changePassword(user.getId(), newHashedPassword);
 				model.addAttribute(success,passwordSuccess);
+				Utils.logger.info("changing password");
 			}else{
+				Utils.logger.error("old password was incorrect or user is null");
 				model.addAttribute(error, passwordError);
 			}
 		}else{
+			Utils.logger.error("password was incorrect");
 			model.addAttribute(error,passwordError);
 		}
 		model.addAttribute(panel, "changePassword");
@@ -177,13 +183,13 @@ public class SettingsController {
 			if(percentage>0&&percentage<=100){
 				percentage /= 100;
 				budget.setPercentageOfIncome(percentage);
-				budget.setBalance(income*percentage - expenses);
-				System.out.println("Budget balance after changing percentage: " + budget.getBalance());
-					
+				budget.setBalance(income*percentage - expenses);					
 				IBudgetDAO.getInstance().updateBudget(budget);
+				Utils.logger.info("budget percentage was changed");
 				model.addAttribute(success, percentageSuccess);
 			}else{
 				model.addAttribute(error, percentageError);
+				Utils.logger.error("budget percentage wasn't in range(0;100]");
 			}
 		}
 		model.addAttribute(panel, "changePercentage");
@@ -197,12 +203,15 @@ public class SettingsController {
 			User user = (User)session.getAttribute("logedUser");
 			if(IUserDAO.getInstance().checkIfEmailExists(newEmail)){
 				model.addAttribute(error, emailError);
+				Utils.logger.error("email exists");
 			}else{
 				model.addAttribute(success, emailSuccess);
 				IUserDAO.getInstance().changeEmail(user.getId(), newEmail);
+				Utils.logger.info("email was changed");
 			}
 		}else{
 			model.addAttribute(error, emailError);
+			Utils.logger.error("new email is invalid");
 		}
 		model.addAttribute(panel, "changeEmail");
 		return "settings";
@@ -210,19 +219,20 @@ public class SettingsController {
 	
 	@RequestMapping(value="/deleteCategory", method = RequestMethod.POST)
 	String deleteCategoryPost(HttpServletRequest request, HttpSession session, Model model) {
-	
 		String category = request.getParameter("category");
 		if(category==null||category.trim().length()==0){
 			model.addAttribute(error, categoryError);
+			Utils.logger.error("deleteCategory:category was either null or its length was 0");
 		}else{
 			int id = ((User) session.getAttribute("logedUser")).getId();
 			DBPaymentDAO.getInstance().deleteCategory(category, id);
 			ArrayList<String> categories = DBBudgetDAO.getInstance().getCustomCategories(id);
 			model.addAttribute(panel, "deleteCategory");
 			model.addAttribute("categories", categories);
+			Utils.logger.info("categories was deleted");
 			model.addAttribute(success, categorySuccess);
 		}
-			return "settings";
+		return "settings";
 	}
 	
 	@RequestMapping(value = "/deletePayment" , method = RequestMethod.POST)
@@ -245,7 +255,7 @@ public class SettingsController {
 			}			
 			budget.getPayments().get("INCOME").removeAll(deleted);
 			deleted.clear();
-		}		
+		}
 		if(expensesID!=null){
 			for(String id:expensesID){
 				int intId = Integer.valueOf(id);
@@ -272,7 +282,7 @@ public class SettingsController {
 		model.addAttribute(success, paymentsSuccess);
 		model.addAttribute(panel, "deletePayment");
 		model.addAttribute("month", true);
-		
+		Utils.logger.info("payments were deleted");
 		return "settings";
 	}
 
@@ -283,23 +293,6 @@ public class SettingsController {
 		s.removeAttribute("changeUsername");
 		s.removeAttribute("changeBudgetPercentage");
 		s.setAttribute("addBalance", true);
-		return "UserProfile";
-	}*/
-	
-	/*@RequestMapping(value = "/changeUsername" , method = RequestMethod.POST)
-	String changeUsernamePost(@RequestParam(value ="username") String username,
-			HttpSession s,
-			Model m) {
-		if(username.length() != 0 && !IUserDAO.getInstance().checkIfUserExests(username)) {
-			User u = (User) s.getAttribute("logedUser");
-			System.out.println(u.getId());
-			IUserDAO.getInstance().changeUserProfile(u.getId(), username);
-			System.out.println(u.getId());
-			m.addAttribute("change", "Sucessful");
-			return "UserProfile";
-		
-		}
-		m.addAttribute("change", "UnSucessful");
 		return "UserProfile";
 	}*/
 }

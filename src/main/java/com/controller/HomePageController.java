@@ -2,8 +2,6 @@ package com.controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,38 +12,35 @@ import java.util.TreeMap;
 import javax.naming.directory.InvalidAttributesException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.swing.text.LayeredHighlighter;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.model.Payment;
 import com.model.User;
+import com.model.Utils;
 import com.model.db.DBBudgetDAO;
 import com.model.db.DBPaymentDAO;
-import com.model.db.IBudgetDAO;
 import com.model.db.IPaymentDAO;
-
-import ch.qos.logback.core.net.SyslogOutputStream;
-import scala.annotation.meta.companionClass;
 
 @Controller
 public class HomePageController {
 	
 	static User currentUser = null;
+	final static Logger logger = Logger.getLogger(HomePageController.class.getName());
 
 	@RequestMapping(value="/home" , method = RequestMethod.GET)
 	String home(Model model, HttpSession session) {
-		if(session.getAttribute("logedUser")!=null)
+		if(session.getAttribute("logedUser")!=null){
 			return "home";
-		else
+		}else{
 			return "redirect:index";
+		}
 	}
 	
 	@RequestMapping(value="/add" , method = RequestMethod.GET)
@@ -54,25 +49,11 @@ public class HomePageController {
 		if(user==null){
 			return "redirect:index";
 		}
-		/*Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(user.getId());
-		JsonObject object = new JsonObject();
-		for(String type:result.keySet()){
-			JsonArray categories = new JsonArray();
-			for(String category:result.get(type)){
-				categories.add(category);
-			}
-			object.add(type, categories);
-		}*/
-	
 		JsonObject object = DBPaymentDAO.getInstance().getCategoriesJSON(user.getId());
-
-		// ArrayList<String> categories =
-		// DBBudgetDAO.getInstance().getCustomCategories(user.getId());
-
 		model.addAttribute("panel", "payment");
 		model.addAttribute("categories", object);
-		// model.addAttribute("customCategories", categories);
 		session.setAttribute("categories", object);
+		Utils.logger.info("add payments link is clicked");
 		return "add";
 	}
 
@@ -89,6 +70,7 @@ public class HomePageController {
 		categories.addAll(result.get("INCOME"));
 		m.addAttribute("currPayments", payments);
 		m.addAttribute("currCategories", categories);
+		Utils.logger.info("history payments link is clicked");
 		return "history";
 	}
 
@@ -126,11 +108,12 @@ public class HomePageController {
 		m.addAttribute("currMonthExpensesJson",currMonthExpensesJson);
 		m.addAttribute("lastYearMonthlyExpenses", lastYearMonthlyExpensesJson);
 		m.addAttribute("lastYearMonthlyIncomes", lastYearMonthlyIncomesJson);
+		Utils.logger.info("info link is clicked");
 		return "info";
 	}
 
 	private HashMap<String, Double> getAsMap(List<Payment> currMonthPayments, String type) {
-		HashMap<String, Double> result = new HashMap();
+		HashMap<String, Double> result = new HashMap<String, Double>();
 		for (Payment payment : currMonthPayments) {
 			if (payment.getType().equalsIgnoreCase(type)) {
 				if (result.containsKey(payment.getCategory())) {
@@ -175,7 +158,7 @@ public class HomePageController {
 
 	private TreeMap<LocalDate, Double> getPaymentsBetweenDates(List<Payment> payments, LocalDate now,
 			LocalDate minusYears, String type) {
-		TreeMap<LocalDate, Double> result = new TreeMap();
+		TreeMap<LocalDate, Double> result = new TreeMap<LocalDate, Double>();
 		for (Payment payment : payments) {
 			if (payment.getDate().isAfter(minusYears) && payment.getDate().isBefore(now)) {
 				// the date is in the period we want
@@ -268,6 +251,7 @@ public class HomePageController {
 		if(session.getAttribute("logedUser")==null){
 			return "redirect:index";
 		}
+		Utils.logger.info("simulator link is clicked");
 		return 	"simulator";	
 	}
 

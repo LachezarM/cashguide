@@ -33,10 +33,10 @@
 			var percentage = ${logedUser.budget.percentageOfIncome};
 			percentage *= 100;
 			if(percentage<50){
-				$("#budgetLine").css("margin-left", "15px");
+				$("#budgetLine").css("margin-left", "25px");
 			}
 			else if(percentage>50){
-				$("#budgetLine").css("margin-left", "-15px");
+				$("#budgetLine").css("margin-left", "-25px");
 			}else{
 				$("#budgetLine").css("margin-left", "0px;");
 			}
