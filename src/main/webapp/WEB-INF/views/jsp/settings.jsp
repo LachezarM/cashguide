@@ -45,7 +45,12 @@ th {
 	color: white;
 }
 
-/*START JQUERY VALIDATE STYLE*/
+.ui-datepicker-calendar {
+	display:none;
+}
+
+
+/*START CSS VALIDATE STYLE*/
 /*the error message from jquery validate function will hava this styles*/
 .error {
 	color: #a94442;
@@ -56,7 +61,7 @@ input.error {
 	background-color: #f2dede;
 	border-color: #a94442;
 }
-/*END JQUERY VALIDATE STYLE*/
+/*END CSS VALIDATE STYLE*/
 </style>
 
 <!-- jQueryV2.2.2 -->
@@ -68,21 +73,35 @@ input.error {
 <!-- jquery datepicker -->
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
-<!-- JQuery Validation plugin -->
-<!-- Plugins for Form validation with jquery -->
-<script
-	src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
-<script
-	src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/additional-methods.min.js"></script>
-
-
 <script>
 	$(document).ready(function() {
 
 	});
 
+/* 	
 	$(function() {
-		$("#datepickerMonth")
+		$("#datepicker")
+				.datepicker(
+					{
+						changeMonth : true,
+						changeYear : true,
+						dateFormat : "dd-mm-yy",
+						showButtonPanel : true,
+						onClose : function() {
+							var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+							var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+							console.log(iMonth);
+							console.log(iYear);
+							$(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+						}
+					});
+		
+		selectAll();
+	}); */
+	
+	
+	$(function() {
+		$("#datepicker")
 				.datepicker(
 					{
 						changeMonth : true,
@@ -98,58 +117,6 @@ input.error {
 						}
 					});
 	});
-	
-	//form validation -> javascript
-	/* $(function() {
-
-		$.validator.addMethod("customNumber", function(value, event) {
-			return (value.match(/^[+]?\d+(\.)?\d*$/));
-		}, "Please enter a correct positive number.");
-
-		$.validator.addMethod("customDate", function(value, event) {
-			return (value.match(/^\d\d?\-\d\d?\-\d\d\d\d$/));
-		}, "Please enter a date in the format dd-mm-yyyy.");
-
-		$("#addForm")
-				.validate(
-						{
-							// Specify the validation rules
-							rules : {
-								amount : {
-									required : true,
-									customNumber : true
-								},
-								date : {
-									required : true,
-									customDate : true
-								},
-								description : {
-									maxlength : 100
-								}
-							},
-		
-							// Specify the validation error messages
-							messages : {
-								amount : {
-									required : "Please enter amount of money",
-									number : "Amount must be a number"
-								},
-								date : {
-									required : "Please enter a date",
-								},
-								description : {
-									manlength : "Your description must be at less than 100 characters long"
-								}
-							},
-							//if error occurs the request won't be send
-							submitHandler : function(form) {
-								form.submit();
-							}
-						});
-
-	}); */
-	
-	//server side validation->java
 </script>
 </head>
 <body>
@@ -178,7 +145,8 @@ input.error {
 			<!-- Content start-->
 			<div class="col-md-9">
 				<div class="panel panel-default">
-					<div class="panel-heading"></div>
+					<div class="panel-heading">
+					</div>
 					<div class="panel-body">
 						<!-- FOR BROWSERS WITHOUT JAVASCRIPT -->
 						<noscript>
@@ -203,9 +171,10 @@ input.error {
 									</div>
 								</c:if>
 										
-									
+								
 									<c:if test="${panel == 'changePassword'}">
 										<div>
+										<h2>Change password</h2>
 											<form action="changePasswordUser" method="POST">
 											Old password: <input type="password" placeholder="Input old password" name="oldPassword"><br/>
 											New password: <input type="password" placeholder="Input new password" name="newPassword"><br/>	
@@ -217,7 +186,8 @@ input.error {
 								
 									<c:if test="${panel=='changePercentage'}">
 										<div>
-										Percentage (0;100]
+										<h2>Change budget percentage</h2>
+										<span>Enter percentage between 0 and 100</span>
 											<form method="POST" action="changeBudgetPercentage">
 												<input type="text" name = "percentage" placeholder="Your percentage">
 												<input type="submit" value="change">
@@ -229,7 +199,9 @@ input.error {
 									<c:if test="${panel=='deleteCategory'}">
 										<div>
 										<p>${errorMessage}</p>
-											Choose category:
+										<h2>Delete category</h2>
+										<span>Choose category:</span>
+											
 											<form method="POST" action="deleteCategory">
 												<select name="category">
 													<c:forEach var="category" items="${categories}">
@@ -243,13 +215,16 @@ input.error {
 									
 									
 									<c:if test="${panel=='deletePayment'}">
+									<h2>Delete payment</h2>
+									<span>Choose month:</span>
 										<form  method="POST" action="getBudgetDel">
-											Date: <input type="text" name="date" id="datepickerMonth" class="form-control" placeholder="Date"> 
-												<input type="submit" value="show" />						
+											<input type="text" name="date" id="datepicker" class="form-control" placeholder="Date"> 
+											<input type="submit" value="show" />						
 										</form>
 									
 										
 										<c:if test="${month!=null}">
+										<span>Choose payments</span>
 											<c:set var="incomes" value='${delBudget.payments.get("INCOME")}'></c:set>
 											<c:set var="expenses" value='${delBudget.payments.get("EXPENSE")}'></c:set>
 											<form method="POST" action="deletePayment">
@@ -292,7 +267,7 @@ input.error {
 									
 									<c:if test="${panel=='changeEmail'}">
 										<div>
-										
+										<h2>Change email</h2>									
 											<form method="POST" action="changeEmail">
 											New email <input type="text" name="email"/><br/>
 											<input type="submit" value="change">
@@ -309,23 +284,3 @@ input.error {
 	<!-- /container -->
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

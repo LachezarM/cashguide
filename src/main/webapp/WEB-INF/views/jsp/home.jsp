@@ -109,7 +109,7 @@
 		  						</c:if>
 		  						<c:if test="${budgetPercent>0&&budgetPercent<100}">
 			  						<div id="budgetLine" style="width: 2px; height: 100px; padding-top: 0px; position:absolute; background: black; left: ${budgetPercent}%;">
-			  							  <div style="padding-top: 40px; margin-left:5px;">Budget: ${budget}</div>
+			  							  <div style="padding-top: 40px; margin-left:5px;">Budget: <fmt:formatNumber value="${budget}" type="number" maxFractionDigits="1"></fmt:formatNumber></div>
 			  						</div>
 								</c:if>
 							</div>
@@ -128,9 +128,9 @@
 							    <div class="thumbnail">
 							      <div class="caption">
 							        <h3>BUDGET</h3>
-							        <span>Your budget is: ${logedUser.budget.income*logedUser.budget.percentageOfIncome}</span>
+							        <span>Your budget is: <fmt:formatNumber value="${budget}" type="number" maxFractionDigits="1"></fmt:formatNumber></span>
 							        <h3>Percentage</h3>
-							        <p>Your percentage is: ${logedUser.budget.percentageOfIncome}</p>
+							        <p>Your percentage is: <fmt:formatNumber value="${budgetPercent}" type="number" maxFractionDigits="3"></fmt:formatNumber></p>
 							    	<p><a href="changeBudgetPercentage" class="btn btn-primary" role="button">Change percentage</a></p>
 							      </div>
 							    </div>
@@ -141,7 +141,7 @@
 							      <div class="caption">
 							        <h3>EXPENSE</h3>
 							        <p><span>Your expeses are: ${logedUser.budget.expense}</span></p>
-							        <p><a href="history" class="btn btn-primary" role="button">Show more payments</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+							        <p><a href="history" class="btn btn-primary" role="button">Show more payments</a></p>
 							      </div>
 							    </div>
 							  </div>
@@ -150,7 +150,7 @@
 							    <div class="thumbnail">
 							      <div class="caption">
 							        <h3>BALANCE</h3>
-							        <p><span>Your balance is: ${logedUser.budget.balance}</span></p>
+							        <p><span>Your balance is: <fmt:formatNumber value="${logedUser.budget.balance}" type="number" maxFractionDigits="2"></fmt:formatNumber></span></p>
 							       <%--  <p><span>Your last income was is: ${logedUser.budget.income}</span></p> --%>
 							         <p><a href="info" class="btn btn-primary" role="button">Info</a> <a href="history" class="btn btn-default" role="button">History</a></p>
 							      </div>
@@ -163,7 +163,7 @@
 							      <div class="caption">
 							        <h3>SETTINGS</h3>
 							        <p><span>You can change your email, password or percentage from your settings</span></p>
-							        <p><a href="settings" class="btn btn-primary" role="button">Button</a> </p>
+							        <p><a href="settings" class="btn btn-primary" role="button">Settings</a> </p>
 							      </div>
 							    </div>
 							  </div> 

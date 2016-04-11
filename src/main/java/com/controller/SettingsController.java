@@ -173,7 +173,7 @@ public class SettingsController {
 	HttpSession s, HttpServletRequest request,
 	Model model) {
 		String param = request.getParameter("percentage");
-		if((param==null)||(param.trim().length()==0)||(!param.trim().matches("(\\d){1,3}?((\\.)(\\d)+)"))){
+		if((param==null)||(param.trim().length()==0)||(!param.trim().matches("[\\d]+([\\.]?[\\d]+)"))){
 			model.addAttribute(error, percentageError);
 		}else{
 			double percentage = Double.valueOf(param);

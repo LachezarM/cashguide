@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -88,9 +89,7 @@ input.error {
 		var tab = '${panel}'
 		$('#'+tab).addClass('active in');
 		var href = '#'+tab;
-		console.log(href)
 		$('a[href="'+href+'"]').parent().addClass("active");
-		console.log($('a[href="#payment"]').parent());
 		
 	}
 	
@@ -214,7 +213,7 @@ input.error {
 						</noscript>
 						<!-- END -->
 
-						<div class="balance">Your balance is:${logedUser.budget.balance}</div>
+						<div class="balance">Your balance is:<fmt:formatNumber value="${logedUser.budget.balance}" type="number" maxFractionDigits="2"></fmt:formatNumber></div>
 						<div class="income">Income: ${logedUser.budget.income}</div>
 						
 						<!-- NAVIGATION add payment|add category| delete payment| delete category -->
@@ -316,71 +315,8 @@ input.error {
 										</form>
 									</div>
 								</div>
-							</div>
-							
-							<%-- <div id="delete-category" class="tab-pane fade">
-							
-							
-							<div id="delete-payment" class="tab-pane fade">
-								<div class="row" id="delete-payment-form">
-									<div class="col-md-6" style="margin-top:8px">
-										<!--New category-->
-										<h1 style="margin-left: 20px; margin-bottom: 20px;">Delete Payment</h1>
-										
-										<c:if test="${successDeletingPayment!=null}">
-											<div class="alert alert-success" role="alert">
-												${successDeletingPayment}
-											</div>
-										</c:if>
-										<c:set var="incomes" value='${budget.payments.get("INCOME")}'></c:set>
-										<c:set var="expenses" value='${budget.payments.get("EXPENSE")}'></c:set>
-										
-										<form  method="POST" action="getBudgetForDeleting">
-											Date: <input type="text" name="date" id="datepickerMonth" class="form-control" placeholder="Date"> 
-												<input type="submit" value="show" />						
-										</form>
-										
-										
-										<form method="POST" action="deletePayment" id="calculation">
-											<table>
-												<tr>
-													<th>Type</th>
-													<th>Category</th>
-													<th>Description</th>
-													<th>Amount</th>
-													<th>Date</th>
-													<th>Select</th>
-												</tr>
-					
-												<c:forEach var="income" items="${incomes}" varStatus="loop">
-												<tr>
-													<td>${income.type }</td>
-													<td>${income.category}</td>
-													<td>${income.description}</td>
-													<td>${income.amount}</td>
-													<td>${income.date}</td>
-													<td><input type="checkbox" name="income" value="${loop.count-1}"></td>
-												</tr>
-												</c:forEach>
-										
-												<c:forEach var="expense" items="${expenses}" varStatus="loop">
-												<tr>
-													<td>${expense.type }</td>
-													<td>${expense.category}</td>
-													<td>${expense.description}</td>
-													<td>${expense.amount}</td>
-													<td>${expense.date}</td>
-													<td><input type="checkbox" name="expense" value="${loop.count-1}"></td>
-												</tr>
-												</c:forEach>
-											</table>
-											<input type="submit" value="delete" />
-										</form>
-									</div>
-								</div>
-							</div> --%>							
+							</div>						
 						</div>
-
 					</div>
 				</div>
 			</div>

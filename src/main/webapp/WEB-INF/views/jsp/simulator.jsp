@@ -117,10 +117,13 @@ th {
 				<div class="panel panel-default">
 					<div class="panel-heading">Simulator</div>
 					<div class="panel-body">
+					
+					<h3>Calculate your future wealth</h3>
 					<%-- <c:if test="${showBudget==null}"> --%>
+					Choose monthly budget:
 						<form  method="POST" action="getBudget">
-							Date: <input type="text" name="date" id="datepicker" class="form-control" placeholder="Date"> 
-								<input type="submit" value="show" />						
+							<input type="text" name="date" id="datepicker" class="form-control" placeholder="Date"> 
+							<input type="submit" value="show" />						
 						</form>
 					 <%-- </c:if> --%>
 					 
@@ -164,9 +167,10 @@ th {
 										</tr>
 										</c:forEach>
 								</table>
-								<div style="margin-left:20px; margin-bottom:20px">
-								<input type="text" name="period"/>
-								<input type="submit" value="calculate" />
+								<div style="margin-left:0px; margin-top:20px; margin-bottom:20px;">
+									<span>Enter period of months</span><br/>
+									<input type="text" name="period"/>
+									<input type="submit" value="calculate" />
 								</div>
 							</form>
 							</c:if>
@@ -199,6 +203,10 @@ th {
 	    }
 	    if(!$.isNumeric(period)) {
 	    	$('[name="period"]').val("number");
+	    	return false;
+	    }
+	    
+	    if(period != parseInt(period, 10)){
 	    	return false;
 	    }
 	});

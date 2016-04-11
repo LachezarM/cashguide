@@ -62,7 +62,7 @@ public class SimulatorController {
 	String calculate(@RequestParam("period") int period, HttpServletRequest request, HttpSession session, Model model){
 		
 		if(period<0){
-			model.addAttribute("error", "period must be positive");
+			model.addAttribute("error", "period must be positive integer");
 			return "simulator";
 		}
 		Budget budget = (Budget)(session.getAttribute("budget"));

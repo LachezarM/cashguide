@@ -14,9 +14,9 @@
 
 <!-- Bootstrap Core CSS -->
 <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
-<!-- css for datepicker -->
-<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
- --><style>
+<!--  css for datepicker -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<style>
 .select_style {
 	background: #FFF;
 	overflow: hidden;
@@ -59,8 +59,8 @@ body {
 </style>
 
 <!-- jQueryV2.2.2 -->
-<!-- <script src="js/Chart.min.js"></script>
-<script src="js/Chart.js"></script> -->
+<script src="js/Chart.min.js"></script>
+<script src="js/Chart.js"></script>
 
 <!-- BootstrapV3.3.6 Core JavaScript -->
 <script>
