@@ -1,5 +1,6 @@
 package com.controller;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -132,7 +133,10 @@ public class HistoryController {
 
 	public static void modifyByDate(String date, List<Payment> payments) {
 		LocalDate dateJava;
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		try
+		{
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		
 		dateJava = LocalDate.parse(date, formatter);
 		for(Iterator<Payment> itt = payments.iterator();itt.hasNext();) {
 			Payment p = itt.next();
@@ -140,5 +144,8 @@ public class HistoryController {
 				itt.remove();
 			}
 		}
-	}
+		}catch(Exception e){
+			Utils.logger.error("date field empty");
+		}
+}
 }
