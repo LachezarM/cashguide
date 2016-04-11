@@ -88,7 +88,8 @@
 							</c:choose>
 							
 							
-							TOTAL INCOME${expensePercent}| ${remainingPercent}
+							<p>TOTAL INCOME ${logedUser.budget.income}</p>
+							<p>TOTAL EXPENSES ${logedUser.budget.expense}</p>
 							<div class="progress" style="height:40px; font-size: 20px; margin-top: 10px; margin-bottom: 100px;" >	
 								
 								<c:if test="${expensePercent>0&&expensePercent<=100}">
@@ -117,8 +118,7 @@
 							    <div class="thumbnail">
 							      <div class="caption">
 							        <h3>INCOME</h3>
-							        <p><span>Your income is: ${logedUser.budget.income}</span></p>
-							         <p><span> WTF>Your last income was is: ${logedUser.budget.income}</span></p>
+							        <p><span>Your incomes are: ${logedUser.budget.income}</span></p>
 							        <p><a href="history" class="btn btn-primary" role="button">Show more payments</a></p>
 							      </div>
 							    </div>
@@ -140,8 +140,7 @@
 							    <div class="thumbnail">
 							      <div class="caption">
 							        <h3>EXPENSE</h3>
-							        <p><span>Your income is: ${logedUser.budget.expense}</span></p>
-							        <p><span>WTF>Your last income was is: ${logedUser.budget.expense}</span></p>
+							        <p><span>Your expeses are: ${logedUser.budget.expense}</span></p>
 							        <p><a href="history" class="btn btn-primary" role="button">Show more payments</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
 							      </div>
 							    </div>

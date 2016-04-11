@@ -167,11 +167,11 @@ public class SettingsController {
 	}
 	
 	@RequestMapping(value="/changeBudgetPercentage", method = RequestMethod.POST)
-	String changeBudgetPercentagePost(/*@RequestParam(value="percentage") double percentage,*/
+	String changeBudgetPercentagePost(
 	HttpSession s, HttpServletRequest request,
 	Model model) {
 		String param = request.getParameter("percentage");
-		if((param==null)||(param.trim().length()==0)||(!param.trim().matches("(\\d){1,3}"))){
+		if((param==null)||(param.trim().length()==0)||(!param.trim().matches("(\\d){1,3}?((\\.)(\\d)+)"))){
 			model.addAttribute(error, percentageError);
 		}else{
 			double percentage = Double.valueOf(param);
@@ -248,23 +248,23 @@ public class SettingsController {
 		if(incomesID!=null){
 			for(String id:incomesID){
 				int intId = Integer.valueOf(id);
-				Payment payment = budget.getPayments().get("INCOME").get(intId);
+				Payment payment = budget.getPayments().get(Payment.INCOME).get(intId);
 				deleted.add(payment);
 				incomes += payment.getAmount();
 				IPaymentDAO.getInstance().deletePayment(payment.getId());
 			}			
-			budget.getPayments().get("INCOME").removeAll(deleted);
+			budget.getPayments().get(Payment.INCOME).removeAll(deleted);
 			deleted.clear();
 		}
 		if(expensesID!=null){
 			for(String id:expensesID){
 				int intId = Integer.valueOf(id);
-				Payment payment = budget.getPayments().get("EXPENSE").get(intId);
+				Payment payment = budget.getPayments().get(Payment.EXPENSE).get(intId);
 				expenses+= payment.getAmount();				
 				deleted.add(payment);
 				IPaymentDAO.getInstance().deletePayment(payment.getId());
 			}
-			budget.getPayments().get("EXPENSE").removeAll(deleted);
+			budget.getPayments().get(Payment.EXPENSE).removeAll(deleted);
 			deleted.clear();
 		}
 		budget.setIncome(budget.getIncome()-incomes);
@@ -285,14 +285,4 @@ public class SettingsController {
 		Utils.logger.info("payments were deleted");
 		return "settings";
 	}
-
-	/*@RequestMapping(value = "/addBalance" , method = RequestMethod.GET)
-	String addBalance(HttpSession s) {
-
-		s.removeAttribute("changePassword");
-		s.removeAttribute("changeUsername");
-		s.removeAttribute("changeBudgetPercentage");
-		s.setAttribute("addBalance", true);
-		return "UserProfile";
-	}*/
 }

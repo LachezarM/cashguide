@@ -149,13 +149,13 @@ public class DBPaymentDAO implements IPaymentDAO{
 	
 	public void deletePayment(int paymentId){
 		String sql = "DELETE FROM "+DBManager.DB_NAME+".payments WHERE id=?";
+		String update="UPDATE budgets SET balance=? WHERE id=?;";
 		try(PreparedStatement ps = DBManager.getDBManager().getConnection().prepareStatement(sql)){
 			ps.setInt(1, paymentId);
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public JsonObject getCategoriesJSON(int userId){

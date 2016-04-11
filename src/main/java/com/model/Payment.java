@@ -11,7 +11,8 @@ public abstract class Payment {
 	private double amount;
 	private LocalDate date;
 	
-
+	public static final String INCOME = "INCOME";
+	public static final String EXPENSE = "EXPENSE";
 	//private String name;
 	//private boolean isIncome;
 	//private Period period;

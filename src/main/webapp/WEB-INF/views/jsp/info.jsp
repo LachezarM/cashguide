@@ -15,9 +15,8 @@
 <!-- Bootstrap Core CSS -->
 <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
 <!-- css for datepicker -->
-<link rel="stylesheet"
-	href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-<style>
+<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+ --><style>
 .select_style {
 	background: #FFF;
 	overflow: hidden;
@@ -60,12 +59,10 @@ body {
 </style>
 
 <!-- jQueryV2.2.2 -->
-<script src="js/jquery-2.2.2.min.js"></script>
-<script src="js/Chart.min.js"></script>
-<script src="js/Chart.js"></script>
+<!-- <script src="js/Chart.min.js"></script>
+<script src="js/Chart.js"></script> -->
 
 <!-- BootstrapV3.3.6 Core JavaScript -->
-<script src="js/bootstrap.min.js"></script>
 <script>
 	/*
 	function selectColor(colorNum, colors){
@@ -205,22 +202,22 @@ function createLineChart(payments) {
 		}
 	}
 	else {
-	var data =  {
-			labels: generateLabels(payments),
-			datasets:[
-			  {
-				  fillColor : "rgba(95,137,250,0.5)",
-                  strokeColor : "rgba(95,137,250,0.9)",
-                  highlightFill: "rgba(95,137,250,0.75)",
-                  highlightStroke: "rgba(95,137,250,1)",
-                  data : generateData(payments)
-			  }        
-			         ]
+		var data =  {
+				labels: generateLabels(payments),
+				datasets:[
+				  {
+					  fillColor : "rgba(95,137,250,0.5)",
+	                  strokeColor : "rgba(95,137,250,0.9)",
+	                  highlightFill: "rgba(95,137,250,0.75)",
+	                  highlightStroke: "rgba(95,137,250,1)",
+	                  data : generateData(payments)
+				  }        
+				         ]
+		}
+		destroyCharts();
+		var ctx = document.getElementById("chartPayments").getContext("2d");
+		myLineChart = new Chart(ctx).Line(data);
 	}
-	destroyCharts();
-	var ctx = document.getElementById("chartPayments").getContext("2d");
-	myLineChart = new Chart(ctx).Line(data);
-}
 }
 </script>
 <script>
@@ -244,7 +241,6 @@ function generateData(payments) {
 		}
 	}
 	return data;
-	
 }
 </script>
 <script>
@@ -260,23 +256,7 @@ function generateData(payments) {
 		}
 	}
 </script>
-<script>
 
-	/*adding hrefs to <a> in the menu, because the name of the project may differ, i.e my project name is Cashguide1*/
-	/*this should be in external js file*/
-	$(document).ready(function() {
-		/* console.log(location.href);
-		console.log(location.href.split("/")); */
-		/* 	var hostname = "/" + location.href.split("/")[3];
-			var links = document.getElementById("navigation");
-			var lists = links.getElementsByTagName("li");
-			lists[1].childNodes[0].setAttribute("href", hostname + "/add");
-			lists[2].childNodes[0].setAttribute("href", hostname + "/history");
-			lists[3].childNodes[0].setAttribute("href", hostname + "/payment");
-			lists[4].childNodes[0].setAttribute("href", hostname + "/shopping");
-			lists[5].childNodes[0].setAttribute("href", hostname + "/simulator"); */
-	});
-</script>
 <!-- jQueryV2.2.2 -->
 <script src="js/jquery-2.2.2.min.js"></script>
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
