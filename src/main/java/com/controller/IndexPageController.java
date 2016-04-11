@@ -44,7 +44,7 @@ public class IndexPageController {
 		password = password.trim();
 		
 		if(Utils.isValidUsername(username)&&Utils.isValidPassword(password)) {
-			String hashed = UserManager.hashPassword(password);
+			String hashed = Utils.hashPassword(password);
 			if(IUserDAO.getInstance().checkForCorrectUsernameAndPassword(username, hashed)){
 				User user = UserManager.createUserAfterLogin(username, hashed);
 				session.setAttribute("logedUser",user);
@@ -82,7 +82,7 @@ public class IndexPageController {
 			HttpSession session, Model model, HttpServletResponse response){
 		String result = valid(username,email,password,confirmPassword);
 		if(result.equals("correct")){
-			String hashed = UserManager.hashPassword(password);
+			String hashed = Utils.hashPassword(password);
 			User user = UserManager.createUserAfterRegister(username, hashed, email);
 			session.setAttribute("logedUser",user);
 			Utils.logger.info("user is register and logged");

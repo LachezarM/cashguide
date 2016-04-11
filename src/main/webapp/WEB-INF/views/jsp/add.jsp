@@ -86,9 +86,12 @@ input.error {
 		$('.nav-tabs li').removeClass('active');
 		$('.tab-pane').removeClass('active in');
 		var tab = '${panel}'
-		console.log(tab);
 		$('#'+tab).addClass('active in');
-		console.log('ggg');			
+		var href = '#'+tab;
+		console.log(href)
+		$('a[href="'+href+'"]').parent().addClass("active");
+		console.log($('a[href="#payment"]').parent());
+		
 	}
 	
 	function addSelectOptions(type) {
@@ -216,7 +219,7 @@ input.error {
 						
 						<!-- NAVIGATION add payment|add category| delete payment| delete category -->
 						<ul class="nav nav-tabs">
-							<li class="active"><a data-toggle="tab" href="#payment">Add Payment</a></li>
+							<li><a data-toggle="tab" href="#payment">Add Payment</a></li>
 							<li><a data-toggle="tab" href="#add-category">Add Category</a></li>
 							<!-- <li><a data-toggle="tab" href="#delete-category">Delete Category</a></li>
 							<li><a data-toggle="tab" href="#delete-payment">Delete paymet</a></li> -->

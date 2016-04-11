@@ -4,9 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 import com.model.User;
 
@@ -15,9 +12,8 @@ public class DBUserDAO implements IUserDAO{
 	private static DBUserDAO instance = null;
 	
 	private DBUserDAO(){
-		/*Statement st;
-		try {
-			st = DBManager.getDBManager().getConnection().createStatement();
+		/*try(Statement st = DBManager.getConnection().createStatement();) {
+			//st = DBManager.getDBManager().getConnection().createStatement();
 			String query = "USE " + DBManager.DB_NAME + ";";
 			st.executeUpdate(query);
 			query = " CREATE TABLE IF NOT EXISTS users ("
@@ -28,11 +24,9 @@ public class DBUserDAO implements IUserDAO{
 					+ "PRIMARY KEY(ID));";
 			st.executeUpdate(query);
 			st.close();
-			
 		} catch (SQLException e) {
 			System.out.println("Error creating table users " + e.getMessage());
-		}
-		*/
+		}*/
 	}
 	
 	public static synchronized DBUserDAO getInstance(){
@@ -127,20 +121,14 @@ public class DBUserDAO implements IUserDAO{
 	
 	@Override
 	public void addUser(User user) {
-		/*String sql = "INSERT INTO users(username, password, email, first_name, last_name) "
-				+ "VALUES(?,?,?,?,?);";*/
 
 		String sql = "INSERT INTO " + DBManager.DB_NAME + ".users(username, password, email) "
 				+ "VALUES(?,?,?);";
 		
-		try(PreparedStatement pr = DBManager.getDBManager().
-											getConnection().
-											prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+		try(PreparedStatement pr = DBManager.getDBManager().getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 			pr.setString(1, user.getUsername());
 			pr.setString(2, user.getPassword());
 			pr.setString(3, user.getEmail());
-			//pr.setString(4, user.getFirstName());
-			//pr.setString(5, user.getLastName());
 			
 			int affectedRows = pr.executeUpdate();
 			
@@ -188,12 +176,12 @@ public class DBUserDAO implements IUserDAO{
 		return user;
 	}
 
-	@Override
+	/*@Override
 	public List<User> getAllUsers() {
 		String sql = "SELECT id, username, password, email"
 				+ " FROM " + DBManager.DB_NAME + ".users;";
 		List<User> users = new LinkedList<User>();
-		try(Statement st = DBManager.getDBManager().getConnection().createStatement()){
+		try(Statement st = DBManager.getConnection().createStatement()){
 			ResultSet rs = st.executeQuery(sql);
 			while(rs.next()){
 				//System.out.println(rs.getString("username") + " : "  + rs.getInt("id"));
@@ -215,7 +203,7 @@ public class DBUserDAO implements IUserDAO{
 		}
 		
 		return Collections.unmodifiableList(users);
-	}
+	}*/
 
 	@Override
 	public boolean changePassword(int id, String newPassword) {
@@ -263,13 +251,13 @@ public class DBUserDAO implements IUserDAO{
 		return result;
 	}
 
-	@Override
+	/*@Override
 	public boolean changeUserProfile(int id,String newUsername) {
 		String sql = "UPDATE "+DBManager.DB_NAME+".users "
 				+ "SET username=? "
 				+ "WHERE id=?;";
 		boolean result = false;
-		try(PreparedStatement pr = DBManager.getDBManager().getConnection().prepareStatement(sql)){
+		try(PreparedStatement pr = DBManager.getConnection().prepareStatement(sql)){
 			pr.setString(1, newUsername);
 			pr.setInt(2, id);
 			int rs = pr.executeUpdate();
@@ -285,14 +273,14 @@ public class DBUserDAO implements IUserDAO{
 		
 		return result;
 		
-	}
+	}*/
 
 	//-------------------------------------------------------------------------------------------------
-	@Override
+	/*@Override
 	public boolean checkIfPasswordExists(String newPassword) {
 		String sql = "SELECT password FROM " + DBManager.DB_NAME + ".users WHERE password=?;";
 		boolean result = false;
-		try(PreparedStatement pr = DBManager.getDBManager().getConnection().prepareStatement(sql)){
+		try(PreparedStatement pr = DBManager.getConnection().prepareStatement(sql)){
 			pr.setString(1, newPassword);
 			ResultSet rs= pr.executeQuery();
 			while(rs.next()){
@@ -311,5 +299,5 @@ public class DBUserDAO implements IUserDAO{
 			e.printStackTrace();
 		}
 		return result;
-	}
+	}*/
 }

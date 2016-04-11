@@ -166,6 +166,7 @@ $(function() {
 						</c:if>
 						<a href="?categories=${param.categories }&Show=${param.Show }&start=${pageStart - perPage}"><<</a>${pageStart + 1}	- ${pageStart + perPage} 
 						<a href="?categories=${param.categories }&Show=${param.Show }&start=${pageStart + perPage}">>></a>
+						<c:out value="${payments}"></c:out>
 						<table style="width: 100%">
 							<thead>
 								<th>Type</th>
@@ -174,15 +175,15 @@ $(function() {
 								<th>Amount</th>
 								<th><a id="dateLink" href ="sortByDate">Date</a></th>
 							</thead>
-							<c:forEach var="payments" items="${payments}"
+							<c:forEach var="payment" items="${payments}"
 								varStatus="paymentsCounter" begin="${pageStart}"
 								end="${pageStart + perPage - 1 }">
 								<tr>
-									<td>${payments.type}</td>
-									<td>${payments.category}</td>
-									<td>${payments.description}</td>
-									<td>${payments.amount}</td>
-									<td>${payments.date}</td>
+									<td>${payment.type}</td>
+									<td>${payment.category}</td>
+									<td>${payment.description}</td>
+									<td>${payment.amount}</td>
+									<td>${payment.date}</td>
 								</tr>
 							</c:forEach>
 						</table>

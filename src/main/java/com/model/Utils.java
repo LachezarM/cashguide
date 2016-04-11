@@ -1,11 +1,11 @@
 package com.model;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
-
-import com.controller.HomePageController;
 
 public class Utils {
 
+	private static final String TOKEN = "cashguide";
 	public final static Logger logger = Logger.getLogger("LOGS");
 
 	//private static final String EMAIL_REGEX = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
@@ -35,6 +35,11 @@ public class Utils {
 		}
 		System.out.println("username is true");
 		return true;
+	}
+	
+	public static String hashPassword(String password){
+		String hash = DigestUtils.md5Hex(TOKEN+password);
+		return hash;
 	}
 	
 	

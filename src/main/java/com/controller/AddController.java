@@ -19,7 +19,7 @@ import com.model.Payment;
 import com.model.User;
 import com.model.UserManager;
 import com.model.Utils;
-import com.model.db.DBPaymentDAO;
+import com.model.db.IPaymentDAO;
 
 
 @Controller
@@ -46,8 +46,6 @@ public class AddController {
 			Utils.logger.info("Incorect date in add payments");
 			return "redirect:add";
 		}
-		
-		
 		if(amount<0){
 			System.out.println("must be positive");
 			Utils.logger.info("Negative amount in add payments");
@@ -90,25 +88,23 @@ public class AddController {
 			HttpSession session){
 		User user = (User)session.getAttribute("logedUser");
 		if(paymentType.equalsIgnoreCase("expense")){
-			paymentType="EXPENSE";
+			paymentType=Payment.EXPENSE;
 		}else{
-			paymentType="INCOME";
+			paymentType=Payment.INCOME;
 		}
 		
-		//save to db
 		if(customCategory.trim().length()==0){
 			model.addAttribute("errorCategory", "Category is empty");
 			Utils.logger.info("custom category wasn't added because its length is 0");
 			
 		}else{
-			DBPaymentDAO.getInstance().addNewCategory(customCategory, paymentType, user);		
-			JsonObject object = DBPaymentDAO.getInstance().getCategoriesJSON(user.getId());
+			IPaymentDAO.getInstance().addNewCategory(customCategory, paymentType, user);		
+			JsonObject object = IPaymentDAO.getInstance().getCategoriesJSON(user.getId());
 			session.setAttribute("categories", object);
 			model.addAttribute("successCategory", "category was added");
 			Utils.logger.info("custom category was added");
 		}
 		model.addAttribute("panel", "add-category");
-		
 		return "add";
 	}	
 }

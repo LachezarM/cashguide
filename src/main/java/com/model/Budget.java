@@ -18,8 +18,8 @@ public class Budget {
 		this.date = LocalDate.of(date.getYear(), date.getMonthValue(), 1);
 		this.percentageOfIncome = percentageOfIncome;
 		this.payments = new HashMap<String, ArrayList<Payment>>();
-		this.payments.put("INCOME", new ArrayList<Payment>());
-		this.payments.put("EXPENSE", new ArrayList<Payment>());
+		this.payments.put(Payment.INCOME, new ArrayList<Payment>());
+		this.payments.put(Payment.EXPENSE, new ArrayList<Payment>());
 		this.balance = 0;
 		this.income = 0;
 		this.expense = 0;
@@ -57,6 +57,7 @@ public class Budget {
 		return payments;
 	}
 
+
 	public double getBalance() {
 		return balance;
 	}
@@ -65,17 +66,18 @@ public class Budget {
 		this.balance = balance;
 	}
 	
+	
+	//TODO see addPayment budget
 	public void addPayment(Payment payment){
 		this.payments.get(payment.getType()).add(payment);
 
-		if(payment.getType().equalsIgnoreCase("expense")){
+		/*if(payment.getType().equalsIgnoreCase(Payment.EXPENSE)){
 			this.balance -= payment.getAmount();
 			this.expense += payment.getAmount();
-		}else if(payment.getType().equalsIgnoreCase("income")){
+		}else if(payment.getType().equalsIgnoreCase(Payment.INCOME)){
 			this.balance += this.percentageOfIncome*payment.getAmount();
 			this.income += payment.getAmount();
-		}
-		//System.out.println("BALANCE: " + this.balance);
+		}*/
 	}
 
 	@Override
@@ -85,7 +87,6 @@ public class Budget {
 				+ balance + "]";
 	}
 
-	
 	public double getExpense() {
 		return expense;
 	}

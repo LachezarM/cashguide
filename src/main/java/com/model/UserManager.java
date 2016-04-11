@@ -2,18 +2,16 @@ package com.model;
 
 import java.time.LocalDate;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
 import com.model.db.DBBudgetDAO;
-import com.model.db.DBUserDAO;
+import com.model.db.IUserDAO;
 
 //Tested
 public class UserManager {
-	private static final String TOKEN = "cashguide";
+	
 	//register
 	public static User createUserAfterRegister(String username, String password, String email){
 		User user = new User(username,email, password);
-		DBUserDAO.getInstance().addUser(user);
+		IUserDAO.getInstance().addUser(user);
 		Budget budget = new Budget(LocalDate.now(), 1);
 		user.addBudet(budget);
 		DBBudgetDAO.getInstance().addBudget(user.getId(), budget);
@@ -23,10 +21,11 @@ public class UserManager {
 	//login
 	//initialize user
 	//this method gets the user, the budget for the current month if exists else creates new budget and all payments for current budget
+	//TODO
 	public static User createUserAfterLogin(String username, String password){
 		//getting user only by username is not cool
-		User user = DBUserDAO.getInstance().getUser(username);
-		Budget budget = DBBudgetDAO.getInstance().getBudget(user.getId(), LocalDate.now());
+		User user = IUserDAO.getInstance().getUser(username);
+		Budget budget = DBBudgetDAO.getInstance().getBudget(user, LocalDate.now());
 		if(budget == null){
 			//no budget for this user for current month.
 			//create budget for this user for current month
@@ -38,10 +37,12 @@ public class UserManager {
 			user.addBudet(budget);
 			//getPayments is changed on 4.4.16.returns only payments for the specific budget
 			DBBudgetDAO.getInstance().getPayments(budget);
+			
+			System.out.println("budget after login: " + budget);
+			
 		}
 		
 		System.out.println("Budget in UserManager: " + budget.toString());
-		
 		return user;
 	}
 	
@@ -55,7 +56,8 @@ public class UserManager {
 		if((payment.getDate().compareTo(startDate)>=0)&&(payment.getDate().compareTo(endDate)<=0)){
 			//add to current budget
 			System.out.println("In range");
-			budget.addPayment(payment);
+			//budget.addPayment(payment);
+			UserManager.updateBudget(budget, payment);
 			System.out.println("Budget balance to be added in db is: " + budget.getBalance());
 			DBBudgetDAO.getInstance().addPayment(payment, budget);
 		}else{
@@ -68,21 +70,32 @@ public class UserManager {
 				//create budget
 				Budget newBudget =new Budget(payment.getDate(), 1);
 				DBBudgetDAO.getInstance().addBudget(user.getId(), newBudget);
-				newBudget.addPayment(payment);
+				//newBudget.addPayment(payment);
+				
+				UserManager.updateBudget(newBudget, payment);
 				DBBudgetDAO.getInstance().addPayment(payment, newBudget);
 			}else{
 				//budget exists->old or new budget
 				//add to it
-				budgetForOtherDate.addPayment(payment);
+				//budgetForOtherDate.addPayment(payment);
+				UserManager.updateBudget(budgetForOtherDate, payment);
 				DBBudgetDAO.getInstance().addPayment(payment, budgetForOtherDate);
 			}
 		}
 	}
 	
-	public static String hashPassword(String password){
-		String hash = DigestUtils.md5Hex(TOKEN+password);
-		return hash;
+	
+	public static void updateBudget(Budget budget, Payment payment){
+		budget.addPayment(payment);
+		if(payment.getType().equalsIgnoreCase("expense")){
+			budget.setBalance(budget.getBalance() - payment.getAmount());
+			budget.setExpense(budget.getExpense()+payment.getAmount());
+		}else if(payment.getType().equalsIgnoreCase("income")){
+			budget.setBalance(budget.getBalance() + budget.getPercentageOfIncome()*payment.getAmount());
+			budget.setIncome(budget.getIncome()+payment.getAmount());
+		}
 	}
+	
 	
 	
 }

@@ -51,12 +51,12 @@ public class DBManager {
 		return instance;
 	}
 
- 	public static Connection getConnection() {
-		try {
+ 	public Connection getConnection() {
+		/*try {
 			con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
 		} catch (SQLException e) {
 			System.out.println("Error creating connection" + e.getMessage());
-		}
+		}*/
 		return con;
 	}
 

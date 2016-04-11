@@ -24,12 +24,13 @@ import com.model.db.IPaymentDAO;
 @Controller
 public class HomePageController {
 	
+
 	final static String EXPENSE = "EXPENSE";
 	final static String INCOME = "INCOME";
 	final static String ALL = "ALL";
 	
 	static User currentUser = null;
-	final static Logger logger = Logger.getLogger(HomePageController.class.getName());
+	//final static Logger logger = Logger.getLogger(HomePageController.class.getName());
 
 	@RequestMapping(value="/home" , method = RequestMethod.GET)
 	String home(Model model, HttpSession session) {
@@ -46,7 +47,7 @@ public class HomePageController {
 		if(user==null){
 			return "redirect:index";
 		}
-		JsonObject object = DBPaymentDAO.getInstance().getCategoriesJSON(user.getId());
+		JsonObject object = IPaymentDAO.getInstance().getCategoriesJSON(user.getId());
 		model.addAttribute("panel", "payment");
 		model.addAttribute("categories", object);
 		session.setAttribute("categories", object);
@@ -86,14 +87,13 @@ public class HomePageController {
 		return 	"simulator";	
 	}
 
-	@RequestMapping(value = "/userProfile", method = RequestMethod.GET)
-	String userProfile(HttpSession s) {
-
-		s.removeAttribute("changePassword");
-		s.removeAttribute("changeUsername");
-		s.removeAttribute("addBalance");
-		return "UserProfile";
+	@RequestMapping(value="/logout", method = RequestMethod.GET)
+	String logout(HttpSession session){
+		session.invalidate();
+		Utils.logger.info("User is logout");
+		return "redirect:index";
 	}
+	
 	public static List<String> generateCategoriesByType(String choise, Map<String, ArrayList<String>> result) {
 		List<String> categories = new ArrayList<String>();
 		if(choise.equalsIgnoreCase(ALL)) {
@@ -107,6 +107,7 @@ public class HomePageController {
 		}
 		return categories;
 	}
+
 	public static double total(List<Payment> payments){
 		double amount = 0;
 		for(Payment payment : payments) {
@@ -117,4 +118,4 @@ public class HomePageController {
 		}
 		return amount;
 	}
-	}
+}

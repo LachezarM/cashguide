@@ -6,16 +6,7 @@ public class User {
 	private String username;
 	private String password;
 	private String email;
-	//private String firstName;
-	//private String lastName;
- 	//private double balance;
-  	//List<Payment> payments;
-
 	private Budget budget;
-	
-	public User(){
-		
-	}
 	
 	public User(String username, String password){
 		this.username = username;
@@ -28,15 +19,6 @@ public class User {
 		this.email = email;
 	}
 
-	/*
-	public User(String username, String email, String password, String firstNane, String lastName){
-		this.username = username;
-		this.password = password;
-		this.email = email;
-		this.firstName = firstNane;
-		this.lastName = lastName;
-	}
-	*/
 	public int getId() {
 		return id;
 	}

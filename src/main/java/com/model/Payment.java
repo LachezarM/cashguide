@@ -1,7 +1,6 @@
 package com.model;
 
 import java.time.LocalDate;
-import java.time.Period;
 
 public abstract class Payment {
 	private int id;
@@ -13,14 +12,11 @@ public abstract class Payment {
 	
 	public static final String INCOME = "INCOME";
 	public static final String EXPENSE = "EXPENSE";
-	//private String name;
-	//private boolean isIncome;
-	//private Period period;
-
+	private static final String DEFAULT_DESCRIPTION  = "";
 	
 	public Payment(String category, String type,
 			double amount, LocalDate date) {
-		this(category,type,"",amount, date);
+		this(category,type,DEFAULT_DESCRIPTION,amount, date);
 	}
 	
 	public Payment(String category, String type, String description, double amount, LocalDate date) {

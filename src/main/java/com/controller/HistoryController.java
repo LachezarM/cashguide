@@ -172,6 +172,7 @@ public class HistoryController {
 			ifAsc *= -1;
 			model.addAttribute("currCategories",categories);
 			session.setAttribute("currPayments",payments);
+			System.out.println("PAYMENTS IN HISTORY controller: " + payments);
 			model.addAttribute("totalAmount",HomePageController.total(payments));
 			Utils.logger.info("sortByDate link was clicked");
 			return "history";

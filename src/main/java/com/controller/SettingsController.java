@@ -1,5 +1,7 @@
 package com.controller;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -19,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.model.Budget;
 import com.model.Payment;
 import com.model.User;
-import com.model.UserManager;
 import com.model.Utils;
 import com.model.db.DBBudgetDAO;
+import com.model.db.DBManager;
 import com.model.db.DBPaymentDAO;
 import com.model.db.IBudgetDAO;
 import com.model.db.IPaymentDAO;
@@ -148,9 +150,9 @@ public class SettingsController {
 		oldPassword = oldPassword.trim();
 		if(Utils.isValidPassword(newPassword)&&Utils.isValidPassword(oldPassword)){
 			User user = (User)session.getAttribute("logedUser");
-			String oldHashedPass = UserManager.hashPassword(oldPassword);
+			String oldHashedPass = Utils.hashPassword(oldPassword);
 			if((user!=null)&&(!user.getPassword().equals(oldHashedPass))){/*&& !(IUserDAO.getInstance().checkIfPasswordExists(newPassword))*/
-				String newHashedPassword = UserManager.hashPassword(newPassword);
+				String newHashedPassword = Utils.hashPassword(newPassword);
 				IUserDAO.getInstance().changePassword(user.getId(), newHashedPassword);
 				model.addAttribute(success,passwordSuccess);
 				Utils.logger.info("changing password");
@@ -225,7 +227,7 @@ public class SettingsController {
 			Utils.logger.error("deleteCategory:category was either null or its length was 0");
 		}else{
 			int id = ((User) session.getAttribute("logedUser")).getId();
-			DBPaymentDAO.getInstance().deleteCategory(category, id);
+			IPaymentDAO.getInstance().deleteCategory(category, id);
 			ArrayList<String> categories = DBBudgetDAO.getInstance().getCustomCategories(id);
 			model.addAttribute(panel, "deleteCategory");
 			model.addAttribute("categories", categories);
@@ -245,6 +247,22 @@ public class SettingsController {
 		double incomes = 0;
 		double expenses = 0;
 		List<Payment> deleted = new LinkedList<Payment>();
+		//------------------------------------------------------------------------------------------------
+		//
+		//							START TRANSACTION
+		//***********************************************************************************************
+		//------------------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------------
+		Connection con = DBManager.getDBManager().getConnection();
+		
+		try {
+			con.setAutoCommit(false);
+		} catch (SQLException e1) {
+			Utils.logger.error("AutoCommit false");
+			e1.printStackTrace();
+		}
+		
+		///-----------------------------------------------------------------------------------------------
 		if(incomesID!=null){
 			for(String id:incomesID){
 				int intId = Integer.valueOf(id);
@@ -276,6 +294,31 @@ public class SettingsController {
 		//update budget in DB
 		IBudgetDAO.getInstance().updateBudget(budget);
 		
+		try {
+			con.commit();
+		} catch (SQLException e) {
+			try {
+				con.rollback();
+				e.printStackTrace();
+				System.out.println("rollback");
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		}finally{
+			try {
+				con.setAutoCommit(true);
+				System.out.println("autocommit is true");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		//-------------------------------------------------------------------------------------------------
+		//
+		//					END TRANSACRION
+		//
+		//-------------------------------------------------------------------------------------------------
 		if(user.getBudget().getId()==budget.getId()){
 			user.addBudet(budget);
 		}

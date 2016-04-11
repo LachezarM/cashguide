@@ -15,6 +15,7 @@ import com.model.Expense;
 import com.model.Income;
 import com.model.Payment;
 import com.model.User;
+import com.model.Utils;
 
 public class DBPaymentDAO implements IPaymentDAO{
 	
@@ -147,12 +148,19 @@ public class DBPaymentDAO implements IPaymentDAO{
 		
 	}
 	
+	//TODO better implementation (paymentId, User)
 	public void deletePayment(int paymentId){
 		String sql = "DELETE FROM "+DBManager.DB_NAME+".payments WHERE id=?";
 		String update="UPDATE budgets SET balance=? WHERE id=?;";
+		
+		
 		try(PreparedStatement ps = DBManager.getDBManager().getConnection().prepareStatement(sql)){
 			ps.setInt(1, paymentId);
 			ps.executeUpdate();
+			
+			//TODO fix this
+			//IBudgetDAO.getInstance().updateBudget(budget);
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
