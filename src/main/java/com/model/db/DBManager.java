@@ -13,8 +13,8 @@ public class DBManager {
 	private static final String DB_URL = "jdbc:mysql://localhost:3306/";
 	private static final String DB_USER = "root";
 	//password different for users
-	private static final String DB_PASS = "mysqlpassword";
-	private Connection con;
+	private static final String DB_PASS = "ds941213";
+	private static volatile Connection con;
 
 	private DBManager() {
 
@@ -26,10 +26,10 @@ public class DBManager {
 		} catch (SQLException | ClassNotFoundException e) {
 			System.out.println("Error connection to DB " + e.getMessage());
 		}
-		createDB();
+		//createDB();
 	}
 
-	private void createDB() {
+	/*private void createDB() {
 		try (Statement st = con.createStatement()) {
 			String query;
 			query = "CREATE DATABASE IF NOT EXISTS " + DB_NAME;
@@ -42,7 +42,7 @@ public class DBManager {
 			System.out.println("Error creating DB" + e.getMessage());
 		}
 
-	}
+	}*/
 
 	public static synchronized DBManager getDBManager() {
 		if (instance == null) {
@@ -51,7 +51,7 @@ public class DBManager {
 		return instance;
 	}
 
- 	public Connection getConnection() {
+ 	public static Connection getConnection() {
 		try {
 			con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
 		} catch (SQLException e) {

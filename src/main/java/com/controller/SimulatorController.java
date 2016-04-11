@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.model.Budget;
+import com.model.Payment;
 import com.model.User;
 import com.model.Utils;
 import com.model.db.DBBudgetDAO;
@@ -74,7 +75,7 @@ public class SimulatorController {
 		if(incomesID!=null){
 			for(String id:incomesID){
 				int intId = Integer.valueOf(id);
-				balance += budget.getPayments().get("INCOME").get(intId).getAmount();
+				balance += budget.getPayments().get(Payment.INCOME).get(intId).getAmount();
 			}
 		}
 		
@@ -83,7 +84,7 @@ public class SimulatorController {
 		if(expensesID!=null){
 			for(String id:expensesID){
 				int intId = Integer.valueOf(id);
-				balance -= budget.getPayments().get("EXPENSE").get(intId).getAmount();
+				balance -= budget.getPayments().get(Payment.EXPENSE).get(intId).getAmount();
 			}
 		}	
 		

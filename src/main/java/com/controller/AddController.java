@@ -51,33 +51,30 @@ public class AddController {
 		if(amount<0){
 			System.out.println("must be positive");
 			Utils.logger.info("Negative amount in add payments");
-			amount = -amount;
-		}
-		//exception 
-		
-		
-		Payment payment = null;
-		//get user from session
-		User user = (User)session.getAttribute("logedUser");
-		
-		if(paymentType.equalsIgnoreCase("EXPENSE")){
-			payment = new Expense(category,description, amount, date);
-		}else if(paymentType.equalsIgnoreCase("INCOME")){
-			payment = new Income(category, description, amount, date);
-		}
-		
-		//this will add payment to db+all foreign keys and to user's budget in session
-		if(payment.getType().equalsIgnoreCase("EXPENSE") 
-				&& payment.getAmount()>(user.getBudget().getIncome()-user.getBudget().getExpense())){
-					errorMessage="You don't have enought money in your budget";
-					System.out.println("error you can't do this");
-					Utils.logger.info("Payment wasn't added because its amount is greater than total incomes");
+			errorMessage = "Amount must be positive";
 		}else{
-			UserManager.addPayment(user, payment);
-			successMessage="Payment was added";
-			Utils.logger.info("Payment was added");
+			Payment payment = null;
+			//get user from session
+			User user = (User)session.getAttribute("logedUser");
+			
+			if(paymentType.equalsIgnoreCase(Payment.EXPENSE)){
+				payment = new Expense(category,description, amount, date);
+			}else if(paymentType.equalsIgnoreCase(Payment.INCOME)){
+				payment = new Income(category, description, amount, date);
+			}
+			
+			//this will add payment to db+all foreign keys and to user's budget in session
+			if(payment.getType().equalsIgnoreCase(Payment.EXPENSE) 
+					&& payment.getAmount()>(user.getBudget().getIncome()-user.getBudget().getExpense())){
+						errorMessage="You don't have enought money in your budget";
+						System.out.println("error you can't do this");
+						Utils.logger.info("Payment wasn't added because its amount is greater than total incomes");
+			}else{
+				UserManager.addPayment(user, payment);
+				successMessage="Payment was added";
+				Utils.logger.info("Payment was added");
+			}
 		}
-		
 		model.addAttribute("errorPayment", errorMessage);
 		model.addAttribute("successPayment", successMessage);
 		model.addAttribute("panel", "payment");
@@ -113,11 +110,5 @@ public class AddController {
 		model.addAttribute("panel", "add-category");
 		
 		return "add";
-	}
-
-	
-	
-
-	
-	
+	}	
 }

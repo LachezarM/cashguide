@@ -15,7 +15,7 @@ public class DBUserDAO implements IUserDAO{
 	private static DBUserDAO instance = null;
 	
 	private DBUserDAO(){
-		Statement st;
+		/*Statement st;
 		try {
 			st = DBManager.getDBManager().getConnection().createStatement();
 			String query = "USE " + DBManager.DB_NAME + ";";
@@ -32,7 +32,7 @@ public class DBUserDAO implements IUserDAO{
 		} catch (SQLException e) {
 			System.out.println("Error creating table users " + e.getMessage());
 		}
-		
+		*/
 	}
 	
 	public static synchronized DBUserDAO getInstance(){

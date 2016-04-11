@@ -44,7 +44,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 		java.sql.Date sqlDate = java.sql.Date.valueOf(date);
 		System.out.println("date: " + date);
 		System.out.println("sqlDate: " + sqlDate);
-		try (PreparedStatement pr = DBManager.getDBManager().getConnection()
+		try (PreparedStatement pr = DBManager.getConnection()
 				.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 			pr.setInt(1, userId);
 			pr.setDouble(2, balance);
@@ -71,15 +71,15 @@ public class DBBudgetDAO implements IBudgetDAO {
 		}
 	}
 
+	//not used
 	@Override
 	public void removeBudget(int budgetId) {
 		String sql = "DELETE FROM " + DBManager.DB_NAME
 				+ ".budgets WHERE id=?;";
 
-		try (PreparedStatement pr = DBManager.getDBManager().getConnection()
+		try (PreparedStatement pr = DBManager.getConnection()
 				.prepareStatement(sql)) {
 			pr.setInt(1, budgetId);
-
 			pr.executeUpdate();
 
 		} catch (SQLException e) {
@@ -92,7 +92,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 		String sql = "UPDATE " +DBManager.DB_NAME + ".budgets "
 				+ "SET balance=?, percentage=? "
 				+ "WHERE id=?;";
-		try(PreparedStatement ps = DBManager.getDBManager().getConnection().prepareStatement(sql)){
+		try(PreparedStatement ps = DBManager.getConnection().prepareStatement(sql)){
 			ps.setDouble(1, budget.getBalance());
 			ps.setDouble(2, budget.getPercentageOfIncome());
 			ps.setInt(3, budget.getId());
@@ -111,7 +111,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 		String sql = "UPDATE " + DBManager.DB_NAME
 				+ ".budgets SET percentage=? WHERE id=?;";
 		boolean result = false;
-		try (PreparedStatement pr = DBManager.getDBManager().getConnection()
+		try (PreparedStatement pr = DBManager.getConnection()
 				.prepareStatement(sql)) {
 			pr.setInt(2, budgetId);
 			pr.setDouble(1, percentage);
@@ -140,7 +140,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 				+ "WHERE users.id=? AND budgets.date=?;";
 		Budget budget = null;
 
-		try (PreparedStatement pr = DBManager.getDBManager().getConnection().prepareStatement(sql)) {
+		try (PreparedStatement pr = DBManager.getConnection().prepareStatement(sql)) {
 			//change date to 1-st day of the say month and year.
 			date = LocalDate.of(date.getYear(), date.getMonthValue(), 1);
 			java.sql.Date sqlDate = java.sql.Date.valueOf(date);
@@ -178,7 +178,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 				+ "JOIN "+ DBManager.DB_NAME + ".categories ON payments.categoryId=categories.id "
 				+ "JOIN "+ DBManager.DB_NAME + ".payment_types ON payment_types.id = categories.typeId "
 				+ "WHERE budgets.id=? AND budgets.date=?;";
-		try (PreparedStatement pr = DBManager.getDBManager().getConnection()
+		try (PreparedStatement pr = DBManager.getConnection()
 				.prepareStatement(sql)) {
 			java.sql.Date sqlDate = java.sql.Date.valueOf(budget.getDate());
 			pr.setInt(1, budget.getId());
@@ -219,7 +219,6 @@ public class DBBudgetDAO implements IBudgetDAO {
 		
 	}
 	
-	//---------------------------------------------------------------------------------------------------
 	//calls the getBudget(userId, date)																	|
 	@Override
 	public Budget getBudget(int userId) {
@@ -240,7 +239,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 				+ "WHERE users.id=? AND budgets.date=?;";
 		Budget budget = null;
 		double balance = 0;
-		try (PreparedStatement pr = DBManager.getDBManager().getConnection().prepareStatement(sql)) {
+		try (PreparedStatement pr = DBManager.getConnection().prepareStatement(sql)) {
 			java.sql.Date sqlDate = java.sql.Date.valueOf(date);
 			pr.setInt(1, userId);
 			pr.setDate(2, sqlDate);
@@ -314,7 +313,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 		LocalDate date = payment.getDate();
 		java.sql.Date sqlDate = java.sql.Date.valueOf(date);
 		
-		Connection con = DBManager.getDBManager().getConnection();
+		Connection con = DBManager.getConnection();
 		
 		try {
 			con.setAutoCommit(false);
@@ -402,7 +401,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 		List<Budget> budgets = new ArrayList<Budget>();
 		Budget budget = null;
 
-		try (PreparedStatement pr = DBManager.getDBManager().getConnection()
+		try (PreparedStatement pr = DBManager.getConnection()
 				.prepareStatement(sql)) {
 			pr.setInt(1, userId);
 			int lastId = -1;
@@ -476,7 +475,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 				+ ".payment_types ON typeId=payment_types.id "
 				+ "WHERE type=?;";
 		List<String> categories = new LinkedList<String>();
-		try (PreparedStatement ps = DBManager.getDBManager().getConnection()
+		try (PreparedStatement ps = DBManager.getConnection()
 				.prepareStatement(sql)) {
 			ps.setString(1, type);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -505,7 +504,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 		Map<String, ArrayList<String>> categories = new HashMap<String, ArrayList<String>>();
 		categories.put("EXPENSE", new ArrayList<String>());
 		categories.put("INCOME", new ArrayList<String>());
-		try (PreparedStatement ps = DBManager.getDBManager().getConnection().prepareStatement(sql)) {
+		try (PreparedStatement ps = DBManager.getConnection().prepareStatement(sql)) {
 			//ps.setInt(1, userId);
 			try (ResultSet rs = ps.executeQuery(sql)) {
 				while (rs.next()) {
@@ -530,7 +529,7 @@ public class DBBudgetDAO implements IBudgetDAO {
 				+ "WHERE userId="+id+";";
 		
 		ArrayList<String>categories = new ArrayList<String>();
-		try (PreparedStatement ps = DBManager.getDBManager().getConnection().prepareStatement(sql)) {
+		try (PreparedStatement ps = DBManager.getConnection().prepareStatement(sql)) {
 			//ps.setInt(1, userId);
 			try (ResultSet rs = ps.executeQuery(sql)) {
 				while (rs.next()) {
