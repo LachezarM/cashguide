@@ -109,7 +109,7 @@ $(function() {
 					<li><a href="home">Home</a></li>
 					<li><a href="add">Add</a></li>
 					<li class="active"><a href="history">Show history</a></li>
-					<li><a href="info">Info</a></li>
+					<li><a href="info">Charts</a></li>
 					<li><a href="simulator">Simulator</a></li>
 				</ul>
 			</div>

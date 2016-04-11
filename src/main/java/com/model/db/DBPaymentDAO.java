@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,6 @@ import com.model.Expense;
 import com.model.Income;
 import com.model.Payment;
 import com.model.User;
-import com.model.Utils;
 
 public class DBPaymentDAO implements IPaymentDAO{
 	
@@ -49,7 +49,7 @@ public class DBPaymentDAO implements IPaymentDAO{
 			}
 			while(rs.next()) {
 				Payment p;
-				if(rs.getString("type").equalsIgnoreCase("INCOME")) {
+				if(rs.getString("type").equalsIgnoreCase(Payment.INCOME)) {
 					 p = new Income(rs.getString("category"),rs.getString("description"),rs.getDouble("amount"),
 						rs.getDate("date").toLocalDate());
 					p.setId(rs.getInt("payments.id"));
@@ -167,7 +167,7 @@ public class DBPaymentDAO implements IPaymentDAO{
 	}
 	
 	public JsonObject getCategoriesJSON(int userId){
-		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(userId);
+		Map<String, ArrayList<String>> result = IPaymentDAO.getInstance().getAllCategories(userId);
 		JsonObject object = new JsonObject();
 		for(String type:result.keySet()){
 			JsonArray categories = new JsonArray();
@@ -179,4 +179,55 @@ public class DBPaymentDAO implements IPaymentDAO{
 		return object;
 
 	}
+	
+	public ArrayList<String> getCustomCategories(int id) {
+		String sql = "SELECT category "
+				+ "FROM "+DBManager.DB_NAME+".categories "
+				+ "JOIN "+DBManager.DB_NAME+".customCategories ON categories.id=customCategories.categoryId "
+				+ "WHERE userId="+id+";";
+		
+		ArrayList<String>categories = new ArrayList<String>();
+		try (PreparedStatement ps = DBManager.getDBManager().getConnection().prepareStatement(sql)) {
+			//ps.setInt(1, userId);
+			try (ResultSet rs = ps.executeQuery(sql)) {
+				while (rs.next()) {
+					String category = rs.getString("category");
+					System.out.println("cate:" + category);
+					categories.add(category);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return categories;
+	}
+	
+	public Map<String, ArrayList<String>> getAllCategories(int userId) {
+		String sql = "SELECT category, type "
+				+ "FROM ((SELECT category, typeId "
+				+ "FROM "+DBManager.DB_NAME+".categories WHERE isDefault=TRUE) "
+				+ "UNION (SELECT category, typeId "
+				+ "FROM "+DBManager.DB_NAME+".categories "
+				+ "JOIN "+DBManager.DB_NAME+".customCategories ON categories.id=customCategories.categoryId "
+				+ "WHERE userId="+userId+")) as temp "
+				+ "JOIN "+DBManager.DB_NAME+".payment_types ON typeId=payment_types.id;";
+				
+		Map<String, ArrayList<String>> categories = new HashMap<String, ArrayList<String>>();
+		categories.put(Payment.EXPENSE, new ArrayList<String>());
+		categories.put(Payment.INCOME, new ArrayList<String>());
+		try (PreparedStatement ps = DBManager.getDBManager().getConnection().prepareStatement(sql)) {
+			try (ResultSet rs = ps.executeQuery(sql)) {
+				while (rs.next()) {
+					String category = rs.getString("category");
+					String type = rs.getString("type");
+					categories.get(type).add(category);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return categories;
+	}
+
 }

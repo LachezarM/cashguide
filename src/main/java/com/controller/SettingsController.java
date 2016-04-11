@@ -24,7 +24,6 @@ import com.model.User;
 import com.model.Utils;
 import com.model.db.DBBudgetDAO;
 import com.model.db.DBManager;
-import com.model.db.DBPaymentDAO;
 import com.model.db.IBudgetDAO;
 import com.model.db.IPaymentDAO;
 import com.model.db.IUserDAO;
@@ -96,7 +95,7 @@ public class SettingsController {
 		User user = (User)session.getAttribute("logedUser");
 		if(user!=null){
 			int id = user.getId();
-			ArrayList<String> categories = DBBudgetDAO.getInstance().getCustomCategories(id);
+			ArrayList<String> categories = IPaymentDAO.getInstance().getCustomCategories(id);
 			model.addAttribute("categories", categories);
 		}else{
 			return "redirect:index";
@@ -131,7 +130,7 @@ public class SettingsController {
 			}
 		}
 		User user = (User)session.getAttribute("logedUser");
-		Budget budget = DBBudgetDAO.getInstance().getBudget(user.getId(), date);		
+		Budget budget = DBBudgetDAO.getInstance().getBudgetAndPayments(user.getId(), date);		
 		if(budget!=null){
 			model.addAttribute(panel, "deletePayment");
 			session.setAttribute("delBudget", budget);
@@ -228,7 +227,7 @@ public class SettingsController {
 		}else{
 			int id = ((User) session.getAttribute("logedUser")).getId();
 			IPaymentDAO.getInstance().deleteCategory(category, id);
-			ArrayList<String> categories = DBBudgetDAO.getInstance().getCustomCategories(id);
+			ArrayList<String> categories = IPaymentDAO.getInstance().getCustomCategories(id);
 			model.addAttribute(panel, "deleteCategory");
 			model.addAttribute("categories", categories);
 			Utils.logger.info("categories was deleted");

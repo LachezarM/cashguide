@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +15,6 @@ import com.google.gson.JsonObject;
 import com.model.Payment;
 import com.model.User;
 import com.model.Utils;
-import com.model.db.DBBudgetDAO;
-import com.model.db.DBPaymentDAO;
-import com.model.db.IBudgetDAO;
 import com.model.db.IPaymentDAO;
 
 @Controller
@@ -64,7 +60,7 @@ public class HomePageController {
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(currentUser.getId());
 		session.setAttribute("AllPaymentsSession", payments);
 		//we add all payments for user in session
-		Map<String, ArrayList<String>> categoriesMap = IBudgetDAO.getInstance().getAllCategories(currentUser.getId());
+		Map<String, ArrayList<String>> categoriesMap = IPaymentDAO.getInstance().getAllCategories(currentUser.getId());
 		List<String> categoriesList = generateCategoriesByType(ALL, categoriesMap);
 		//we add all categories map in the session
 		session.setAttribute("AllCategoriesSession", categoriesMap);
@@ -111,7 +107,7 @@ public class HomePageController {
 	public static double total(List<Payment> payments){
 		double amount = 0;
 		for(Payment payment : payments) {
-			if(payment.getType().equalsIgnoreCase("Expense"))
+			if(payment.getType().equalsIgnoreCase(Payment.EXPENSE))
 				amount -= payment.getAmount();
 			else 
 				amount += payment.getAmount();

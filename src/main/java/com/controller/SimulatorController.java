@@ -43,7 +43,7 @@ public class SimulatorController {
 		}
 		User user = (User)session.getAttribute("logedUser");
 		
-		Budget budget = DBBudgetDAO.getInstance().getBudget(user.getId(), date);
+		Budget budget = DBBudgetDAO.getInstance().getBudgetAndPayments(user.getId(), date);
 		
 		System.out.println("Budget: " + budget);
 		

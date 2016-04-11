@@ -1,6 +1,8 @@
 package com.model.db;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.JsonObject;
 import com.model.Payment;
@@ -11,15 +13,19 @@ public interface IPaymentDAO {
 	static IPaymentDAO getInstance() {
 		return DBPaymentDAO.getInstance();
 	}
-	//OK
+	
 	List<Payment> getAllPayments(int userId);
-	//OK
+	
 	void deletePayment(int paymentId);
-	//OK
+	
 	void addNewCategory(String category, String type, User user);
-	//OK
+	
 	void deleteCategory(String category, int userId);
-	//OK
+
 	JsonObject getCategoriesJSON(int userId);
+	
+	ArrayList<String> getCustomCategories(int id);
+	
+	Map<String, ArrayList<String>> getAllCategories(int id);
 	
 }

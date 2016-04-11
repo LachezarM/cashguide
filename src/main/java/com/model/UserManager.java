@@ -1,48 +1,82 @@
 package com.model;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 import com.model.db.DBBudgetDAO;
+import com.model.db.DBManager;
 import com.model.db.IUserDAO;
 
 //Tested
 public class UserManager {
 	
 	//register
-	public static User createUserAfterRegister(String username, String password, String email){
+	public static User createUserAfterRegister(String username, String password, String email){		
 		User user = new User(username,email, password);
-		IUserDAO.getInstance().addUser(user);
 		Budget budget = new Budget(LocalDate.now(), 1);
+		//with transaction
+		IUserDAO.getInstance().addUser(user, budget);
+		//IBudgetDAO.getInstance().addBudget(user.getId(), budget);
 		user.addBudet(budget);
-		DBBudgetDAO.getInstance().addBudget(user.getId(), budget);
 		return user;
 	}
 	 
-	//login
-	//initialize user
-	//this method gets the user, the budget for the current month if exists else creates new budget and all payments for current budget
-	//TODO
+	//login initialize user
+	//this method gets the user, the budget for the current month if exists else creates new budget and add all payments for current budget
 	public static User createUserAfterLogin(String username, String password){
-		//getting user only by username is not cool
-		User user = IUserDAO.getInstance().getUser(username);
-		Budget budget = DBBudgetDAO.getInstance().getBudget(user, LocalDate.now());
-		if(budget == null){
-			//no budget for this user for current month.
-			//create budget for this user for current month
-			budget = new Budget(LocalDate.now(),1);
-			user.addBudet(budget);
-			DBBudgetDAO.getInstance().addBudget(user.getId(), budget);
-		}else{
-			//get all payments for this budget
-			user.addBudet(budget);
-			//getPayments is changed on 4.4.16.returns only payments for the specific budget
-			DBBudgetDAO.getInstance().getPayments(budget);
+		//------------------------------------------------------------------------------
+		//-------------------------------FUCK THIS SHIT---------------------------------
+		//------------------------------------------------------------------------------
+			Connection con = DBManager.getDBManager().getConnection();
 			
-			System.out.println("budget after login: " + budget);
-			
-		}
+			try {
+				con.setAutoCommit(false);
+				System.out.println("autocommit is false");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		
-		System.out.println("Budget in UserManager: " + budget.toString());
+			//getting user only by username is not cool
+			User user = IUserDAO.getInstance().getUser(username);
+			Budget budget = DBBudgetDAO.getInstance().getBudget(user, LocalDate.now());
+			if(budget == null){
+				//no budget for this user for current month.
+				//create budget for this user for current month
+				budget = new Budget(LocalDate.now(),1);
+				user.addBudet(budget);
+				DBBudgetDAO.getInstance().addBudget(user.getId(), budget);
+			}else{
+				user.addBudet(budget);
+				DBBudgetDAO.getInstance().getPayments(budget);
+				
+				System.out.println("budget after login: " + budget);
+			}
+			System.out.println("Budget in UserManager: " + budget.toString());
+			
+		
+			try {
+				con.commit();
+			} catch (SQLException e) {
+				try {
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				System.out.println("rollback");
+				e.printStackTrace();
+			}finally{
+				try {
+					con.setAutoCommit(true);
+					System.out.println("autocommit is true");
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		
+			//----------------------------------------------------------------------------
+			//----------------------------------------------------------------------------
+			//----------------------------------------------------------------------------
 		return user;
 	}
 	
@@ -51,7 +85,6 @@ public class UserManager {
 		Budget budget = user.getBudget();
 		LocalDate startDate = budget.getDate();
 		LocalDate endDate = budget.getDate().plusMonths(1).minusDays(1);
-		System.out.println("StartDate: " + startDate + ", EndDate: " + endDate);
 
 		if((payment.getDate().compareTo(startDate)>=0)&&(payment.getDate().compareTo(endDate)<=0)){
 			//add to current budget
@@ -87,15 +120,12 @@ public class UserManager {
 	
 	public static void updateBudget(Budget budget, Payment payment){
 		budget.addPayment(payment);
-		if(payment.getType().equalsIgnoreCase("expense")){
+		if(payment.getType().equalsIgnoreCase(Payment.EXPENSE)){
 			budget.setBalance(budget.getBalance() - payment.getAmount());
 			budget.setExpense(budget.getExpense()+payment.getAmount());
-		}else if(payment.getType().equalsIgnoreCase("income")){
+		}else if(payment.getType().equalsIgnoreCase(Payment.INCOME)){
 			budget.setBalance(budget.getBalance() + budget.getPercentageOfIncome()*payment.getAmount());
 			budget.setIncome(budget.getIncome()+payment.getAmount());
 		}
 	}
-	
-	
-	
 }

@@ -2,7 +2,6 @@ package com.model.db;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Connection;
 
 public class DBManager {
@@ -12,7 +11,7 @@ public class DBManager {
 	public  static final String DB_NAME = "cashguidedb";
 	private static final String DB_URL = "jdbc:mysql://localhost:3306/";
 	private static final String DB_USER = "root";
-	//password different for users
+
 	private static final String DB_PASS = "ds941213";
 	private static volatile Connection con;
 
@@ -67,6 +66,4 @@ public class DBManager {
 			System.out.println(e.getMessage());
 		}
 	}
-
-
 }

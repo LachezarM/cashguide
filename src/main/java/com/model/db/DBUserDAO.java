@@ -1,16 +1,18 @@
 package com.model.db;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.model.Budget;
 import com.model.User;
 
 public class DBUserDAO implements IUserDAO{
 
 	private static DBUserDAO instance = null;
-	
+	//TODO see if this code is ok
 	private DBUserDAO(){
 		/*try(Statement st = DBManager.getConnection().createStatement();) {
 			//st = DBManager.getDBManager().getConnection().createStatement();
@@ -120,10 +122,19 @@ public class DBUserDAO implements IUserDAO{
 	}
 	
 	@Override
-	public void addUser(User user) {
+	public void addUser(User user, Budget budget) {
 
 		String sql = "INSERT INTO " + DBManager.DB_NAME + ".users(username, password, email) "
 				+ "VALUES(?,?,?);";
+		
+		Connection con = DBManager.getDBManager().getConnection();
+		
+		try {
+			con.setAutoCommit(false);
+			System.out.println("autocommit is false");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
 		try(PreparedStatement pr = DBManager.getDBManager().getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 			pr.setString(1, user.getUsername());
@@ -144,9 +155,29 @@ public class DBUserDAO implements IUserDAO{
 	                throw new SQLException("Creating user failed, no ID obtained.");
 	            }
 	        }
+			
+			IBudgetDAO.getInstance().addBudget(user.getId(), budget);
+			
+			
+			con.commit();
+			System.out.println("changes are commited");
 		} catch (SQLException e) {
-			System.out.println("Error inserting User" + e.getMessage());
-		}		
+			System.out.println("Error inserting user");
+			try {
+				con.rollback();
+				e.printStackTrace();
+				System.out.println("rollback");
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}finally{
+			try {
+				con.setAutoCommit(true);
+				System.out.println("autocommit is true");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
@@ -175,35 +206,6 @@ public class DBUserDAO implements IUserDAO{
 		
 		return user;
 	}
-
-	/*@Override
-	public List<User> getAllUsers() {
-		String sql = "SELECT id, username, password, email"
-				+ " FROM " + DBManager.DB_NAME + ".users;";
-		List<User> users = new LinkedList<User>();
-		try(Statement st = DBManager.getConnection().createStatement()){
-			ResultSet rs = st.executeQuery(sql);
-			while(rs.next()){
-				//System.out.println(rs.getString("username") + " : "  + rs.getInt("id"));
-				int id = rs.getInt("id");
-				String username = rs.getString("username");
-				String password = rs.getString("password");
-				String email = rs.getString("email");
-				//String firstName = rs.getString("firstName");
-				//String lastName = rs.getString("lastName");
-				//User user = new User(username,email, password, firstName, lastName);
-				User user = new User(username,email, password);
-				user.setId(id);
-				users.add(user);
-			}
-			rs.close();
-		} catch (SQLException e) {
-			System.out.println("DB couldn't select the users see getAllUser() in DBUserDAO");
-			e.printStackTrace();
-		}
-		
-		return Collections.unmodifiableList(users);
-	}*/
 
 	@Override
 	public boolean changePassword(int id, String newPassword) {
@@ -250,54 +252,4 @@ public class DBUserDAO implements IUserDAO{
 		
 		return result;
 	}
-
-	/*@Override
-	public boolean changeUserProfile(int id,String newUsername) {
-		String sql = "UPDATE "+DBManager.DB_NAME+".users "
-				+ "SET username=? "
-				+ "WHERE id=?;";
-		boolean result = false;
-		try(PreparedStatement pr = DBManager.getConnection().prepareStatement(sql)){
-			pr.setString(1, newUsername);
-			pr.setInt(2, id);
-			int rs = pr.executeUpdate();
-			if(rs == 0){
-				result = false;
-			}else{
-				result = true;
-			}			
-		} catch (SQLException e) {
-			System.out.println("DB error in changeEmail");
-			e.printStackTrace();
-		}
-		
-		return result;
-		
-	}*/
-
-	//-------------------------------------------------------------------------------------------------
-	/*@Override
-	public boolean checkIfPasswordExists(String newPassword) {
-		String sql = "SELECT password FROM " + DBManager.DB_NAME + ".users WHERE password=?;";
-		boolean result = false;
-		try(PreparedStatement pr = DBManager.getConnection().prepareStatement(sql)){
-			pr.setString(1, newPassword);
-			ResultSet rs= pr.executeQuery();
-			while(rs.next()){
-				String user = rs.getString("username");
-				if(user==null){
-					result = false;
-					break;
-				}else{
-					result = true;
-					break;
-				}
-			}
-			rs.close();
-		} catch (SQLException e) {
-			System.out.println("Error in DB");
-			e.printStackTrace();
-		}
-		return result;
-	}*/
 }

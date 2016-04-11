@@ -1,6 +1,5 @@
 package com.controller;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
-import javax.websocket.SessionException;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,12 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.model.Payment;
-import com.model.User;
 import com.model.Utils;
-import com.model.db.IBudgetDAO;
-import com.model.db.IPaymentDAO;
-
-import ch.qos.logback.core.net.SyslogOutputStream;
 
 
 
