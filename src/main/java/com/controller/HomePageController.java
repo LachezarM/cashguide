@@ -26,10 +26,15 @@ import com.model.User;
 import com.model.Utils;
 import com.model.db.DBBudgetDAO;
 import com.model.db.DBPaymentDAO;
+import com.model.db.IBudgetDAO;
 import com.model.db.IPaymentDAO;
 
 @Controller
 public class HomePageController {
+	
+	final static String EXPENSE = "EXPENSE";
+	final static String INCOME = "INCOME";
+	final static String ALL = "ALL";
 	
 	static User currentUser = null;
 	final static Logger logger = Logger.getLogger(HomePageController.class.getName());
@@ -58,18 +63,23 @@ public class HomePageController {
 	}
 
 	@RequestMapping(value = "/history", method = RequestMethod.GET)
-	String showHistory(HttpSession s, Model m) {
-		currentUser = (User) s.getAttribute("logedUser");
-		if(currentUser==null){
+	String showHistory(HttpSession session, Model model) {
+		currentUser = (User) session.getAttribute("logedUser");
+		if(currentUser == null){
 			return "redirect:index";
 		}
 		List<Payment> payments = IPaymentDAO.getInstance().getAllPayments(currentUser.getId());
-		Map<String, ArrayList<String>> result = DBBudgetDAO.getInstance().getAllCategories(currentUser.getId());
-		List<String> categories = new ArrayList<String>();
-		categories.addAll(result.get("EXPENSE"));
-		categories.addAll(result.get("INCOME"));
-		m.addAttribute("currPayments", payments);
-		m.addAttribute("currCategories", categories);
+		session.setAttribute("AllPaymentsSession", payments);
+		//we add all payments for user in session
+		Map<String, ArrayList<String>> categoriesMap = IBudgetDAO.getInstance().getAllCategories(currentUser.getId());
+		List<String> categoriesList = generateCategoriesByType(ALL, categoriesMap);
+		//we add all categories map in the session
+		session.setAttribute("AllCategoriesSession", categoriesMap);
+		//
+		double total = total(payments);
+		model.addAttribute("currPayments", payments);
+		model.addAttribute("currCategories", categoriesList);
+		model.addAttribute("totalAmount",total);
 		Utils.logger.info("history payments link is clicked");
 		return "history";
 	}
@@ -92,4 +102,27 @@ public class HomePageController {
 		s.removeAttribute("addBalance");
 		return "UserProfile";
 	}
-}
+	public static List<String> generateCategoriesByType(String choise, Map<String, ArrayList<String>> result) {
+		List<String> categories = new ArrayList<String>();
+		if(choise.equalsIgnoreCase(ALL)) {
+			categories.addAll(result.get(EXPENSE));
+			categories.addAll(result.get(INCOME));
+		}else if(choise.equalsIgnoreCase(EXPENSE)) {
+			categories.addAll(result.get(EXPENSE));
+		}
+		else if(choise.equalsIgnoreCase(INCOME)) {
+			categories.addAll(result.get(INCOME));
+		}
+		return categories;
+	}
+	public static double total(List<Payment> payments){
+		double amount = 0;
+		for(Payment payment : payments) {
+			if(payment.getType().equalsIgnoreCase("Expense"))
+				amount -= payment.getAmount();
+			else 
+				amount += payment.getAmount();
+		}
+		return amount;
+	}
+	}

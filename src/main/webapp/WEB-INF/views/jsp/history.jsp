@@ -56,33 +56,22 @@ label {
 }
 .select_style {
      background: #FFF;
-    overflow: hidden;
     display: inline-block;
     color: #525252;
     font-weight: 300;
-    -webkit-border-radius: 5px 4px 4px 5px/5px 5px 4px 4px;
-    -moz-border-radius: 5px 4px 4px 5px/5px 5px 4px 4px;
-    border-radius: 5px 4px 4px 5px/5px 5px 4px 4px;
-    -webkit-box-shadow: 0 0 5px rgba(123, 123, 123, 0.2);
-    -moz-box-shadow: 0 0 5px rgba(123,123,123,.2);
-    box-shadow: 0 0 5px rgba(123, 123, 123, 0.2);
-    border: solid 1px #DADADA;
-    font-family: "helvetica neue",arial;
     position: relative;
-    cursor: pointer;
     padding-right:10px;
     left:140px;
     top: 120px
 }
 .select_style select {
-    -webkit-appearance: none;
-    appearance:none;
     width:70%;
     background:none;
     background:transparent;
-    border:none;
-    outline:none;
 }
+#sortOptions{
+   	position: relative;
+ }
 </style>
 
 <!-- jQueryV2.2.2 -->
@@ -92,7 +81,15 @@ label {
 
 <script>
 $(function() {
-	$("#datepicker").datepicker({
+	 $("#datepicker1").datepicker({
+		dateFormat : "dd-mm-yy",
+		onClose: function(selectedDate) {
+			$("#datepicker2").datepicker("option","minDate",selectedDate);
+		}
+	});
+	 
+	$("#datepicker2").datepicker({
+		minDate: document.getElementById('datepicker1').value,
 		dateFormat : "dd-mm-yy"
 	});
 });
@@ -121,6 +118,7 @@ $(function() {
 				<div class="panel panel-default">
 					<div class="panel-heading">History</div>
 					<div class="panel-body">
+					<div id="sortOptions">
 					<form action="showOnlyCategories" method="GET">
 							<div class='select_style'>
 								<label for="categories"> Categories:</label>
@@ -135,11 +133,12 @@ $(function() {
 							
 							<div >
 								<form  method="GET" action="showByDate">
-							Date: <input type="text" name="date" id="datepicker" class="form-control" placeholder="Date"> 
+							Show : <input type="text" name="date1" id="datepicker1" class="form-control" placeholder="Date From"> 
+									<input type="text" name="date2" id="datepicker2" class="form-control" placeholder="Date To">
 								<input type="submit" value="show" />						
 								</form>
 							</div>
-							
+						<div>	
 						<form action="showOnlyTypes" method="GET" >
 							<input checked="checked" type="radio" name="Show" id="rd1" value="All" ${param.Show == 'ALL' ? 'checked' : ''} onChange='this.form.submit();'/>
 								 <label for="rd1">Show All</label><br /> 
@@ -152,6 +151,8 @@ $(function() {
 								onChange='this.form.submit();' /> 
 								<label for="rd3">Show Incomes</label><br />
 						</form>
+						</div>
+						</div>
 						<c:set var="payments" scope="session" value="${currPayments}" />
 						<c:set var="totalCount" scope="session"
 							value="${fn:length(payments)}" />
@@ -163,8 +164,8 @@ $(function() {
 						<c:if test="${totalCount < pageStart}">
 							<c:set var="pageStart" value="${pageStart - perPage}" />
 						</c:if>
-						<a href="?Show=${param.Show }&start=${pageStart - perPage}"><<</a>${pageStart + 1}	- ${pageStart + perPage} 
-						<a href="?Show=${param.Show }&start=${pageStart + perPage}">>></a>
+						<a href="?categories=${param.categories }&Show=${param.Show }&start=${pageStart - perPage}"><<</a>${pageStart + 1}	- ${pageStart + perPage} 
+						<a href="?categories=${param.categories }&Show=${param.Show }&start=${pageStart + perPage}">>></a>
 						<table style="width: 100%">
 							<thead>
 								<th>Type</th>
@@ -185,8 +186,8 @@ $(function() {
 								</tr>
 							</c:forEach>
 						</table>
-
-
+					<p style="position: absolute; left:549px; background-color: #337ab7; color: white; text-align: center">Total : ${totalAmount}</p>
+					
 					</div>
 				</div>
 			</div>
