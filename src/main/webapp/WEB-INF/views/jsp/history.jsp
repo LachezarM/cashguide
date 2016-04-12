@@ -113,32 +113,25 @@ $(function() {
 					<li><a href="simulator">Simulator</a></li>
 				</ul>
 			</div>
-
 			<div class="col-md-9">
 				<div class="panel panel-default">
 					<div class="panel-heading">History</div>
 					<div class="panel-body">
 					<div id="sortOptions">
-					<form action="showOnlyCategories" method="GET">
-							<div class='select_style'>
-								<label for="categories"> Categories:</label>
-								<select id="categories" name="categories" onChange='this.form.submit();'>
-										<option selected="selected" value="All" >All</option>
-								<c:forEach  var="categories" items="${currCategories }">
-										<option  value="${categories}" >${categories}</option>							
-								</c:forEach>
-								</select>
-							</div>
-						</form>	
+						<h3>Choose period :</h3> 
+							<form action="showByDate" method="GET">
+								<div class="col-md-6">
+									From:<input type="text" name="date1" id="datepicker1" class="form-control" placeholder="Date From">
+								</div>
+								<div class="col-md-6">
+										To:<input type="text" name="date2" id="datepicker2" class="form-control" placeholder="Date To">
+								</div>
+								<input type="submit" value="show" style="margin-top: 15px; margin-left:15px; width:80px;"/>
 							
-							<div >
-								<form  method="GET" action="showByDate">
-							Show : <input type="text" name="date1" id="datepicker1" class="form-control" placeholder="Date From"> 
-									<input type="text" name="date2" id="datepicker2" class="form-control" placeholder="Date To">
-								<input type="submit" value="show" />						
-								</form>
-							</div>
-						<div>	
+							</form>
+							
+						<div class="col-md-6">
+						<h3>Choose type:</h3>
 						<form action="showOnlyTypes" method="GET" >
 							<input checked="checked" type="radio" name="Show" id="rd1" value="All" ${param.Show == 'ALL' ? 'checked' : ''} onChange='this.form.submit();'/>
 								 <label for="rd1">Show All</label><br /> 
@@ -152,10 +145,32 @@ $(function() {
 								<label for="rd3">Show Incomes</label><br />
 						</form>
 						</div>
+							
+						<div class="col-md-6" style="height: 200px;">
+							<h3>Choose category:</h3>
+							<form action="showOnlyCategories" method="GET">
+								<!-- <div class='select_style'> -->
+									<label for="categories"> Categories:</label>
+									<select id="categories" name="categories" onChange='this.form.submit();'>
+											<option selected="selected" value="All" >All</option>
+									<c:forEach  var="categories" items="${currCategories }">
+											<option  value="${categories}" >${categories}</option>							
+									</c:forEach>
+									</select>
+								<!-- </div> -->
+							</form>	
 						</div>
-						<c:set var="payments" scope="session" value="${currPayments}" />
-						<c:set var="totalCount" scope="session"
-							value="${fn:length(payments)}" />
+						
+					</div>
+					
+					
+					<div class="col-md-12"  >
+						<p >Total : ${totalAmount}</p>
+					</div>
+				
+				
+					<c:set var="payments" scope="session" value="${currPayments}" />
+					<c:set var="totalCount" scope="session" value="${fn:length(payments)}" />
 						<c:set var="perPage" scope="session" value="5" />
 						<c:set var="pageStart" value="${param.start}" />
 						<c:if test="${empty pageStart or pageStart < 0}">
@@ -164,31 +179,36 @@ $(function() {
 						<c:if test="${totalCount < pageStart}">
 							<c:set var="pageStart" value="${pageStart - perPage}" />
 						</c:if>
-						<a href="?categories=${param.categories }&Show=${param.Show }&start=${pageStart - perPage}"><<</a>${pageStart + 1}	- ${pageStart + perPage} 
-						<a href="?categories=${param.categories }&Show=${param.Show }&start=${pageStart + perPage}">>></a>
-						<c:out value="${payments}"></c:out>
-						<table style="width: 100%">
-							<thead>
-								<th>Type</th>
-								<th>Category</th>
-								<th>Description</th>
-								<th>Amount</th>
-								<th><a id="dateLink" href ="sortByDate">Date</a></th>
-							</thead>
-							<c:forEach var="payment" items="${payments}"
-								varStatus="paymentsCounter" begin="${pageStart}"
-								end="${pageStart + perPage - 1 }">
-								<tr>
-									<td>${payment.type}</td>
-									<td>${payment.category}</td>
-									<td>${payment.description}</td>
-									<td>${payment.amount}</td>
-									<td>${payment.date}</td>
-								</tr>
-							</c:forEach>
-						</table>
-					<p style="position: absolute; left:549px; background-color: #337ab7; color: white; text-align: center">Total : ${totalAmount}</p>
-					
+						
+						<div class="col-md-12"  >
+							<table style="margin-top:10px; width: 100%">
+								<thead>
+									<th>Type</th>
+									<th>Category</th>
+									<th>Description</th>
+									<th>Amount</th>
+									<th><a id="dateLink" href ="sortByDate">Date</a></th>
+								</thead>
+								<c:forEach var="payment" items="${payments}"
+									varStatus="paymentsCounter" begin="${pageStart}"
+									end="${pageStart + perPage - 1 }">
+									<tr>
+										<td>${payment.type}</td>
+										<td>${payment.category}</td>
+										<td>${payment.description}</td>
+										<td>${payment.amount}</td>
+										<td>${payment.date}</td>
+									</tr>
+								</c:forEach>
+							</table>
+						</div>
+				
+								
+						<div class="col-md-12 text-center" style="margin-top: 30px; font-size:20px;">
+							<a href="?categories=${param.categories }&Show=${param.Show }&start=${pageStart - perPage}"><<</a>${pageStart + 1}	- ${pageStart + perPage} 
+							<a href="?categories=${param.categories }&Show=${param.Show }&start=${pageStart + perPage}">>></a>
+						</div>
+					</div>
 					</div>
 				</div>
 			</div>

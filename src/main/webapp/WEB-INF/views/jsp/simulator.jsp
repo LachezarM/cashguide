@@ -120,70 +120,84 @@ th {
 					
 					<h3>Calculate your future wealth</h3>
 					<%-- <c:if test="${showBudget==null}"> --%>
-					Choose monthly budget:
-						<form  method="POST" action="getBudget">
-							<input type="text" name="date" id="datepicker" class="form-control" placeholder="Date"> 
-							<input type="submit" value="show" />						
-						</form>
+					<div class="col-md-12">
+						<div class="col-md-4">
+							<h4>Choose monthly budget:</h4>
+							<form  method="POST" action="getBudget">
+								<input type="text" name="date" id="datepicker" class="form-control" placeholder="Date"> 
+								<input type="submit" value="show" style="width:150px; margin-top:15px;"/>						
+							</form>
+						</div>
+					</div>
 					 <%-- </c:if> --%>
-					 
+					 <div class="col-md-12" style="margin-top:25px;">
 					 <c:if test="${error!=null}">
-						<div class="alert alert-danger" role="alert"><c:out value="${error}"></c:out></div>
-					</c:if>
-						<c:if test="${showBudget!=null}">
-							Balance:<c:out value="${showBudget.balance}"></c:out>
-							Income:<c:out value="${showBudget.income}"></c:out>
-							<c:set var="incomes" value='${showBudget.payments.get("INCOME")}'></c:set>
-							<c:set var="expenses" value='${showBudget.payments.get("EXPENSE")}'></c:set>
-							<c:set var="incomeSize" value="${incomes.size()}"></c:set>
-							<c:set var="expensesSize" value="${expenses.size()}"></c:set>
-							<form method="POST" action="calculate" id="calculation">
-								<table>
-										<tr>
-											<th>Type</th>
-											<th>Category</th>
-											<th>Description</th>
-											<th>Amount</th>
-											<th>Select</th>
-										</tr>
-			
-										<c:forEach var="income" items="${incomes}" varStatus="loop">
-										<tr>
-											<td>${income.type }</td>
-											<td>${income.category}</td>
-											<td>${income.description}</td>
-											<td>${income.amount}</td>
-											<td><input type="checkbox" name="income" value="${loop.count-1}"></td>
-										</tr>
-										</c:forEach>
+							<div class="alert alert-danger" role="alert"><c:out value="${error}"></c:out></div>
+						 </c:if>
+					 <form method="POST" action="calculate" id="calculation">
+					 	<c:if test="${showBudget!=null}">
+					 	<div class="col-md-6">
+							<div style="margin-bottom:10px;">
+								Balance:<c:out value="${showBudget.balance}"></c:out>
+								Income:<c:out value="${showBudget.income}"></c:out>
+							</div>
+								<c:set var="incomes" value='${showBudget.payments.get("INCOME")}'></c:set>
+								<c:set var="expenses" value='${showBudget.payments.get("EXPENSE")}'></c:set>
+								<c:set var="incomeSize" value="${incomes.size()}"></c:set>
+								<c:set var="expensesSize" value="${expenses.size()}"></c:set>
+									<table>
+											<tr>
+												<th>Type</th>
+												<th>Category</th>
+												<th>Description</th>
+												<th>Amount</th>
+												<th>Select</th>
+											</tr>
+				
+											<c:forEach var="income" items="${incomes}" varStatus="loop">
+											<tr>
+												<td>${income.type }</td>
+												<td>${income.category}</td>
+												<td>${income.description}</td>
+												<td>${income.amount}</td>
+												<td><input type="checkbox" name="income" value="${loop.count-1}"></td>
+											</tr>
+											</c:forEach>
+									
+											<c:forEach var="expense" items="${expenses}" varStatus="loop">
+											<tr>
+												<td>${expense.type }</td>
+												<td>${expense.category}</td>
+												<td>${expense.description}</td>
+												<td>${expense.amount}</td>
+												<td><input type="checkbox" name="expense" value="${loop.count-1}"></td>
+											</tr>
+											</c:forEach>
+									</table>
 								
-										<c:forEach var="expense" items="${expenses}" varStatus="loop">
-										<tr>
-											<td>${expense.type }</td>
-											<td>${expense.category}</td>
-											<td>${expense.description}</td>
-											<td>${expense.amount}</td>
-											<td><input type="checkbox" name="expense" value="${loop.count-1}"></td>
-										</tr>
-										</c:forEach>
-								</table>
-								<div style="margin-left:0px; margin-top:20px; margin-bottom:20px;">
+							</div>
+							<div class="col-md-6">
+								<div style="margin-left:0px; margin-top:-5px; margin-bottom:20px;">
 									<span>Enter period of months</span><br/>
 									<input type="text" name="period"/>
 									<input type="submit" value="calculate" />
 								</div>
+							</div>
+							</c:if>
 							</form>
-							</c:if>
-							<c:if test="${result!=nul}">
-							<c:choose>
-								<c:when test="${positiveSaving}">
-									<div class="alert alert-success" role="alert" ><c:out value="${result}"></c:out></div>
-								</c:when>
-								<c:otherwise>
-									<div class="alert alert-danger" role="alert"><c:out value="${result}"></c:out></div>
-								</c:otherwise>
-							</c:choose>
-							</c:if>
+						</div>
+						<div class="col-md-10" style="margin-top:15px;">
+								<c:if test="${result!=nul}">
+								<c:choose>
+									<c:when test="${positiveSaving}">
+										<div class="alert alert-success" role="alert" ><c:out value="${result}"></c:out></div>
+									</c:when>
+									<c:otherwise>
+										<div class="alert alert-danger" role="alert"><c:out value="${result}"></c:out></div>
+									</c:otherwise>
+								</c:choose>
+								</c:if>
+						</div>
 					</div>
 				</div>
 			</div>

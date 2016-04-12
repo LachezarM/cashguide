@@ -48,7 +48,7 @@
 
 #chartPayments {
 	position: relative;
-	left: 350px;
+	left: 50px;
 	top: 0px;
 }
 
@@ -56,6 +56,11 @@ body {
 	padding-top: 20px;
 	padding-bottom: 20px;
 }
+
+.ui-datepicker-calendar {
+	display:none;
+}
+
 </style>
 
 <!-- jQueryV2.2.2 -->
@@ -263,7 +268,7 @@ function generateData(payments) {
 <script src="js/bootstrap.min.js"></script>
 
 <script>
-$(function() {
+/* $(function() {
 	$("#datepicker1").datepicker({
 		dateFormat : "dd-mm-yy"
 	});
@@ -271,6 +276,44 @@ $(function() {
 		dateFormat : "dd-mm-yy"
 	});
 });
+ */
+
+
+$(function() {
+	$("#datepicker1")
+			.datepicker(
+				{
+					changeMonth : true,
+					changeYear : true,
+					dateFormat : "dd-mm-yy",
+					showButtonPanel : true,
+					onClose : function() {
+						var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+						var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+						console.log(iMonth);
+						console.log(iYear);
+						$(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+					}
+				});
+	
+	$("#datepicker2")
+	.datepicker(
+		{
+			changeMonth : true,
+			changeYear : true,
+			dateFormat : "dd-mm-yy",
+			showButtonPanel : true,
+			onClose : function() {
+				var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+				var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+				console.log(iMonth);
+				console.log(iYear);
+				$(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+			}
+		});
+});
+
+
 </script>
 <script>
 function opa() {
@@ -385,26 +428,34 @@ function getData(array){
 				<div class="panel panel-default">
 					<div class="panel-heading">Charts</div>
 					<div class="panel-body">
+						<div class="col-md-3">
+						Choose :
 							<select id="typeChart" name="typeChart" onchange="showPayments(value);">
 								<option selected="selected" >Choose</option>
 								<option  value="EXPENSES">Expenses</option>
 								<option   value="INCOMES">Incomes</option>
 								<option value="YEARSEXPENSES">YearBackExpenses</option>
 								<option value="YEARSINCOMES">YearBackIncomes</option>
-						</select>
+							</select>
+						</div>
+						<div class="col-md-1">
 						OR
-						<div id="choise" >
-							Compare By Month: <input type="text" name="date1" id="datepicker1" class="form-control" placeholder="Month"> 
-											<input type="text" name="date2" id="datepicker2" class="form-control" placeholder="Month"> 
-										<button onclick="opa();">Compare : </button>	
-										Expenses <input checked="checked" type="radio" name="choise" value="Expenses" '>
-										Incomes <input type="radio" name="choise" value="Incomes"> 		
+						</div>
+						<div class="col-md-8">
+							<div id="choise" >
+							Compare By Month:<br/> 
+							First Month<input type="text" name="date1" id="datepicker1" class="form-control" placeholder="Month"> 
+							Second Month<input type="text" name="date2" id="datepicker2" class="form-control" placeholder="Month"> 
 								
+							Expenses <input checked="checked" type="radio" name="choise" value="Expenses" '>
+							Incomes <input type="radio" name="choise" value="Incomes"> 		
+								<button onclick="opa();">Compare : </button>
 							</div>
-						<canvas id="chartPayments" width="300" height="300"></canvas>
+						</div>
+						<div class="col-md-12" style="margin-top:30px;">
+							<canvas style="margin-left:100px;" id="chartPayments" width="300" height="300"></canvas>
+						</div>
 						
-	
-
 					</div>
 				</div>
 			</div>
