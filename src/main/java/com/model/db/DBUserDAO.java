@@ -13,22 +13,7 @@ public class DBUserDAO implements IUserDAO{
 
 	private static DBUserDAO instance = null;
 	//TODO see if this code is ok
-	private DBUserDAO(){
-		/*try(Statement st = DBManager.getConnection().createStatement();) {
-			//st = DBManager.getDBManager().getConnection().createStatement();
-			String query = "USE " + DBManager.DB_NAME + ";";
-			st.executeUpdate(query);
-			query = " CREATE TABLE IF NOT EXISTS users ("
-					+ "ID int auto_increment,"
-					+ "password varchar(20),"
-					+ "username varchar(20),"
-					+ "email varchar(20),"
-					+ "PRIMARY KEY(ID));";
-			st.executeUpdate(query);
-			st.close();
-		} catch (SQLException e) {
-			System.out.println("Error creating table users " + e.getMessage());
-		}*/
+	private DBUserDAO()	{
 	}
 	
 	public static synchronized DBUserDAO getInstance(){

@@ -83,7 +83,6 @@ public class DBBudgetDAO implements IBudgetDAO {
 		}
 	}
 	
-//FIND WHAT PROBLEMS MAY COME FROM THIS METHOD BECAUSE OF INCOME AND EXPENSE vars in budget
 	public Budget getBudget(User user, LocalDate date) {
 		String sql = "SELECT budgets.id as id, balance, percentage, budgets.date as date "
 				+ "FROM "
@@ -124,9 +123,6 @@ public class DBBudgetDAO implements IBudgetDAO {
 		return budget;
 	}
 
-	//TODO move this method to payments
-	//changed on 4.4.16. Returns payments for the specific budget
-	//this method must be either renamed or its return type must be changed
 	public void getPayments(Budget budget){
 		String sql = "SELECT payments.id as paymentId, description, amount, category, type, payments.date as paymentDate "
 				+ "FROM "+ DBManager.DB_NAME + ".budgets "
@@ -176,10 +172,6 @@ public class DBBudgetDAO implements IBudgetDAO {
 		}
 		
 	}
-		//calls the getBudget(userId, date)																	|
-
-	//TODO fix the budget algorithm for calculating balance and income and expenes  |
-	// get budget by userId and date and all incomes for this budget									|
 	public Budget getBudgetAndPayments(int userId, LocalDate date) {
 		String sql = "SELECT budgets.id as id, balance, percentage, budgets.date as date, "
 				+ "payments.id as paymentId, description, amount, category, type, payments.date as paymentDate "
@@ -250,92 +242,6 @@ public class DBBudgetDAO implements IBudgetDAO {
 		return budget;
 
 	}
-	//------------------------------------------------------------------------------------------------------
-	//tested
-	//OLD VERSION 11.04 21:42 ;
-
-	//OLD VERSION
-	/*	public void addPayment(Payment payment, Budget budget) {
-		
-		String sqlInsert = "INSERT INTO " + DBManager.DB_NAME
-				+ ".payments(categoryId, description, amount, date, budgetId) "
-				+ "VALUES( " + "(SELECT id FROM " + DBManager.DB_NAME
-				+ ".categories WHERE category=?),?,?,?,?)";
-		
-		String sqlUpdate = "UPDATE " + DBManager.DB_NAME+ ".budgets SET balance=? WHERE id=?;";
-		
-		int budgetId = budget.getId();
-		String category = payment.getCategory();
-		String description = payment.getDescription();
-		double amount = payment.getAmount();
-		LocalDate date = payment.getDate();
-		java.sql.Date sqlDate = java.sql.Date.valueOf(date);
-		
-		Connection con = DBManager.getDBManager().getConnection();
-		
-		try {
-			con.setAutoCommit(false);
-			System.out.println("autocommit is false");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		try(PreparedStatement ps1 = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS); 
-				PreparedStatement ps2 = con.prepareStatement(sqlUpdate)){
-			ps1.setString(1, category);
-			ps1.setString(2, description);
-			ps1.setDouble(3, amount);
-			ps1.setDate(4, sqlDate);
-			ps1.setInt(5, budgetId);
-			
-			//ps1.executeUpdate();
-			
-			int affectedRows = ps1.executeUpdate();
-
-			if (affectedRows == 0) {
-				throw new SQLException(
-						"Adding payment failed, no rows affected.");
-			}
-			try (ResultSet generatedKeys = ps1.getGeneratedKeys()) {
-				if (generatedKeys.next()) {
-					payment.setId((int) (generatedKeys.getLong(1)));
-				} else {
-					throw new SQLException(
-							"Adding payment failed, no ID obtained.");
-				}
-			}
-			
-			System.out.println("Payment has id: " + payment.toString());
-			
-			ps2.setDouble(1,budget.getBalance());
-			ps2.setInt(2, budgetId);
-			
-			ps2.executeUpdate();
-						
-			con.commit();
-			System.out.println("changes are commited");
-		} catch (SQLException e) {
-			try {
-				con.rollback();
-				e.printStackTrace();
-				System.out.println("rollback");
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		}finally{
-			try {
-				con.setAutoCommit(true);
-				System.out.println("autocommit is true");
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-*/
-	
-	//tested
-	//NEW VERSION 
-	//MOVE IT TO PAYMENTS DAO
 	public void addPayment(Payment payment, Budget budget) {
 			
 			String sqlInsert = "INSERT INTO " + DBManager.DB_NAME

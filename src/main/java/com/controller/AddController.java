@@ -97,6 +97,8 @@ public class AddController {
 			model.addAttribute("errorCategory", "Category is empty");
 			Utils.logger.info("custom category wasn't added because its length is 0");
 			
+		}else if(customCategory.trim().length()>=45){
+			
 		}else{
 			IPaymentDAO.getInstance().addNewCategory(customCategory, paymentType, user);		
 			JsonObject object = IPaymentDAO.getInstance().getCategoriesJSON(user.getId());

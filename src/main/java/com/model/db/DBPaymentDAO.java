@@ -148,19 +148,13 @@ public class DBPaymentDAO implements IPaymentDAO{
 		
 	}
 	
-	//TODO better implementation (paymentId, User)
 	public void deletePayment(int paymentId){
-		String sql = "DELETE FROM "+DBManager.DB_NAME+".payments WHERE id=?";
-		String update="UPDATE budgets SET balance=? WHERE id=?;";
-		
+		String sql = "DELETE FROM "+DBManager.DB_NAME+".payments WHERE id=?";		
 		
 		try(PreparedStatement ps = DBManager.getDBManager().getConnection().prepareStatement(sql)){
 			ps.setInt(1, paymentId);
 			ps.executeUpdate();
-			
-			//TODO fix this
-			//IBudgetDAO.getInstance().updateBudget(budget);
-			
+						
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

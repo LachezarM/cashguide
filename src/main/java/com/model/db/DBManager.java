@@ -25,23 +25,7 @@ public class DBManager {
 		} catch (SQLException | ClassNotFoundException e) {
 			System.out.println("Error connection to DB " + e.getMessage());
 		}
-		//createDB();
 	}
-
-	/*private void createDB() {
-		try (Statement st = con.createStatement()) {
-			String query;
-			query = "CREATE DATABASE IF NOT EXISTS " + DB_NAME;
-			st.executeUpdate(query);
-			query = "USE " + DB_NAME;
-			st.executeUpdate(query);
-			st.close();
-			closeConnection();
-		} catch (SQLException e) {
-			System.out.println("Error creating DB" + e.getMessage());
-		}
-
-	}*/
 
 	public static synchronized DBManager getDBManager() {
 		if (instance == null) {
@@ -51,11 +35,6 @@ public class DBManager {
 	}
 
  	public Connection getConnection() {
-		/*try {
-			con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-		} catch (SQLException e) {
-			System.out.println("Error creating connection" + e.getMessage());
-		}*/
 		return con;
 	}
 

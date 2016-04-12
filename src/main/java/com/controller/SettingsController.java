@@ -246,12 +246,7 @@ public class SettingsController {
 		double incomes = 0;
 		double expenses = 0;
 		List<Payment> deleted = new LinkedList<Payment>();
-		//------------------------------------------------------------------------------------------------
-		//
-		//							START TRANSACTION
-		//***********************************************************************************************
-		//------------------------------------------------------------------------------------------------
-		//------------------------------------------------------------------------------------------------
+
 		Connection con = DBManager.getDBManager().getConnection();
 		
 		try {
@@ -261,7 +256,6 @@ public class SettingsController {
 			e1.printStackTrace();
 		}
 		
-		///-----------------------------------------------------------------------------------------------
 		if(incomesID!=null){
 			for(String id:incomesID){
 				int intId = Integer.valueOf(id);
@@ -312,12 +306,7 @@ public class SettingsController {
 				e.printStackTrace();
 			}
 		}
-		
-		//-------------------------------------------------------------------------------------------------
-		//
-		//					END TRANSACRION
-		//
-		//-------------------------------------------------------------------------------------------------
+
 		if(user.getBudget().getId()==budget.getId()){
 			user.addBudet(budget);
 		}

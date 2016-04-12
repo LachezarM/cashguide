@@ -1,3 +1,4 @@
+
 package com.model;
 
 import java.sql.Connection;
@@ -25,10 +26,8 @@ public class UserManager {
 	//login initialize user
 	//this method gets the user, the budget for the current month if exists else creates new budget and add all payments for current budget
 	public static User createUserAfterLogin(String username, String password){
-		//------------------------------------------------------------------------------
-		//-------------------------------FUCK THIS SHIT---------------------------------
-		//------------------------------------------------------------------------------
-			Connection con = DBManager.getDBManager().getConnection();
+
+		Connection con = DBManager.getDBManager().getConnection();
 			
 			try {
 				con.setAutoCommit(false);
@@ -74,9 +73,7 @@ public class UserManager {
 				}
 			}
 		
-			//----------------------------------------------------------------------------
-			//----------------------------------------------------------------------------
-			//----------------------------------------------------------------------------
+
 		return user;
 	}
 	
