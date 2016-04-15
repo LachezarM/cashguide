@@ -15,8 +15,8 @@
 
 
 ###Cashguide - User interface
-<p style="border:1px solid black" align="center"><img src="https://raw.githubusercontent.com/LachezarM/cashguide/master/images/home.png" /></p>
-<p style="border:1px solid black" align="center"><img src="https://raw.githubusercontent.com/LachezarM/cashguide/master/images/add.png" /></p>
-<p style="border:1px solid black" align="center"><img src="https://raw.githubusercontent.com/LachezarM/cashguide/master/images/charts.png" /></p>
-<p style="border:1px solid black" align="center"><img src="https://raw.githubusercontent.com/LachezarM/cashguide/master/images/history.png" /></p>
-<p style="border:1px solid black" align="center"><img src="https://raw.githubusercontent.com/LachezarM/cashguide/master/images/simulator.png" /></p>
+<p style="border: 1px solid black;" align="center"><img src="https://raw.githubusercontent.com/LachezarM/cashguide/master/images/home.png" /></p>
+<p style="border:solid black 1px;" align="center"><img src="https://raw.githubusercontent.com/LachezarM/cashguide/master/images/add.png" /></p>
+<p style="border: solid black 1px;" align="center"><img src="https://raw.githubusercontent.com/LachezarM/cashguide/master/images/charts.png" /></p>
+<p style="border:1px solid black;" align="center"><img src="https://raw.githubusercontent.com/LachezarM/cashguide/master/images/history.png" /></p>
+<p style="border:1px solid black;" align="center"><img src="https://raw.githubusercontent.com/LachezarM/cashguide/master/images/simulator.png" /></p>
